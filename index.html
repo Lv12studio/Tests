@@ -17,7 +17,6 @@ html, body {
   color:#fff; font-size:50px; font-weight:bold; z-index:3000;
   text-align:center; animation:eyeGlow 2s ease-in-out forwards;
 }
-
 @keyframes eyeGlow {
   0% { opacity:0.2; text-shadow:none; }
   50% { opacity:1; text-shadow:0 0 25px #fff,0 0 50px #fff,0 0 75px #fff; }
@@ -69,6 +68,7 @@ html, body {
 .bubble.triple { background: linear-gradient(135deg,#f0f,#a0a); color:#fff; font-size:24px; }
 .bubble.gravity { background: linear-gradient(135deg,#fff,#d166ff); color:#000; font-size:28px; }
 .bubble.instawin { background: linear-gradient(135deg,#ff0055,#ff66aa); color:#fff; font-size:28px; text-shadow:0 0 15px #fff; }
+.bubble.invert { background: linear-gradient(135deg,#00ff00,#006600); color:#000; font-size:28px; }
 
 /* --- Index Panel --- */
 #indexPanel, #updatesPanel {
@@ -77,6 +77,7 @@ html, body {
   overflow-y:auto; transition:top 0.5s ease; padding:20px;
   z-index:999; box-shadow:0 -5px 30px #d166ff;
 }
+#updatesPanel { box-shadow:0 -5px 30px #00ff00; }
 #indexPanel h2, #updatesPanel h2 { text-transform:uppercase; }
 #indexPanel .closeBtn, #updatesPanel .closeUpdatesBtn {
   position:absolute; top:15px; right:15px; font-size:28px; cursor:pointer;
@@ -91,7 +92,7 @@ html, body {
 }
 .indexItem .desc { flex:1; }
 .indexItem .rarity { font-weight:bold; }
-#updatesList { padding-left:20px; color:#fff; }
+#updatesList li { margin:5px 0; }
 
 @keyframes float { 0%{transform:translateY(0);} 100%{transform:translateY(-10px);} }
 
@@ -155,14 +156,16 @@ html, body {
   <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#0f0,#0a0); color:#000;">12²</div><div class="desc"><span class="rarity">Vzácná 1%:</span> +144 skóre</div></div>
   <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#f0f,#a0a);">3×12</div><div class="desc"><span class="rarity">Vzácná 2%:</span> Spawnuje 3 bubliny</div></div>
   <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#fff,#d166ff); color:#000;">&lt;12&gt;</div><div class="desc"><span class="rarity">Vzácná 3%:</span> Gravitační bublina teleportuje všechny bubliny k ní</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ff0055,#ff66aa);">INSTA WIN</div><div class="desc"><span class="rarity">Vzácná 0,1%:</span> +999999999 skóre</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ff0055,#ff66aa);">*12*</div><div class="desc"><span class="rarity">Vzácná 0,1%:</span> Insta Win +999999999 skóre</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#00ff00,#006600);">!12!</div><div class="desc"><span class="rarity">Vzácná 0,5%:</span> Invertuje barvy na 5 s +10 skóre</div></div>
 </div>
 
 <div id="updatesPanel">
   <div class="closeUpdatesBtn">✖</div>
   <h2>POSLEDNÍ UPDATY</h2>
   <ul id="updatesList">
-    <li>Verze 1.2.0 – Přidána Insta Win bublina</li>
+    <li>Přidány dvě nové bubliny: Insta Win (*12*) a Invert (!12!)</li>
+    <li>Přidán nový button "Updaty"</li>
   </ul>
 </div>
 
@@ -188,7 +191,6 @@ const indexBtn=document.getElementById('indexBtn');
 const updatesBtn=document.getElementById('updatesBtn');
 const indexPanel=document.getElementById('indexPanel');
 const updatesPanel=document.getElementById('updatesPanel');
-const updatesList=document.getElementById('updatesList');
 const countdownEl=document.getElementById('countdown');
 const scoreContainer=document.getElementById('scoreContainer');
 const scoreEl=document.getElementById('score');
@@ -220,53 +222,22 @@ window.addEventListener('load',()=>{
 // --- BUTTON LOGIC ---
 function attachButtonEvents(){
   startBtn.addEventListener('click',startCountdown);
-
-  indexBtn.addEventListener('click',(e)=>{
-    e.stopPropagation();
-    if(indexPanel.style.top==='30%'){
-      indexPanel.style.top='100%';
-      startBtn.style.display='block';
-      indexBtn.style.display='block';
-      updatesBtn.style.display='block';
-    } else {
-      indexPanel.style.top='30%';
-      startBtn.style.display='none';
-      indexBtn.style.display='none';
-      updatesBtn.style.display='none';
-    }
+  indexBtn.addEventListener('click',()=>{
+    indexPanel.style.top = indexPanel.style.top==='30%'?'100%':'30%';
+    startBtn.style.display=indexPanel.style.top==='30%'?'none':'block';
+    indexBtn.style.display=indexPanel.style.top==='30%'?'none':'block';
+    updatesBtn.style.display=indexPanel.style.top==='30%'?'none':'block';
   });
-
-  closeBtn.addEventListener('click',(e)=>{
-    e.stopPropagation();
-    indexPanel.style.top='100%';
-    startBtn.style.display='block';
-    indexBtn.style.display='block';
-    updatesBtn.style.display='block';
-  });
-
+  closeBtn.addEventListener('click',()=>{ indexPanel.style.top='100%'; startBtn.style.display='block'; indexBtn.style.display='block'; updatesBtn.style.display='block'; });
   updatesBtn.addEventListener('click',()=>{ updatesPanel.style.top='30%'; });
   closeUpdatesBtn.addEventListener('click',()=>{ updatesPanel.style.top='100%'; });
-
-  document.body.addEventListener('click',()=>{
-    if(indexPanel.style.top==='30%'){ indexPanel.style.top='100%'; startBtn.style.display='block'; indexBtn.style.display='block'; updatesBtn.style.display='block'; }
-    if(updatesPanel.style.top==='30%'){ updatesPanel.style.top='100%'; }
-  });
-
-  continueBtn.addEventListener('click',()=>{
-    endScreen.style.display='none';
-    startBtn.style.display='block';
-    indexBtn.style.display='block';
-    updatesBtn.style.display='block';
-    versionLabel.style.display='block';
-  });
+  continueBtn.addEventListener('click',()=>{ endScreen.style.display='none'; startBtn.style.display='block'; indexBtn.style.display='block'; updatesBtn.style.display='block'; versionLabel.style.display='block'; });
 }
 
 // --- Countdown ---
 function startCountdown(){
   versionLabel.style.display='none';
-  startBtn.style.display='none';
-  indexBtn.style.display='none';
-  updatesBtn.style.display='none';
+  startBtn.style.display='none'; indexBtn.style.display='none'; updatesBtn.style.display='none';
   countdownEl.style.display='block';
   let count=3;
   countdownEl.textContent=count;
@@ -298,7 +269,8 @@ function spawnBubble(){
   const bubble=document.createElement('div');
   bubble.classList.add('bubble');
 
-  if(chance<=0.001){ bubble.classList.add('instawin'); bubble.textContent="INSTA WIN"; bubble.dataset.type="instawin"; }
+  if(chance<=0.001){ bubble.classList.add('instawin'); bubble.textContent="*12*"; bubble.dataset.type="instawin"; }
+  else if(chance<=0.006){ bubble.classList.add('invert'); bubble.textContent="!12!"; bubble.dataset.type="invert"; }
   else if(chance<=0.0025){ bubble.classList.add('rare2x'); bubble.textContent="12×2"; bubble.dataset.type="2x"; }
   else if(chance<=0.0125){ bubble.classList.add('rare144'); bubble.textContent="12²"; bubble.dataset.type="144"; }
   else if(chance<=0.0325){ bubble.classList.add('triple'); bubble.textContent="3×12"; bubble.dataset.type="triple"; }
@@ -316,9 +288,8 @@ function spawnBubble(){
 
   const pop=()=>{
     if(!gameRunning) return;
-    if(['2x','144','triple','gravity','instawin'].includes(bubble.dataset.type)) popSound.currentTime=0,popSound.play();
-    bubble.remove();
-    bubbles=bubbles.filter(b=>b!==bubble);
+    if(['2x','144','triple','gravity','instawin','invert'].includes(bubble.dataset.type)) popSound.currentTime=0,popSound.play();
+    bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble);
     if(bubble.dataset.type==="2x") score*=2;
     else if(bubble.dataset.type==="144") score+=144;
     else if(bubble.dataset.type==="triple") for(let i=0;i<3;i++) spawnSingleBubble();
@@ -327,7 +298,12 @@ function spawnBubble(){
       const by=parseFloat(bubble.style.top)+parseFloat(bubble.style.height)/2;
       bubbles.forEach(b=>{ b.style.left=(bx-parseFloat(b.style.width)/2)+'px'; b.style.top=(by-parseFloat(b.style.height)/2)+'px'; });
     }
-    else if(bubble.dataset.type==="instawin"){ score+=999999999; }
+    else if(bubble.dataset.type==="instawin") score+=999999999;
+    else if(bubble.dataset.type==="invert") {
+      score+=10;
+      document.body.style.filter="invert(1)";
+      setTimeout(()=>{ document.body.style.filter="invert(0)"; },5000);
+    }
     else score++;
     if(score>999999999) score=999999999;
     scoreEl.textContent="Skóre: "+score;
@@ -394,13 +370,6 @@ function endGame(){
 function showEndScreen(){
   finalScoreText.textContent="Tvé skóre: "+score;
   endScreen.style.display='flex';
-}
-
-// --- Funkce aktualizace ---
-function aktualizujUpdaty(novyText){
-  const li=document.createElement('li');
-  li.textContent=novyText;
-  updatesList.appendChild(li);
 }
 </script>
 </body>
