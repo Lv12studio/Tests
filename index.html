@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>12 Bubbles</title>
+<style>
+html, body {
+  margin:0; padding:0; height:100vh; overflow:hidden;
+  font-family: monospace;
+  background-color:#0a0a0a;
+  background-image: radial-gradient(circle at 30% 30%, #0ff1 10%, transparent 60%),
+                    radial-gradient(circle at 70% 70%, #ff00ff1a 10%, transparent 60%),
+                    linear-gradient(180deg, #000 0%, #111 100%);
+  color:#0ff;
+}
+
+#startBtn, #indexBtn {
+  display:block; margin:0 auto;
+  font-size:28px; padding:15px 35px;
+  background: linear-gradient(45deg,#00ffff,#00ff99,#ff00ff);
+  border:none; border-radius:12px; color:white;
+  font-weight:bold; text-transform:uppercase;
+  cursor:pointer; box-shadow:0 0 20px #0ff,0 0 40px #0ff,0 0 60px #0ff;
+  z-index:1000;
+}
+
+#startBtn { margin-top:30vh; } /* center home screen for mobile */
+#indexBtn { margin-top:20px; }
+
+#countdown {
+  position:fixed; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  font-size:80px; color:#0ff;
+  text-shadow:0 0 20px #0ff,0 0 40px #0ff;
+  z-index:1001; display:none;
+}
+
+#scoreContainer {
+  position:fixed; top:20px; left:50%;
+  transform:translateX(-50%);
+  z-index:1001; text-align:center; display:none;
+}
+#highscore { font-size:20px; color:#ff0; margin-bottom:5px; }
+#score { font-size:28px; color:#0ff; }
+#lives { font-size:20px; color:#f00; margin-top:5px; }
+
+.bubble {
+  width:80px; height:80px; border-radius:50%;
+  display:flex; justify-content:center; align-items:center;
+  font-size:24px; font-weight:bold; color:#fff;
+  background:linear-gradient(135deg,#00ffff,#ff00ff);
+  border:2px solid #0ff; box-shadow:0 0 15px #0ff,0 0 30px #0ff inset;
+  position:absolute; cursor:pointer;
+}
+.bubble.rare2x { background: linear-gradient(135deg,#ffff00,#ff9900); color:#000; font-size:28px; box-shadow:0 0 20px #ff0,0 0 40px #ff0 inset;}
+.bubble.rare144 { background: linear-gradient(135deg,#00ff00,#00aa00); color:#000; font-size:28px; box-shadow:0 0 20px #0f0,0 0 40px #0f0 inset;}
+.bubble.triple { background: linear-gradient(135deg,#ff00ff,#9900ff); color:#fff; font-size:24px; box-shadow:0 0 20px #f0f,0 0 40px #f0f inset;}
+.bubble.gravity { background: linear-gradient(135deg,#00ffff,#ff0); color:#000; font-size:28px; box-shadow:0 0 25px #0ff,0 0 50px #ff0 inset; }
+
+#indexPanel {
+  position:fixed; top:100%; left:0; width:100%;
+  max-height:70%; background:rgba(10,10,10,0.95);
+  overflow-y:auto; transition:top 0.5s ease; padding:20px;
+  z-index:999; box-shadow:0 -5px 30px #0ff;
+}
+#indexPanel h2 { text-transform:uppercase; }
+#indexPanel .closeBtn {
+  position:absolute; top:15px; right:15px; font-size:28px; cursor:pointer;
+  color:#fff; font-weight:bold; z-index:1001;
+}
+.indexItem { display:flex; align-items:center; margin:10px 0; }
+.indexItem .bubbleImg {
+  width:60px; height:60px; margin-right:15px; border-radius:50%;
+  display:flex; justify-content:center; align-items:center;
+  font-weight:bold; color:#fff; border:2px solid #0ff;
+  box-shadow:0 0 15px #0ff inset; animation:float 1s infinite alternate;
+}
+.indexItem .desc { flex:1; }
+.indexItem .rarity { font-weight:bold; }
+
+@keyframes float { 0%{transform:translateY(0);} 100%{transform:translateY(-10px);} }
+
+#endScreen {
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.9); display:none; flex-direction:column;
+  justify-content:center; align-items:center; color:#0ff; font-size:40px;
+  z-index:1500; text-align:center;
+}
+#continueBtn {
+  margin-top:30px; font-size:26px; padding:15px 40px;
+  border:none; border-radius:10px; cursor:pointer; color:white;
+  background: linear-gradient(45deg,#00ffff,#00ff99,#ff00ff);
+  box-shadow:0 0 20px #0ff,0 0 40px #0ff;
+}
+
+#versionLabel {
+  position:fixed; top:10px; right:10px; font-size:16px;
+  color:rgba(255,255,255,0.3); font-weight:bold; z-index:1002; pointer-events:none;
+}
+
+#easterEgg {
+  position: fixed; top: 0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.9); color:red; font-size:150px;
+  font-weight:bold; display:flex; justify-content:center; align-items:center;
+  z-index:2000; display:none; text-transform:uppercase; opacity:0;
+  animation:fadeShake 5s forwards;
+}
+@keyframes fadeShake {
+  0%{opacity:0; transform:translateX(0);}
+  10%{opacity:1; transform:translateX(-5px);}
+  20%{transform:translateX(5px);}
+  30%{transform:translateX(-5px);}
+  40%{transform:translateX(5px);}
+  50%{transform:translateX(-5px);}
+  60%{transform:translateX(5px);}
+  70%{transform:translateX(-5px);}
+  80%{transform:translateX(5px);}
+  90%{transform:translateX(-5px);}
+  100%{opacity:0; transform:translateX(0);}
+}
+</style>
+</head>
+<body>
+
+<div id="versionLabel">Released 1.12.0</div>
+
+<button id="startBtn">START</button>
+<button id="indexBtn">INDEX</button>
+
+<div id="indexPanel">
+  <div class="closeBtn">✖</div>
+  <h2>BUBBLES INDEX</h2>
+  <div class="indexItem"><div class="bubbleImg">12</div><div class="desc"><span class="rarity">Běžná:</span> +1 skóre</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ffff00,#ff9900); color:#000;">12×2</div><div class="desc"><span class="rarity">Vzácná 0,25%:</span> Zdvojnásobí skóre</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#00ff00,#00aa00); color:#000;">12²</div><div class="desc"><span class="rarity">Vzácná 1%:</span> +144 skóre</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ff00ff,#9900ff);">3×12</div><div class="desc"><span class="rarity">Vzácná 2%:</span> Spawnuje 3 bubliny</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#00ffff,#ff0); color:#000;">&lt;12&gt;</div><div class="desc"><span class="rarity">Vzácná 3%:</span> Gravitační bublina teleportuje všechny bubliny k ní</div></div>
+</div>
+
+<div id="countdown"></div>
+<div id="scoreContainer">
+  <div id="highscore">Nejvyšší skóre: 0</div>
+  <div id="score">Skóre: 0</div>
+  <div id="lives">Životy: 3</div>
+</div>
+
+<div id="endScreen">
+  <div id="finalScoreText"></div>
+  <button id="continueBtn">POKRAČOVAT</button>
+</div>
+
+<div id="easterEgg"></div>
+
+<audio id="popSound" src="https://www.soundjay.com/button/sounds/button-16.mp3"></audio>
+
+<script>
+const startBtn=document.getElementById('startBtn');
+const indexBtn=document.getElementById('indexBtn');
+const indexPanel=document.getElementById('indexPanel');
+const countdownEl=document.getElementById('countdown');
+const scoreContainer=document.getElementById('scoreContainer');
+const scoreEl=document.getElementById('score');
+const highscoreEl=document.getElementById('highscore');
+const livesEl=document.getElementById('lives');
+const popSound=document.getElementById('popSound');
+const endScreen=document.getElementById('endScreen');
+const finalScoreText=document.getElementById('finalScoreText');
+const continueBtn=document.getElementById('continueBtn');
+const versionLabel=document.getElementById('versionLabel');
+const easterEl=document.getElementById('easterEgg');
+const closeBtn=document.querySelector('#indexPanel .closeBtn');
+
+let score=0, highscore=0, lives=3, bubbles=[], gameRunning=false, startTime;
+
+startBtn.addEventListener('click',startCountdown);
+
+indexBtn.addEventListener('click',(e)=>{
+  e.stopPropagation();
+  if(indexPanel.style.top==='30%'){
+    indexPanel.style.top='100%';
+    startBtn.style.display='block';
+    indexBtn.style.display='block';
+  } else {
+    indexPanel.style.top='30%';
+    startBtn.style.display='none';
+    indexBtn.style.display='none';
+  }
+});
+
+closeBtn.addEventListener('click',(e)=>{
+  e.stopPropagation();
+  indexPanel.style.top='100%';
+  startBtn.style.display='block';
+  indexBtn.style.display='block';
+});
+
+indexPanel.addEventListener('click',e=>e.stopPropagation());
+
+document.body.addEventListener('click',()=>{
+  if(indexPanel.style.top==='30%'){
+    indexPanel.style.top='100%';
+    startBtn.style.display='block';
+    indexBtn.style.display='block';
+  }
+});
+
+continueBtn.addEventListener('click',()=>{
+  endScreen.style.display='none';
+  startBtn.style.display='block';
+  indexBtn.style.display='block';
+  versionLabel.style.display='block';
+});
+
+function startCountdown(){
+  versionLabel.style.display='none';
+  startBtn.style.display='none';
+  indexBtn.style.display='none';
+  countdownEl.style.display='block';
+  let count=3;
+  countdownEl.textContent=count;
+  const interval=setInterval(()=>{
+    count--;
+    if(count>0) countdownEl.textContent=count;
+    else{
+      clearInterval(interval);
+      countdownEl.style.display='none';
+      scoreContainer.style.display='block';
+      startGame();
+    }
+  },1000);
+}
+
+function startGame(){
+  score=0; lives=3; bubbles=[]; gameRunning=true; startTime=Date.now();
+  scoreEl.textContent="Skóre: "+score; livesEl.textContent="Životy: "+lives;
+  spawnBubble();
+  requestAnimationFrame(updateBubbles);
+}
+
+function spawnBubble(){
+  if(!gameRunning) return;
+  const elapsed=(Date.now()-startTime)/1000;
+  const speedMultiplier=1+elapsed/120;
+  const chance=Math.random();
+  const bubble=document.createElement('div');
+  bubble.classList.add('bubble');
+
+  if(chance<=0.0025){ bubble.classList.add('rare2x'); bubble.textContent="12×2"; bubble.dataset.type="2x"; }
+  else if(chance<=0.0125){ bubble.classList.add('rare144'); bubble.textContent="12²"; bubble.dataset.type="144"; }
+  else if(chance<=0.0325){ bubble.classList.add('triple'); bubble.textContent="3×12"; bubble.dataset.type="triple"; }
+  else if(chance<=0.0625){ bubble.classList.add('gravity'); bubble.textContent="<12>"; bubble.dataset.type="gravity"; }
+  else{ bubble.textContent="12"; bubble.dataset.type="normal"; }
+
+  const size=Math.random()*60+60;
+  bubble.style.width=`${size}px`;
+  bubble.style.height=`${size}px`;
+  bubble.style.fontSize=(bubble.dataset.type==="144"?size/2.5:size/3)+'px';
+  bubble.style.left=Math.random()*(window.innerWidth-size)+'px';
+  bubble.style.top=(window.innerHeight-size)+'px';
+  bubble.dataset.speed=(Math.random()*1.5+1)*speedMultiplier;
+  document.body.appendChild(bubble);
+
+  const pop=()=>{
+    if(!gameRunning) return;
+    if(['2x','144','triple','gravity'].includes(bubble.dataset.type)) popSound.currentTime=0,popSound.play();
+    bubble.remove();
+    bubbles=bubbles.filter(b=>b!==bubble);
+
+    if(bubble.dataset.type==="2x") score*=2;
+    else if(bubble.dataset.type==="144") score+=144;
+    else if(bubble.dataset.type==="triple") for(let i=0;i<3;i++) spawnSingleBubble();
+    else if(bubble.dataset.type==="gravity"){
+      const bx=parseFloat(bubble.style.left)+parseFloat(bubble.style.width)/2;
+      const by=parseFloat(bubble.style.top)+parseFloat(bubble.style.height)/2;
+      bubbles.forEach(b=>{
+        b.style.left=(bx-parseFloat(b.style.width)/2)+'px';
+        b.style.top=(by-parseFloat(b.style.height)/2)+'px';
+      });
+    }
+    else score++;
+
+    if(score>999999999) score=999999999;
+    scoreEl.textContent="Skóre: "+score;
+    if(score>highscore){ highscore=score; highscoreEl.textContent="Nejvyšší skóre: "+highscore; }
+  };
+
+  bubble.addEventListener('click',pop);
+  bubble.addEventListener('touchstart',pop);
+  bubbles.push(bubble);
+  setTimeout(spawnBubble,500);
+}
+
+function spawnSingleBubble(){
+  if(!gameRunning) return;
+  const elapsed=(Date.now()-startTime)/1000;
+  const speedMultiplier=1+elapsed/120;
+  const bubble=document.createElement('div'); bubble.classList.add('bubble');
+  bubble.textContent="12"; bubble.dataset.type="normal";
+  const size=Math.random()*60+60;
+  bubble.style.width=`${size}px`; bubble.style.height=`${size}px`;
+  bubble.style.fontSize=size/3+'px';
+  bubble.style.left=Math.random()*(window.innerWidth-size)+'px';
+  bubble.style.top=(window.innerHeight-size)+'px';
+  bubble.dataset.speed=(Math.random()*1.5+1)*speedMultiplier;
+  document.body.appendChild(bubble);
+
+  const pop=()=>{ 
+    if(!gameRunning) return; score++; 
+    if(score>999999999) score=999999999; scoreEl.textContent="Skóre: "+score; 
+    if(score>highscore){ highscore=score; highscoreEl.textContent="Nejvyšší skóre: "+highscore; } 
+    bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble);
+  };
+  bubble.addEventListener('click',pop); bubble.addEventListener('touchstart',pop);
+  bubbles.push(bubble);
+}
+
+function updateBubbles(){
+  if(!gameRunning) return;
+  bubbles.forEach(bubble=>{
+    const top=parseFloat(bubble.style.top);
+    bubble.style.top=top-parseFloat(bubble.dataset.speed)+'px';
+    if(top<=0){ 
+      lives--; livesEl.textContent="Životy: "+lives; 
+      bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble); 
+      if(lives<=0) endGame();
+    }
+  });
+  requestAnimationFrame(updateBubbles);
+}
+
+function endGame(){
+  gameRunning=false; bubbles.forEach(b=>b.remove()); bubbles=[];
+  scoreContainer.style.display='none';
+
+  // Easter egg
+  if(score===12 || score<=3){
+    easterEl.textContent = (score===12?'12':'BRUH');
+    easterEl.style.display='flex';
+    easterEl.style.animation='fadeShake 5s forwards';
+    setTimeout(()=>{ easterEl.style.display='none'; showEndScreen(); },5000);
+  } else {
+    showEndScreen();
+  }
+}
+
+function showEndScreen(){
+  finalScoreText.textContent="Tvé skóre: "+score;
+  endScreen.style.display='flex';
+}
+
+</script>
+</body>
+</html>
