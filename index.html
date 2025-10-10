@@ -163,6 +163,7 @@ html, body {
 <audio id="popSound" src="https://www.soundjay.com/button/sounds/button-16.mp3"></audio>
 
 <script>
+// --- DOM ELEMENTS ---
 const startBtn=document.getElementById('startBtn');
 const indexBtn=document.getElementById('indexBtn');
 const updatesBtn=document.getElementById('updatesBtn');
@@ -228,8 +229,144 @@ function attachButtonEvents(){
   continueBtn.addEventListener('click',()=>{ endScreen.style.display='none'; startBtn.style.display='block'; indexBtn.style.display='block'; updatesBtn.style.display='block'; versionLabel.style.display='block'; });
 }
 
-// --- Game loop a spawnování bublin ---
-// ... zde vložit kód z předchozí verze pro spawnBubble, updateBubbles, endGame, showEndScreen
+// --- Countdown ---
+function startCountdown(){
+  versionLabel.style.display='none';
+  startBtn.style.display='none';
+  indexBtn.style.display='none';
+  updatesBtn.style.display='none';
+  countdownEl.style.display='block';
+  let count=3;
+  countdownEl.textContent=count;
+  const interval=setInterval(()=>{
+    count--;
+    if(count>0) countdownEl.textContent=count;
+    else{
+      clearInterval(interval);
+      countdownEl.style.display='none';
+      scoreContainer.style.display='block';
+      startGame();
+    }
+  },1000);
+}
+
+// --- GAME LOGIC ---
+function startGame(){
+  score=0; lives=3; bubbles=[]; gameRunning=true; startTime=Date.now();
+  scoreEl.textContent="Skóre: "+score; livesEl.textContent="Životy: "+lives;
+  spawnBubble();
+  requestAnimationFrame(updateBubbles);
+}
+
+function spawnBubble(){
+  if(!gameRunning) return;
+  const elapsed=(Date.now()-startTime)/1000;
+  const speedMultiplier=1+elapsed/120;
+  const chance=Math.random();
+  const bubble=document.createElement('div');
+  bubble.classList.add('bubble');
+
+  if(chance<=0.0005){ bubble.classList.add('instawin'); bubble.textContent="*12*"; bubble.dataset.type="instawin"; }
+  else if(chance<=0.006){ bubble.classList.add('invert'); bubble.textContent="!12!"; bubble.dataset.type="invert"; }
+  else if(chance<=0.0025){ bubble.classList.add('rare2x'); bubble.textContent="12×2"; bubble.dataset.type="2x"; }
+  else if(chance<=0.0125){ bubble.classList.add('rare144'); bubble.textContent="12²"; bubble.dataset.type="144"; }
+  else if(chance<=0.0325){ bubble.classList.add('triple'); bubble.textContent="3×12"; bubble.dataset.type="triple"; }
+  else if(chance<=0.0625){ bubble.classList.add('gravity'); bubble.textContent="<12>"; bubble.dataset.type="gravity"; }
+  else{ bubble.textContent="12"; bubble.dataset.type="normal"; }
+
+  const size=Math.random()*60+60;
+  bubble.style.width=size+'px';
+  bubble.style.height=size+'px';
+  bubble.style.fontSize=(bubble.dataset.type==="144"?size/2.5:size/3)+'px';
+  bubble.style.left=Math.random()*(window.innerWidth-size)+'px';
+  bubble.style.top=(window.innerHeight-size)+'px';
+  bubble.dataset.speed=(Math.random()*1.5+1)*speedMultiplier;
+  document.body.appendChild(bubble);
+
+  const pop=()=>{
+    if(!gameRunning) return;
+    if(['2x','144','triple','gravity','instawin','invert'].includes(bubble.dataset.type)) popSound.currentTime=0,popSound.play();
+    bubble.remove();
+    bubbles=bubbles.filter(b=>b!==bubble);
+    if(bubble.dataset.type==="2x") score*=2;
+    else if(bubble.dataset.type==="144") score+=144;
+    else if(bubble.dataset.type==="triple") for(let i=0;i<3;i++) spawnSingleBubble();
+    else if(bubble.dataset.type==="gravity"){
+      const bx=parseFloat(bubble.style.left)+parseFloat(bubble.style.width)/2;
+      const by=parseFloat(bubble.style.top)+parseFloat(bubble.style.height)/2;
+      bubbles.forEach(b=>{ b.style.left=(bx-parseFloat(b.style.width)/2)+'px'; b.style.top=(by-parseFloat(b.style.height)/2)+'px'; });
+    }
+    else if(bubble.dataset.type==="instawin") score=999999999;
+    else if(bubble.dataset.type==="invert"){
+      document.body.style.filter="invert(1)";
+      setTimeout(()=>{document.body.style.filter="invert(0)";},5000);
+      score+=10;
+    }
+    else score++;
+    if(score>999999999) score=999999999;
+    scoreEl.textContent="Skóre: "+score;
+    if(score>highscore){ highscore=score; highscoreEl.textContent="Nejvyšší skóre: "+highscore; }
+  };
+
+  bubble.addEventListener('click',pop);
+  bubble.addEventListener('touchstart',pop);
+  bubbles.push(bubble);
+  setTimeout(spawnBubble,500);
+}
+
+function spawnSingleBubble(){
+  if(!gameRunning) return;
+  const elapsed=(Date.now()-startTime)/1000;
+  const speedMultiplier=1+elapsed/120;
+  const bubble=document.createElement('div'); bubble.classList.add('bubble');
+  bubble.textContent="12"; bubble.dataset.type="normal";
+  const size=Math.random()*60+60;
+  bubble.style.width=size+'px'; bubble.style.height=size+'px';
+  bubble.style.fontSize=size/3+'px';
+  bubble.style.left=Math.random()*(window.innerWidth-size)+'px';
+  bubble.style.top=(window.innerHeight-size)+'px';
+  bubble.dataset.speed=(Math.random()*1.5+1)*speedMultiplier;
+  document.body.appendChild(bubble);
+
+  const pop=()=>{ 
+    if(!gameRunning) return; score++; 
+    if(score>999999999) score=999999999; scoreEl.textContent="Skóre: "+score; 
+    if(score>highscore){ highscore=score; highscoreEl.textContent="Nejvyšší skóre: "+highscore; } 
+    bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble);
+  };
+  bubble.addEventListener('click',pop); bubble.addEventListener('touchstart',pop);
+  bubbles.push(bubble);
+}
+
+function updateBubbles(){
+  if(!gameRunning) return;
+  bubbles.forEach(bubble=>{
+    const top=parseFloat(bubble.style.top);
+    bubble.style.top=top-parseFloat(bubble.dataset.speed)+'px';
+    if(top<=0){ 
+      lives--; livesEl.textContent="Životy: "+lives; 
+      bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble); 
+      if(lives<=0) endGame();
+    }
+  });
+  requestAnimationFrame(updateBubbles);
+}
+
+function endGame(){
+  gameRunning=false; bubbles.forEach(b=>b.remove()); bubbles=[];
+  scoreContainer.style.display='none';
+  if(score===12 || score<=3){
+    easterEl.textContent = (score===12?'12':'BRUH');
+    easterEl.style.display='flex';
+    easterEl.style.animation='fadeShake 5s forwards';
+    setTimeout(()=>{ easterEl.style.display='none'; showEndScreen(); },5000);
+  } else showEndScreen();
+}
+
+function showEndScreen(){
+  finalScoreText.textContent="Tvé skóre: "+score;
+  endScreen.style.display='flex';
+}
 </script>
 </body>
 </html>
