@@ -3,109 +3,110 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>12 Bubbles</title>
+<title>12 Bubbles Mobile</title>
 <style>
 html, body {
   margin:0; padding:0; height:100vh; overflow:hidden;
   font-family: monospace;
   background-color:#0a0a0a;
   color:#fff;
+  touch-action: manipulation;
 }
 
 /* --- LOADING SCREEN --- */
 #loadingScreen {
   position: fixed; top:0; left:0; width:100%; height:100%;
   background:#000; display:flex; justify-content:center; align-items:center;
-  color:#fff; font-size:50px; font-weight:bold; z-index:3000;
+  color:#fff; font-size:40px; font-weight:bold; z-index:3000;
   text-align:center;
   animation:eyeGlow 2s ease-in-out forwards;
 }
-
 @keyframes eyeGlow {
   0% { opacity:0.2; text-shadow:none; }
-  50% { opacity:1; text-shadow:0 0 25px #fff,0 0 50px #fff,0 0 75px #fff; }
+  50% { opacity:1; text-shadow:0 0 20px #fff,0 0 40px #fff; }
   100% { opacity:0.2; text-shadow:none; }
 }
 
-/* --- HOME SCREEN --- */
+/* --- BUTTONS --- */
 #startBtn, #indexBtn, #updateBtn {
-  display:none; margin:0 auto;
-  font-size:28px; padding:15px 35px;
+  display:none; margin:0 auto; font-size:24px; padding:15px 30px;
   background: linear-gradient(45deg,#a044ff,#6a00f4,#d166ff);
   border:none; border-radius:12px; color:#fff;
   font-weight:bold; text-transform:uppercase;
   cursor:pointer; box-shadow:0 0 10px #d166ff,0 0 20px #a044ff;
   z-index:1000;
 }
-#startBtn { margin-top:25vh; }
-#indexBtn, #updateBtn { margin-top:20px; }
+#startBtn { margin-top:20vh; }
+#indexBtn, #updateBtn { margin-top:15px; }
 
 /* --- Countdown & Score --- */
 #countdown {
   position:fixed; top:50%; left:50%;
   transform:translate(-50%,-50%);
-  font-size:80px; color:#d166ff;
+  font-size:60px; color:#d166ff;
   text-shadow:0 0 20px #d166ff,0 0 40px #a044ff;
   z-index:1001; display:none;
 }
 #scoreContainer {
-  position:fixed; top:20px; left:50%;
+  position:fixed; top:10px; left:50%;
   transform:translateX(-50%);
   z-index:1001; text-align:center; display:none;
 }
-#highscore { font-size:20px; color:#ff0; margin-bottom:5px; }
-#score { font-size:28px; color:#d166ff; }
-#lives { font-size:20px; color:#f00; margin-top:5px; }
+#highscore { font-size:16px; color:#ff0; margin-bottom:5px; }
+#score { font-size:20px; color:#d166ff; }
+#lives { font-size:16px; color:#f00; margin-top:5px; }
 
 /* --- Bubbles --- */
 .bubble {
-  width:80px; height:80px; border-radius:50%;
+  width:70px; height:70px; border-radius:50%;
   display:flex; justify-content:center; align-items:center;
-  font-size:24px; font-weight:bold; color:#fff;
+  font-size:20px; font-weight:bold; color:#fff;
   background:linear-gradient(135deg,#a044ff,#6a00f4);
   border:2px solid #d166ff; box-shadow:0 0 10px #d166ff,0 0 20px #a044ff inset;
   position:absolute; cursor:pointer;
+  user-select:none;
+  touch-action: manipulation;
 }
-.bubble.rare2x { background: linear-gradient(135deg,#ffff00,#a044ff); color:#000; font-size:28px; }
-.bubble.rare144 { background: linear-gradient(135deg,#0f0,#0a0); color:#000; font-size:28px; }
-.bubble.triple { background: linear-gradient(135deg,#f0f,#a0a); color:#fff; font-size:24px; }
-.bubble.gravity { background: linear-gradient(135deg,#fff,#d166ff); color:#000; font-size:28px; }
-.bubble.instawin { background: linear-gradient(135deg,#0f0,#00ff00); color:#000; font-size:30px; }
+.bubble.rare2x { background: linear-gradient(135deg,#ffff00,#a044ff); color:#000; font-size:22px; }
+.bubble.rare144 { background: linear-gradient(135deg,#0f0,#0a0); color:#000; font-size:22px; }
+.bubble.triple { background: linear-gradient(135deg,#f0f,#a0a); color:#fff; font-size:20px; }
+.bubble.gravity { background: linear-gradient(135deg,#fff,#d166ff); color:#000; font-size:22px; }
+.bubble.instawin { background: linear-gradient(135deg,#0f0,#00ff00); color:#000; font-size:24px; }
 
-/* --- Index Panel --- */
+/* --- Panels --- */
 .panel {
   position:fixed; top:100%; left:0; width:100%;
-  max-height:70%; overflow-y:auto; transition:top 0.5s ease; padding:20px;
-  z-index:999; box-shadow:0 -5px 30px #d166ff; background:rgba(10,10,10,0.95);
+  max-height:70%; overflow-y:auto; transition:top 0.5s ease; padding:15px;
+  z-index:999; box-shadow:0 -5px 20px #d166ff; background:rgba(10,10,10,0.95);
 }
-.panel.green { background: rgba(0,100,0,0.95); box-shadow:0 -5px 30px #0f0; }
-
-.panel h2 { text-transform:uppercase; }
+.panel.green { background: rgba(0,100,0,0.95); box-shadow:0 -5px 20px #0f0; }
+.panel h2 { text-transform:uppercase; font-size:18px; }
 .panel .closeBtn {
-  position:absolute; top:15px; right:15px; font-size:28px; cursor:pointer;
+  position:absolute; top:10px; right:10px; font-size:24px; cursor:pointer;
   color:#fff; font-weight:bold; z-index:1001;
 }
-.indexItem { display:flex; align-items:center; margin:10px 0; }
+.indexItem { display:flex; align-items:center; margin:8px 0; font-size:14px; }
 .indexItem .bubbleImg {
-  width:60px; height:60px; margin-right:15px; border-radius:50%;
+  width:50px; height:50px; margin-right:10px; border-radius:50%;
   display:flex; justify-content:center; align-items:center;
   font-weight:bold; color:#fff; border:2px solid #d166ff;
-  box-shadow:0 0 15px #d166ff inset; animation:float 1s infinite alternate;
+  box-shadow:0 0 10px #d166ff inset; animation:float 1s infinite alternate;
+  font-size:14px;
 }
 .indexItem .desc { flex:1; }
 .indexItem .rarity { font-weight:bold; }
 
-@keyframes float { 0%{transform:translateY(0);} 100%{transform:translateY(-10px);} }
+@keyframes float { 0%{transform:translateY(0);} 100%{transform:translateY(-6px);} }
 
 /* --- End Screen --- */
 #endScreen {
   position:fixed; top:0; left:0; width:100%; height:100%;
   background:rgba(0,0,0,0.9); display:none; flex-direction:column;
-  justify-content:center; align-items:center; color:#fff; font-size:40px;
+  justify-content:center; align-items:center; color:#fff; font-size:30px;
   z-index:1500; text-align:center;
 }
 #continueBtn {
-  margin-top:30px; font-size:26px; padding:15px 40px;
+  margin-top:20px; font-size:20px; padding:10px 30px;
   border:none; border-radius:10px; cursor:pointer; color:#fff;
   background: linear-gradient(45deg,#a044ff,#6a00f4,#d166ff);
   box-shadow:0 0 10px #d166ff,0 0 20px #a044ff;
@@ -113,38 +114,16 @@ html, body {
 
 /* --- Version --- */
 #versionLabel {
-  position:fixed; top:10px; right:10px; font-size:16px;
+  position:fixed; top:5px; right:5px; font-size:12px;
   color:rgba(255,255,255,0.3); font-weight:bold; z-index:1002; pointer-events:none;
-}
-
-/* --- Easter Egg --- */
-#easterEgg {
-  position: fixed; top: 0; left:0; width:100%; height:100%;
-  background:rgba(0,0,0,0.9); color:red; font-size:150px;
-  font-weight:bold; display:flex; justify-content:center; align-items:center;
-  z-index:2000; display:none; text-transform:uppercase; opacity:0;
-  animation:fadeShake 5s forwards;
-}
-@keyframes fadeShake {
-  0%{opacity:0; transform:translateX(0);}
-  10%{opacity:1; transform:translateX(-5px);}
-  20%{transform:translateX(5px);}
-  30%{transform:translateX(-5px);}
-  40%{transform:translateX(5px);}
-  50%{transform:translateX(-5px);}
-  60%{transform:translateX(5px);}
-  70%{transform:translateX(-5px);}
-  80%{transform:translateX(5px);}
-  90%{transform:translateX(-5px);}
-  100%{opacity:0; transform:translateX(0);}
 }
 </style>
 </head>
 <body>
 
 <div id="loadingScreen">Level 12 studio</div>
-
 <div id="versionLabel">Released 1.2.0</div>
+
 <button id="startBtn">START</button>
 <button id="indexBtn">INDEX</button>
 <button id="updateBtn">UPDATY</button>
@@ -163,7 +142,7 @@ html, body {
   <div class="closeBtn">✖</div>
   <h2>UPDATY</h2>
   <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#0f0,#0a0); color:#000;">12²</div><div class="desc"><span class="rarity">Nová bublina:</span> +144 skóre</div></div>
-  <div class="indexItem"><div class="bubbleImg" class="bubbleImg instawin">*</div><div class="desc"><span class="rarity">Nová bublina:</span> Insta Win +999999999 skóre</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#0f0,#00ff00); color:#000;">*12*</div><div class="desc"><span class="rarity">Nová bublina:</span> Insta Win +999999999 skóre</div></div>
   <div class="indexItem"><div class="desc">Přidáno tlačítko UPDATY pro zobrazení novinek</div></div>
 </div>
 
@@ -178,8 +157,6 @@ html, body {
   <div id="finalScoreText"></div>
   <button id="continueBtn">POKRAČOVAT</button>
 </div>
-
-<div id="easterEgg"></div>
 
 <audio id="popSound" src="https://www.soundjay.com/button/sounds/button-16.mp3"></audio>
 
@@ -198,27 +175,24 @@ const popSound=document.getElementById('popSound');
 const endScreen=document.getElementById('endScreen');
 const finalScoreText=document.getElementById('finalScoreText');
 const continueBtn=document.getElementById('continueBtn');
-const versionLabel=document.getElementById('versionLabel');
-const easterEl=document.getElementById('easterEgg');
+const loadingScreen=document.getElementById('loadingScreen');
 const indexClose=document.querySelector('#indexPanel .closeBtn');
 const updateClose=document.querySelector('#updatePanel .closeBtn');
-const loadingScreen=document.getElementById('loadingScreen');
 
 let score=0, highscore=0, lives=3, bubbles=[], gameRunning=false, startTime;
 
-// --- LOADING SCREEN ---
+// --- Loading ---
 window.addEventListener('load',()=>{
   setTimeout(()=>{
     loadingScreen.style.display='none';
     startBtn.style.display='block';
     indexBtn.style.display='block';
     updateBtn.style.display='block';
-    attachButtonEvents();
-  },2000);
+    attachButtons();
+  },1500);
 });
 
-// --- BUTTON LOGIC ---
-function attachButtonEvents(){
+function attachButtons(){
   startBtn.addEventListener('click',startCountdown);
   indexBtn.addEventListener('click',()=>togglePanel(indexPanel));
   updateBtn.addEventListener('click',()=>togglePanel(updatePanel));
@@ -229,7 +203,6 @@ function attachButtonEvents(){
     startBtn.style.display='block';
     indexBtn.style.display='block';
     updateBtn.style.display='block';
-    versionLabel.style.display='block';
   });
 }
 
@@ -237,14 +210,12 @@ function togglePanel(panel){
   if(panel.style.top==='30%') closePanel(panel);
   else openPanel(panel);
 }
-
 function openPanel(panel){
   panel.style.top='30%';
   startBtn.style.display='none';
   indexBtn.style.display='none';
   updateBtn.style.display='none';
 }
-
 function closePanel(panel){
   panel.style.top='100%';
   startBtn.style.display='block';
@@ -254,7 +225,6 @@ function closePanel(panel){
 
 // --- Countdown ---
 function startCountdown(){
-  versionLabel.style.display='none';
   startBtn.style.display='none';
   indexBtn.style.display='none';
   updateBtn.style.display='none';
@@ -273,7 +243,7 @@ function startCountdown(){
   },1000);
 }
 
-// --- GAME LOGIC ---
+// --- Game ---
 function startGame(){
   score=0; lives=3; bubbles=[]; gameRunning=true; startTime=Date.now();
   scoreEl.textContent="Skóre: "+score; livesEl.textContent="Životy: "+lives;
@@ -296,7 +266,7 @@ function spawnBubble(){
   else if(chance<=0.0625){ bubble.classList.add('gravity'); bubble.textContent="<12>"; bubble.dataset.type="gravity"; }
   else{ bubble.textContent="12"; bubble.dataset.type="normal"; }
 
-  const size=Math.random()*60+60;
+  const size=Math.random()*50+60;
   bubble.style.width=size+'px';
   bubble.style.height=size+'px';
   bubble.style.fontSize=(bubble.dataset.type==="144"?size/2.5:bubble.dataset.type==="instawin"?size/2:size/3)+'px';
@@ -340,7 +310,7 @@ function spawnSingleBubble(){
   const speedMultiplier=1+elapsed/120;
   const bubble=document.createElement('div'); bubble.classList.add('bubble');
   bubble.textContent="12"; bubble.dataset.type="normal";
-  const size=Math.random()*60+60;
+  const size=Math.random()*50+60;
   bubble.style.width=size+'px'; bubble.style.height=size+'px';
   bubble.style.fontSize=size/3+'px';
   bubble.style.left=Math.random()*(window.innerWidth-size)+'px';
@@ -375,14 +345,7 @@ function updateBubbles(){
 function endGame(){
   gameRunning=false; bubbles.forEach(b=>b.remove()); bubbles=[];
   scoreContainer.style.display='none';
-  if(score===12 || score<=3){
-    easterEl.textContent = (score===12?'12':'BRUH');
-    easterEl.style.display='flex';
-    easterEl.style.animation='fadeShake 5s forwards';
-    setTimeout(()=>{ easterEl.style.display='none'; showEndScreen(); },5000);
-  } else {
-    showEndScreen();
-  }
+  showEndScreen();
 }
 
 function showEndScreen(){
