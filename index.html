@@ -18,7 +18,7 @@ html, body {
   background:#000; display:flex; justify-content:center; align-items:center;
   color:#fff; font-size:50px; font-weight:bold; z-index:3000;
   text-align:center;
-  animation:eyeGlow 2s ease-in-out forwards;
+  animation:eyeGlow 2.5s ease-in-out forwards;
 }
 
 @keyframes eyeGlow {
@@ -70,7 +70,7 @@ html, body {
 .bubble.rare144 { background: linear-gradient(135deg,#0f0,#0a0); color:#000; font-size:28px; }
 .bubble.triple { background: linear-gradient(135deg,#f0f,#a0a); color:#fff; font-size:24px; }
 .bubble.gravity { background: linear-gradient(135deg,#fff,#d166ff); color:#000; font-size:28px; }
-.bubble.colorFlip { background: linear-gradient(135deg,#ff00ff,#aa00ff); color:#fff; font-size:28px; }
+.bubble.instawin { background: linear-gradient(135deg,#ffd700,#ffdd33); color:#000; font-size:28px; text-shadow:0 0 10px #fff,0 0 20px #ffd700; }
 
 /* --- Index Panel --- */
 #indexPanel {
@@ -155,7 +155,7 @@ html, body {
   <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#0f0,#0a0); color:#000;">12²</div><div class="desc"><span class="rarity">Vzácná 1%:</span> +144 skóre</div></div>
   <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#f0f,#a0a);">3×12</div><div class="desc"><span class="rarity">Vzácná 2%:</span> Spawnuje 3 bubliny</div></div>
   <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#fff,#d166ff); color:#000;">&lt;12&gt;</div><div class="desc"><span class="rarity">Vzácná 3%:</span> Gravitační bublina teleportuje všechny bubliny k ní</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ff00ff,#aa00ff); color:#fff;">✨</div><div class="desc"><span class="rarity">Vzácná 1,5%:</span> Převrátí barvy na 5s +10 bodů</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ffd700,#ffdd33); color:#000;">INSTA WIN</div><div class="desc"><span class="rarity">Vzácná 0,1%:</span> Přidá 999999999 skóre</div></div>
 </div>
 
 <div id="countdown"></div>
@@ -201,7 +201,7 @@ window.addEventListener('load',()=>{
     startBtn.style.display='block';
     indexBtn.style.display='block';
     attachButtonEvents();
-  },2000); // delší efekty zasvícení
+  },2500);
 });
 
 // --- BUTTON LOGIC ---
@@ -233,12 +233,12 @@ function attachButtonEvents(){
       indexBtn.style.display='block';
     }
   });
-  continueBtn.addEventListener('click',()=>{
+  continueBtn.addEventListener('click(()=>{
     endScreen.style.display='none';
     startBtn.style.display='block';
     indexBtn.style.display='block';
     versionLabel.style.display='block';
-  });
+  }));
 }
 
 // --- Countdown ---
@@ -277,11 +277,11 @@ function spawnBubble(){
   const bubble=document.createElement('div');
   bubble.classList.add('bubble');
 
-  if(chance<=0.0025){ bubble.classList.add('rare2x'); bubble.textContent="12×2"; bubble.dataset.type="2x"; }
+  if(chance<=0.001){ bubble.classList.add('instawin'); bubble.textContent="INSTA WIN"; bubble.dataset.type="instawin"; }
+  else if(chance<=0.0025){ bubble.classList.add('rare2x'); bubble.textContent="12×2"; bubble.dataset.type="2x"; }
   else if(chance<=0.0125){ bubble.classList.add('rare144'); bubble.textContent="12²"; bubble.dataset.type="144"; }
   else if(chance<=0.0325){ bubble.classList.add('triple'); bubble.textContent="3×12"; bubble.dataset.type="triple"; }
   else if(chance<=0.0625){ bubble.classList.add('gravity'); bubble.textContent="<12>"; bubble.dataset.type="gravity"; }
-  else if(chance<=0.0775){ bubble.classList.add('colorFlip'); bubble.textContent="✨"; bubble.dataset.type="colorFlip"; }
   else{ bubble.textContent="12"; bubble.dataset.type="normal"; }
 
   const size=Math.random()*60+60;
@@ -295,10 +295,9 @@ function spawnBubble(){
 
   const pop=()=>{
     if(!gameRunning) return;
-    if(['2x','144','triple','gravity','colorFlip'].includes(bubble.dataset.type)) popSound.currentTime=0,popSound.play();
+    if(['2x','144','triple','gravity','instawin'].includes(bubble.dataset.type)) popSound.currentTime=0,popSound.play();
     bubble.remove();
     bubbles=bubbles.filter(b=>b!==bubble);
-
     if(bubble.dataset.type==="2x") score*=2;
     else if(bubble.dataset.type==="144") score+=144;
     else if(bubble.dataset.type==="triple") for(let i=0;i<3;i++) spawnSingleBubble();
@@ -307,13 +306,8 @@ function spawnBubble(){
       const by=parseFloat(bubble.style.top)+parseFloat(bubble.style.height)/2;
       bubbles.forEach(b=>{ b.style.left=(bx-parseFloat(b.style.width)/2)+'px'; b.style.top=(by-parseFloat(b.style.height)/2)+'px'; });
     }
-    else if(bubble.dataset.type==="colorFlip"){
-      document.body.style.filter="invert(1)";
-      setTimeout(()=>{ document.body.style.filter="invert(0)"; },5000);
-      score+=10;
-    }
+    else if(bubble.dataset.type==="instawin") score+=999999999;
     else score++;
-
     if(score>999999999) score=999999999;
     scoreEl.textContent="Skóre: "+score;
     if(score>highscore){ highscore=score; highscoreEl.textContent="Nejvyšší skóre: "+highscore; }
