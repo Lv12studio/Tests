@@ -9,28 +9,31 @@ html, body {
   margin:0; padding:0; height:100vh; overflow:hidden;
   font-family: monospace;
   background-color:#0a0a0a;
-  background-image: radial-gradient(circle at 30% 30%, #0ff1 10%, transparent 60%),
-                    radial-gradient(circle at 70% 70%, #ff00ff1a 10%, transparent 60%),
-                    linear-gradient(180deg, #000 0%, #111 100%);
-  color:#0ff;
+  color:#ff66ff;
 }
 
 /* --- LOADING SCREEN --- */
 #loadingScreen {
   position: fixed; top:0; left:0; width:100%; height:100%;
   background:#000; display:flex; justify-content:center; align-items:center;
-  color:white; font-size:50px; font-weight:bold; z-index:3000;
-  text-shadow: 0 0 5px #fff,0 0 15px #fff,0 0 30px #fff;
+  color:#fff; font-size:50px; font-weight:bold; z-index:3000;
+  text-shadow: 0 0 20px #aa00ff, 0 0 40px #ff66ff, 0 0 60px #cc33ff;
+  animation: glow 2s ease-in-out infinite alternate;
+}
+@keyframes glow {
+  0% { text-shadow: 0 0 20px #aa00ff,0 0 40px #ff66ff,0 0 60px #cc33ff; opacity:0.7; }
+  50% { text-shadow: 0 0 40px #aa00ff,0 0 80px #ff66ff,0 0 120px #cc33ff; opacity:1; }
+  100% { text-shadow: 0 0 20px #aa00ff,0 0 40px #ff66ff,0 0 60px #cc33ff; opacity:0.7; }
 }
 
 /* --- HOME SCREEN --- */
 #startBtn, #indexBtn {
   display:none; margin:0 auto;
   font-size:28px; padding:15px 35px;
-  background: linear-gradient(45deg,#00ffff,#00ff99,#ff00ff);
+  background: linear-gradient(45deg,#aa00ff,#ff66ff,#cc33ff);
   border:none; border-radius:12px; color:white;
   font-weight:bold; text-transform:uppercase;
-  cursor:pointer; box-shadow:0 0 20px #0ff,0 0 40px #0ff;
+  cursor:pointer; box-shadow:0 0 20px #aa00ff,0 0 40px #ff66ff,0 0 60px #cc33ff;
   z-index:1000;
 }
 #startBtn { margin-top:30vh; }
@@ -40,8 +43,8 @@ html, body {
 #countdown {
   position:fixed; top:50%; left:50%;
   transform:translate(-50%,-50%);
-  font-size:80px; color:#0ff;
-  text-shadow:0 0 20px #0ff,0 0 40px #0ff;
+  font-size:80px; color:#ff66ff;
+  text-shadow:0 0 20px #aa00ff,0 0 40px #ff66ff;
   z-index:1001; display:none;
 }
 #scoreContainer {
@@ -50,7 +53,7 @@ html, body {
   z-index:1001; text-align:center; display:none;
 }
 #highscore { font-size:20px; color:#ff0; margin-bottom:5px; }
-#score { font-size:28px; color:#0ff; }
+#score { font-size:28px; color:#ff66ff; }
 #lives { font-size:20px; color:#f00; margin-top:5px; }
 
 /* --- Bubbles --- */
@@ -58,22 +61,22 @@ html, body {
   width:80px; height:80px; border-radius:50%;
   display:flex; justify-content:center; align-items:center;
   font-size:24px; font-weight:bold; color:#fff;
-  background:linear-gradient(135deg,#00ffff,#ff00ff);
-  border:2px solid #0ff; box-shadow:0 0 15px #0ff,0 0 30px #0ff inset;
+  background:linear-gradient(135deg,#aa00ff,#ff66ff);
+  border:2px solid #aa00ff; box-shadow:0 0 15px #aa00ff,0 0 30px #ff66ff inset;
   position:absolute; cursor:pointer;
 }
-.bubble.rare2x { background: linear-gradient(135deg,#ffff00,#ff9900); color:#000; font-size:28px; box-shadow:0 0 20px #ff0,0 0 40px #ff0 inset;}
-.bubble.rare144 { background: linear-gradient(135deg,#00ff00,#00aa00); color:#000; font-size:28px; box-shadow:0 0 20px #0f0,0 0 40px #0f0 inset;}
-.bubble.triple { background: linear-gradient(135deg,#ff00ff,#9900ff); color:#fff; font-size:24px; box-shadow:0 0 20px #f0f,0 0 40px #f0f inset;}
-.bubble.gravity { background: linear-gradient(135deg,#00ffff,#ff0); color:#000; font-size:28px; box-shadow:0 0 25px #0ff,0 0 50px #ff0 inset;}
-.bubble.colorFlip { background: linear-gradient(135deg,#fff,#ccc); color:#000; font-size:24px; box-shadow:0 0 25px #fff,0 0 50px #fff inset;}
+.bubble.rare2x { background: linear-gradient(135deg,#ffff00,#ff9900); color:#000; font-size:28px; }
+.bubble.rare144 { background: linear-gradient(135deg,#00ff00,#00aa00); color:#000; font-size:28px; }
+.bubble.triple { background: linear-gradient(135deg,#ff00ff,#9900ff); color:#fff; font-size:24px; }
+.bubble.gravity { background: linear-gradient(135deg,#aa00ff,#ff66ff); color:#000; font-size:28px; }
+.bubble.colorFlip { background: linear-gradient(135deg,#ff33ff,#cc00ff); color:#fff; font-size:24px; }
 
 /* --- Index Panel --- */
 #indexPanel {
   position:fixed; top:100%; left:0; width:100%;
   max-height:70%; background:rgba(10,10,10,0.95);
   overflow-y:auto; transition:top 0.5s ease; padding:20px;
-  z-index:999; box-shadow:0 -5px 30px #0ff;
+  z-index:999; box-shadow:0 -5px 30px #aa00ff;
 }
 #indexPanel h2 { text-transform:uppercase; }
 #indexPanel .closeBtn {
@@ -84,8 +87,8 @@ html, body {
 .indexItem .bubbleImg {
   width:60px; height:60px; margin-right:15px; border-radius:50%;
   display:flex; justify-content:center; align-items:center;
-  font-weight:bold; color:#fff; border:2px solid #0ff;
-  box-shadow:0 0 15px #0ff inset; animation:float 1s infinite alternate;
+  font-weight:bold; color:#fff; border:2px solid #aa00ff;
+  box-shadow:0 0 15px #aa00ff inset; animation:float 1s infinite alternate;
 }
 .indexItem .desc { flex:1; }
 .indexItem .rarity { font-weight:bold; }
@@ -96,14 +99,14 @@ html, body {
 #endScreen {
   position:fixed; top:0; left:0; width:100%; height:100%;
   background:rgba(0,0,0,0.9); display:none; flex-direction:column;
-  justify-content:center; align-items:center; color:#0ff; font-size:40px;
+  justify-content:center; align-items:center; color:#ff66ff; font-size:40px;
   z-index:1500; text-align:center;
 }
 #continueBtn {
   margin-top:30px; font-size:26px; padding:15px 40px;
   border:none; border-radius:10px; cursor:pointer; color:white;
-  background: linear-gradient(45deg,#00ffff,#00ff99,#ff00ff);
-  box-shadow:0 0 20px #0ff,0 0 40px #0ff;
+  background: linear-gradient(45deg,#aa00ff,#ff66ff,#cc33ff);
+  box-shadow:0 0 20px #aa00ff,0 0 40px #ff66ff;
 }
 
 /* --- Version --- */
@@ -133,31 +136,19 @@ html, body {
   90%{transform:translateX(-5px);}
   100%{opacity:0; transform:translateX(0);}
 }
-
-/* --- Color Flip Animation --- */
-@keyframes flashWhite {
-  0%,100% { filter: brightness(1); }
-  50% { filter: brightness(3); }
-}
 </style>
 </head>
 <body>
 
 <div id="loadingScreen">Level 12 studio</div>
 
-<div id="versionLabel">Released 1.2.1</div>
+<div id="versionLabel">Released 1.2.2</div>
 <button id="startBtn">START</button>
 <button id="indexBtn">INDEX</button>
 
 <div id="indexPanel">
   <div class="closeBtn">✖</div>
   <h2>BUBBLES INDEX</h2>
-  <div class="indexItem"><div class="bubbleImg">12</div><div class="desc"><span class="rarity">Běžná:</span> +1 skóre</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ffff00,#ff9900); color:#000;">12×2</div><div class="desc"><span class="rarity">Vzácná 1,5%:</span> Zdvojnásobí skóre</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#00ff00,#00aa00); color:#000;">12²</div><div class="desc"><span class="rarity">Vzácná 1%:</span> +144 skóre</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ff00ff,#9900ff);">3×12</div><div class="desc"><span class="rarity">Vzácná 2%:</span> Spawnuje 3 bubliny</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#00ffff,#ff0); color:#000;">&lt;12&gt;</div><div class="desc"><span class="rarity">Vzácná 3%:</span> Gravitační bublina teleportuje všechny bubliny k ní</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#fff,#ccc); color:#000;">!12!</div><div class="desc"><span class="rarity">Vzácná 1,5%:</span> Přetočí barvy 5s a +10 skóre</div></div>
 </div>
 
 <div id="countdown"></div>
@@ -173,7 +164,6 @@ html, body {
 </div>
 
 <div id="easterEgg"></div>
-
 <audio id="popSound" src="https://www.soundjay.com/button/sounds/button-16.mp3"></audio>
 
 <script>
@@ -196,16 +186,14 @@ const loadingScreen=document.getElementById('loadingScreen');
 
 let score=0, highscore=0, lives=3, bubbles=[], gameRunning=false, startTime;
 
-// --- LOADING SCREEN MOBILE FRIENDLY ---
-document.addEventListener('DOMContentLoaded',()=>{
-  loadingScreen.style.display='flex';
-  loadingScreen.style.animation='flashWhite 3.8s forwards';
+// --- LOADING SCREEN ---
+window.addEventListener('load',()=>{
   setTimeout(()=>{
     loadingScreen.style.display='none';
     startBtn.style.display='block';
     indexBtn.style.display='block';
     attachButtonEvents();
-  },3800);
+  },4000); // delší efekt
 });
 
 // --- BUTTON LOGIC ---
@@ -277,22 +265,22 @@ function spawnBubble(){
   if(!gameRunning) return;
   const elapsed=(Date.now()-startTime)/1000;
   const speedMultiplier=1+elapsed/120;
-  const chance=Math.random()*100; // 0-100
+  const chance=Math.random();
   const bubble=document.createElement('div');
   bubble.classList.add('bubble');
 
-  if(chance<=1.5){ 
-    bubble.classList.add('colorFlip'); bubble.textContent="!12"; bubble.dataset.type="colorFlip"; 
+  if(chance<=0.0025){ bubble.classList.add('rare2x'); bubble.textContent="12×2"; bubble.dataset.type="2x"; }
+  else if(chance<=0.0125){ bubble.classList.add('rare144'); bubble.textContent="12²"; bubble.dataset.type="144"; }
+  else if(chance<=0.0325){ bubble.classList.add('triple'); bubble.textContent="3×12"; bubble.dataset.type="triple"; }
+  else if(chance<=0.0625){ bubble.classList.add('gravity'); bubble.textContent="<12>"; bubble.dataset.type="gravity"; }
+  else if(chance<=0.015){ // 1,5% nové bubliny
+    bubble.classList.add('colorFlip'); bubble.textContent="CF"; bubble.dataset.type="colorFlip";
   }
-  else if(chance<=2){ bubble.classList.add('rare2x'); bubble.textContent="12×2"; bubble.dataset.type="2x"; }
-  else if(chance<=3.5){ bubble.classList.add('rare144'); bubble.textContent="12²"; bubble.dataset.type="144"; }
-  else if(chance<=6.5){ bubble.classList.add('triple'); bubble.textContent="3×12"; bubble.dataset.type="triple"; }
-  else if(chance<=9.5){ bubble.classList.add('gravity'); bubble.textContent="<12>"; bubble.dataset.type="gravity"; }
   else{ bubble.textContent="12"; bubble.dataset.type="normal"; }
 
   const size=Math.random()*60+60;
-  bubble.style.width=size+'px';
-  bubble.style.height=size+'px';
+  bubble.style.width=`${size}px`;
+  bubble.style.height=`${size}px`;
   bubble.style.fontSize=(bubble.dataset.type==="144"?size/2.5:size/3)+'px';
   bubble.style.left=Math.random()*(window.innerWidth-size)+'px';
   bubble.style.top=(window.innerHeight-size)+'px';
@@ -318,8 +306,10 @@ function spawnBubble(){
     }
     else if(bubble.dataset.type==="colorFlip"){
       score+=10;
-      document.body.style.filter="hue-rotate(180deg)";
-      setTimeout(()=>{ document.body.style.filter=""; },5000);
+      document.body.style.transition="background 0.5s, color 0.5s";
+      const origColor=document.body.style.background;
+      document.body.style.background="#550055";
+      setTimeout(()=>{ document.body.style.background="#0a0a0a"; },5000);
     }
     else score++;
 
@@ -341,13 +331,12 @@ function spawnSingleBubble(){
   const bubble=document.createElement('div'); bubble.classList.add('bubble');
   bubble.textContent="12"; bubble.dataset.type="normal";
   const size=Math.random()*60+60;
-  bubble.style.width=size+'px'; bubble.style.height=size+'px';
+  bubble.style.width=`${size}px`; bubble.style.height=`${size}px`;
   bubble.style.fontSize=size/3+'px';
   bubble.style.left=Math.random()*(window.innerWidth-size)+'px';
   bubble.style.top=(window.innerHeight-size)+'px';
   bubble.dataset.speed=(Math.random()*1.5+1)*speedMultiplier;
   document.body.appendChild(bubble);
-
   const pop=()=>{ 
     if(!gameRunning) return; score++; 
     if(score>999999999) score=999999999; scoreEl.textContent="Skóre: "+score; 
@@ -380,9 +369,7 @@ function endGame(){
     easterEl.style.display='flex';
     easterEl.style.animation='fadeShake 5s forwards';
     setTimeout(()=>{ easterEl.style.display='none'; showEndScreen(); },5000);
-  } else {
-    showEndScreen();
-  }
+  } else showEndScreen();
 }
 
 function showEndScreen(){
