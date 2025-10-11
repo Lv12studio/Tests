@@ -15,35 +15,16 @@ html, body {
 /* === OLD LOADING SCREEN === */
 #loadingScreen {
   position: fixed; top:0; left:0; width:100%; height:100%;
-  background: radial-gradient(circle at center, #160020 0%, #000 80%);
-  display:flex; flex-direction:column; justify-content:center; align-items:center;
-  font-size:60px; font-weight:bold;
-  color:#fff;
-  z-index:4000;
-  animation: pulse 2s infinite ease-in-out;
+  background:#000; display:flex; justify-content:center; align-items:center;
+  color:#fff; font-size:50px; font-weight:bold; z-index:3000;
+  text-align:center;
+  animation:eyeGlow 2s ease-in-out forwards;
 }
-#loadingEye {
-  width:120px; height:120px;
-  border:4px solid #a044ff;
-  border-radius:50%;
-  margin-bottom:20px;
-  position:relative;
-  box-shadow:0 0 30px #a044ff, 0 0 60px #d166ff inset;
-  animation: glow 2s infinite alternate;
+@keyframes eyeGlow {
+  0% { opacity:0.2; text-shadow:none; }
+  50% { opacity:1; text-shadow:0 0 25px #fff,0 0 50px #fff,0 0 75px #fff; }
+  100% { opacity:0.2; text-shadow:none; }
 }
-#loadingEye::after {
-  content:'';
-  position:absolute;
-  top:50%; left:50%;
-  transform:translate(-50%,-50%);
-  width:30px; height:30px;
-  background:#fff;
-  border-radius:50%;
-  animation: blink 3s infinite;
-}
-@keyframes pulse { 0%,100% { text-shadow: 0 0 10px #d166ff, 0 0 20px #a044ff; opacity:1; } 50% { text-shadow: 0 0 30px #fff, 0 0 60px #d166ff; opacity:0.5; } }
-@keyframes glow { 0% { box-shadow:0 0 20px #a044ff inset, 0 0 10px #d166ff; } 100% { box-shadow:0 0 40px #d166ff inset, 0 0 25px #fff; } }
-@keyframes blink { 0%, 90%, 100% { height:30px; } 95% { height:5px; } }
 
 /* --- BUTTONS --- */
 #startBtn, #indexBtn {
@@ -125,16 +106,16 @@ html, body {
 /* --- Index Menu --- */
 #indexMenu { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); display:none; flex-direction:column; align-items:center; overflow-y:auto; z-index:3000; padding-top:60px; }
 #indexMenu h1 { font-size:50px; color:#d166ff; margin-bottom:30px; }
+#indexMenu .closeBtn { position:absolute; top:15px; right:15px; font-size:28px; cursor:pointer; color:#fff; font-weight:bold; }
 .indexItem { width:80%; background:rgba(30,0,50,0.7); border:2px solid #d166ff; border-radius:15px; margin:10px; padding:15px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 0 15px #a044ff inset; }
 .indexBubble { width:60px; height:60px; border-radius:50%; display:flex; justify-content:center; align-items:center; font-weight:bold; color:white; border:2px solid #d166ff; }
 .indexText { flex:1; margin-left:20px; font-size:20px; }
-.indexBack { margin-top:30px; font-size:22px; padding:12px 35px; background:linear-gradient(45deg,#a044ff,#6a00f4,#d166ff); border:none; border-radius:12px; color:white; cursor:pointer; }
 </style>
 </head>
 <body>
 
 <!-- Loading -->
-<div id="loadingScreen"><div id="loadingEye"></div>Level 12 Studio</div>
+<div id="loadingScreen">Level 12 Studio</div>
 
 <div id="versionLabel">Released 1.4</div>
 
@@ -177,15 +158,11 @@ html, body {
 
 <!-- Index -->
 <div id="indexMenu">
+  <div class="closeBtn">✖</div>
   <h1>BUBBLE INDEX</h1>
-  <div class="indexItem"><div class="indexBubble" style="background:linear-gradient(135deg,#a044ff,#6a00f4);">12</div><div class="indexText">Normal — +1 point | Common</div></div>
-  <div class="indexItem"><div class="indexBubble" style="background:linear-gradient(135deg,#ffff00,#a044ff);color:#000;">12</div><div class="indexText">2x — doubles score | Rare</div></div>
-  <div class="indexItem"><div class="indexBubble" style="background:linear-gradient(135deg,#0f0,#0a0);color:#000;">12</div><div class="indexText">+144 — adds 144 points | Very Rare</div></div>
-  <div class="indexItem"><div class="indexBubble" style="background:linear-gradient(135deg,#f0f,#a0a);">12</div><div class="indexText">Triple — spawns 3 bubbles | Rare</div></div>
-  <div class="indexItem"><div class="indexBubble" style="background:linear-gradient(135deg,#fff,#d166ff);color:#000;">12</div><div class="indexText">Gravity — moves all bubbles | Uncommon</div></div>
-  <div class="indexItem"><div class="indexBubble" style="background:linear-gradient(135deg,#fff,#000);color:#0ff;">12</div><div class="indexText">Invert — inverts colors briefly | Rare</div></div>
-  <div class="indexItem"><div class="indexBubble" style="background:linear-gradient(135deg,#ff0000,#ffff00);color:#000;">12</div><div class="indexText">Instawin — instant victory | Extreme</div></div>
-  <button class="indexBack" id="indexBackBtn">BACK</button>
+  <div class="indexItem"><div class="indexBubble">12</div><div class="indexText">Normal — +1 point | Common</div></div>
+  <div class="indexItem"><div class="indexBubble" style="background:linear-gradient(135deg,#ffff00,#a044ff);color:#000;">12×2</div><div class="indexText">2x — doubles score | Rare</div></div>
+  <div class="indexItem"><div class="indexBubble" style="background:linear-gradient(135deg,#0f0,#0a0);color:#000;">12²</div><div class="indexText">+144 — adds 144 points | Very Rare</div></div>
 </div>
 
 <script>
@@ -207,18 +184,17 @@ const endScreen=document.getElementById('endScreen');
 const finalScoreText=document.getElementById('finalScoreText');
 const continueBtn=document.getElementById('continueBtn');
 const indexMenu=document.getElementById('indexMenu');
-const indexBack=document.getElementById('indexBackBtn');
+const indexClose=document.querySelector('#indexMenu .closeBtn');
 
 let score=0, highscore=0, lives=3, bubbles=[], gameRunning=false, gamePaused=false;
 let spawnSpeed=1500, speedFactor=1;
 
-window.onload=()=>{setTimeout(()=>{loading.style.display='none';startBtn.style.display='block';indexBtn.style.display='block';},2200);}
-
+window.onload=()=>{setTimeout(()=>{loading.style.display='none';startBtn.style.display='block';indexBtn.style.display='block';},2000);}
 startBtn.onclick=()=>{startBtn.style.display='none';indexBtn.style.display='none'; diffMenu.style.display='flex';};
 diffBackBtn.onclick=()=>{diffMenu.style.display='none'; startBtn.style.display='block'; indexBtn.style.display='block';};
 document.querySelectorAll('.diffBtn').forEach(btn=>btn.onclick=()=>{setDifficulty(btn.dataset.diff);});
 indexBtn.onclick=()=>{indexMenu.style.display='flex'; startBtn.style.display='none'; indexBtn.style.display='none';};
-indexBack.onclick=()=>{indexMenu.style.display='none'; startBtn.style.display='block'; indexBtn.style.display='block';};
+indexClose.onclick=()=>{indexMenu.style.display='none'; startBtn.style.display='block'; indexBtn.style.display='block';};
 
 function setDifficulty(d){
   if(d==='easy'){spawnSpeed=1600; speedFactor=0.8;}
@@ -240,15 +216,13 @@ function startGame(){
   scoreContainer.style.display='block'; pauseBtn.style.display='flex';
   scoreEl.style.display='block'; livesEl.style.display='block';
   scoreEl.textContent="Score: "+score; livesEl.textContent="Lives: "+lives;
-  spawnBubble(); requestAnimationFrame(updateBubbles);
+  // spawnBubble(); updateBubbles();  // Insert your original bubble spawn/update logic here
 }
 
 function togglePause(){ if(!gameRunning) return; gamePaused=!gamePaused; pauseScreen.style.display=gamePaused?'flex':'none'; }
 pauseBtn.onclick=togglePause; continueGameBtn.onclick=togglePause;
 endGameBtn.onclick=()=>{ pauseScreen.style.display='none'; endGame(); };
 window.addEventListener('blur',()=>{if(gameRunning && !gamePaused) togglePause();});
-
-// Bubble spawn, update, and pop logic continues from your original code...
 </script>
 </body>
 </html>
