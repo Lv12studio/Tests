@@ -69,7 +69,7 @@ html, body {
 .bubble.rare144 { background: linear-gradient(135deg,#0f0,#0a0); color:#000; font-size:28px; }
 .bubble.triple { background: linear-gradient(135deg,#f0f,#a0a); color:#fff; font-size:24px; }
 .bubble.gravity { background: linear-gradient(135deg,#fff,#d166ff); color:#000; font-size:28px; }
-.bubble.invert { background: linear-gradient(135deg,#fff,#000); color:#0ff; font-size:26px; }
+.bubble.invert { background: linear-gradient(135deg,#fff,#000); color:#0ff; filter: invert(1); font-size:26px; }
 .bubble.instawin { background: linear-gradient(135deg,#ff0000,#ffff00); color:#000; font-size:32px; box-shadow:0 0 30px #ff0, 0 0 60px #f00; }
 
 /* --- Index Panel --- */
@@ -143,7 +143,7 @@ html, body {
 
 <div id="loadingScreen">Level 12 studio</div>
 
-<div id="versionLabel">Released 1.2.3</div>
+<div id="versionLabel">Released 1.1.0</div>
 <button id="startBtn">START</button>
 <button id="indexBtn">INDEX</button>
 
@@ -155,7 +155,7 @@ html, body {
   <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#0f0,#0a0); color:#000;">12²</div><div class="desc"><span class="rarity">Vzácná 1%:</span> +144 skóre</div></div>
   <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#f0f,#a0a);">3×12</div><div class="desc"><span class="rarity">Vzácná 2%:</span> Spawnuje 3 bubliny</div></div>
   <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#fff,#d166ff); color:#000;">&lt;12&gt;</div><div class="desc"><span class="rarity">Vzácná 3%:</span> Gravitační bublina teleportuje všechny bubliny k ní</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#fff,#000); color:#0ff;">!12!</div><div class="desc"><span class="rarity">Vzácná 1,5%:</span> Obrátí barvy obrazovky na 5 sekund a dá +10 skóre</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#fff,#000); filter:invert(1); color:#0ff;">!12!</div><div class="desc"><span class="rarity">Vzácná 1,5%:</span> Obrátí barvy obrazovky a dá +10 skóre</div></div>
   <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ff0000,#ffff00); color:#000; box-shadow:0 0 30px #ff0,0 0 60px #f00;">?12?</div><div class="desc"><span class="rarity">Vzácná 0,1%:</span> Okamžité vítězství (+999 999 999 skóre)</div></div>
 </div>
 
@@ -278,6 +278,7 @@ function spawnBubble(){
   const bubble=document.createElement('div');
   bubble.classList.add('bubble');
 
+  // --- NOVÉ ŠANCE ---
   if(chance<=0.001){ // 0.1 %
     bubble.classList.add('instawin');
     bubble.textContent="?12?";
@@ -340,12 +341,12 @@ function spawnBubble(){
       });
     }
     else if(bubble.dataset.type==="invert"){
-      document.body.style.filter = 'invert(1)';
-      score += 10;
-      setTimeout(()=>document.body.style.filter='',5000);
+      document.body.style.filter='invert(1)';
+      setTimeout(()=>document.body.style.filter='',1500);
+      score+=10;
     }
     else if(bubble.dataset.type==="instawin"){
-      score += 999999999;
+      score+=999999999;
     }
     else score++;
 
@@ -367,8 +368,7 @@ function spawnSingleBubble(){
   const bubble=document.createElement('div'); bubble.classList.add('bubble');
   bubble.textContent="12"; bubble.dataset.type="normal";
   const size=Math.random()*60+60;
-  bubble.style.width=size+'px';
-  bubble.style.height=size+'px';
+  bubble.style.width=size+'px'; bubble.style.height=size+'px';
   bubble.style.fontSize=size/3+'px';
   bubble.style.left=Math.random()*(window.innerWidth-size)+'px';
   bubble.style.top=(window.innerHeight-size)+'px';
