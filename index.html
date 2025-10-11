@@ -12,12 +12,12 @@ html, body {
   color:#ff6600;
 }
 
-/* --- EMOJI BACKGROUND --- */
+/* --- EMOJI BACKGROUND (šachovnice) --- */
 #emojiBackground {
   position:absolute; top:0; left:0; width:100%; height:100%;
   display:grid;
-  grid-template-columns: repeat(auto-fit, 100px);
-  grid-template-rows: repeat(auto-fit, 100px);
+  grid-template-columns: repeat(auto-fill, 100px);
+  grid-auto-rows: 100px;
   z-index:0;
   pointer-events:none;
 }
@@ -173,8 +173,8 @@ html, body {
   <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#00ff00,#00aa00); color:#000;">12²</div><div class="desc"><span class="rarity">Vzácná 1%:</span> +144 skóre</div></div>
   <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ff00ff,#9900ff);">3×12</div><div class="desc"><span class="rarity">Vzácná 2%:</span> Spawnuje 3 bubliny</div></div>
   <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ff6600,#ffff00); color:#000;">&lt;12&gt;</div><div class="desc"><span class="rarity">Vzácná 3%:</span> Gravitační bublina teleportuje všechny bubliny k ní</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background:#000; color:#ff6600;">!12!</div><div class="desc"><span class="rarity">Vzácná 1,5%:</span> +10 skóre a invertuje barvy</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background:#ff00ff; color:#fff;">?12?</div><div class="desc"><span class="rarity">Vzácná 0,05%:</span> Insta win +999999999 skóre</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background:#000; color:#ff6600;">!12!</div><div class="desc"><span class="rarity">Vzácná 1,5%:</span> Obrátí barvy a +10 skóre</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background:#ff00ff; color:#fff;">?12?</div><div class="desc"><span class="rarity">Vzácná 0,1%:</span> Insta win +999999999 skóre</div></div>
 </div>
 
 <div id="countdown"></div>
@@ -210,9 +210,26 @@ const versionLabel=document.getElementById('versionLabel');
 const easterEl=document.getElementById('easterEgg');
 const closeBtn=document.querySelector('#indexPanel .closeBtn');
 const loadingScreen=document.getElementById('loadingScreen');
-const emojiBg=document.getElementById('emojiBackground');
 
 let score=0, highscore=0, lives=3, bubbles=[], gameRunning=false, startTime;
+
+// --- EMOJI BACKGROUND ---
+const emojiBg=document.getElementById('emojiBackground');
+function generateEmojiBackground(){
+  const emojis=["👻","🎃"];
+  const cols=Math.ceil(window.innerWidth/100);
+  const rows=Math.ceil(window.innerHeight/100);
+  emojiBg.innerHTML="";
+  for(let r=0;r<rows;r++){
+    for(let c=0;c<cols;c++){
+      const div=document.createElement("div");
+      div.textContent = emojis[(r+c)%2];
+      emojiBg.appendChild(div);
+    }
+  }
+}
+window.addEventListener('resize', generateEmojiBackground);
+window.addEventListener('load', generateEmojiBackground);
 
 // --- LOADING SCREEN ---
 window.addEventListener('load',()=>{
@@ -221,7 +238,6 @@ window.addEventListener('load',()=>{
     startBtn.style.display='block';
     indexBtn.style.display='block';
     attachButtonEvents();
-    generateEmojiBackground();
   },3550);
 });
 
@@ -299,12 +315,12 @@ function spawnBubble(){
   const bubble=document.createElement('div');
   bubble.classList.add('bubble');
 
-  if(chance<=0.0005){ bubble.classList.add('instawin'); bubble.textContent="?12?"; bubble.dataset.type="instawin"; }
-  else if(chance<=0.015){ bubble.classList.add('rare2x'); bubble.textContent="12×2"; bubble.dataset.type="2x"; }
-  else if(chance<=0.025){ bubble.classList.add('rare144'); bubble.textContent="12²"; bubble.dataset.type="144"; }
-  else if(chance<=0.045){ bubble.classList.add('triple'); bubble.textContent="3×12"; bubble.dataset.type="triple"; }
-  else if(chance<=0.075){ bubble.classList.add('gravity'); bubble.textContent="<12>"; bubble.dataset.type="gravity"; }
-  else if(chance<=0.09){ bubble.classList.add('invert'); bubble.textContent="!12!"; bubble.dataset.type="invert"; }
+  if(chance<=0.0025){ bubble.classList.add('rare2x'); bubble.textContent="12×2"; bubble.dataset.type="2x"; }
+  else if(chance<=0.0125){ bubble.classList.add('rare144'); bubble.textContent="12²"; bubble.dataset.type="144"; }
+  else if(chance<=0.0325){ bubble.classList.add('triple'); bubble.textContent="3×12"; bubble.dataset.type="triple"; }
+  else if(chance<=0.0625){ bubble.classList.add('gravity'); bubble.textContent="<12>"; bubble.dataset.type="gravity"; }
+  else if(chance<=0.0775){ bubble.classList.add('invert'); bubble.textContent="!12!"; bubble.dataset.type="invert"; }
+  else if(chance<=0.0785){ bubble.classList.add('instawin'); bubble.textContent="?12?"; bubble.dataset.type="instawin"; }
   else{ bubble.textContent="12"; bubble.dataset.type="normal"; }
 
   const size=Math.random()*60+60;
@@ -322,21 +338,25 @@ function spawnBubble(){
     bubble.remove();
     bubbles=bubbles.filter(b=>b!==bubble);
 
-    switch(bubble.dataset.type){
-      case "2x": score*=2; break;
-      case "144": score+=144; break;
-      case "triple": for(let i=0;i<3;i++) spawnSingleBubble(); break;
-      case "gravity":
-        const bx=parseFloat(bubble.style.left)+parseFloat(bubble.style.width)/2;
-        const by=parseFloat(bubble.style.top)+parseFloat(bubble.style.height)/2;
-        bubbles.forEach(b=>{
-          b.style.left=(bx-parseFloat(b.style.width)/2)+'px';
-          b.style.top=(by-parseFloat(b.style.height)/2)+'px';
-        }); break;
-      case "invert": document.body.style.filter = document.body.style.filter==="invert(1)"?"invert(0)":"invert(1)"; score+=10; break;
-      case "instawin": score=999999999; endGame(); break;
-      default: score++; break;
+    if(bubble.dataset.type==="2x") score*=2;
+    else if(bubble.dataset.type==="144") score+=144;
+    else if(bubble.dataset.type==="triple") for(let i=0;i<3;i++) spawnSingleBubble();
+    else if(bubble.dataset.type==="gravity"){
+      const bx=parseFloat(bubble.style.left)+parseFloat(bubble.style.width)/2;
+      const by=parseFloat(bubble.style.top)+parseFloat(bubble.style.height)/2;
+      bubbles.forEach(b=>{
+        b.style.left=(bx-parseFloat(b.style.width)/2)+'px';
+        b.style.top=(by-parseFloat(b.style.height)/2)+'px';
+      });
     }
+    else if(bubble.dataset.type==="invert"){
+      document.body.style.filter="invert(1)";
+      score+=10;
+    }
+    else if(bubble.dataset.type==="instawin"){
+      score=999999999;
+    }
+    else score++;
 
     if(score>999999999) score=999999999;
     scoreEl.textContent="Skóre: "+score;
@@ -405,22 +425,6 @@ function showEndScreen(){
   finalScoreText.textContent="Tvé skóre: "+score;
   endScreen.style.display='flex';
 }
-
-// --- EMOJI BACKGROUND GENERATION ---
-function generateEmojiBackground(){
-  const emojis=["👻","🎃"];
-  const cols=Math.ceil(window.innerWidth/100);
-  const rows=Math.ceil(window.innerHeight/100);
-  emojiBg.innerHTML="";
-  for(let r=0;r<rows;r++){
-    for(let c=0;c<cols;c++){
-      const div=document.createElement("div");
-      div.textContent=emojis[Math.floor(Math.random()*emojis.length)];
-      emojiBg.appendChild(div);
-    }
-  }
-}
-window.addEventListener('resize', generateEmojiBackground);
 </script>
 </body>
 </html>
