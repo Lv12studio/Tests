@@ -7,17 +7,11 @@
 <style>
 html, body {
   margin:0; padding:0; height:100vh; overflow:hidden;
-  font-family: monospace;
-  background-color:#0a0a0a;
-  color:#ff6600;
+  font-family: monospace; background-color:#0a0a0a; color:#ff6600;
 }
 
 /* --- HOME BUTTONS --- */
-button {
-  font-family: monospace;
-  font-weight: bold;
-  cursor: pointer;
-}
+button { font-family: monospace; font-weight:bold; cursor:pointer; }
 #startBtn, #indexBtn, #badgesBtn {
   display:none; margin:0 auto; font-size:28px; padding:15px 35px;
   background: linear-gradient(45deg,#ff6600,#ff9900,#ff3300);
@@ -26,8 +20,7 @@ button {
   box-shadow:0 0 20px #ff6600,0 0 40px #ff6600;
 }
 #startBtn { margin-top:25vh; }
-#indexBtn { margin-top:20px; }
-#badgesBtn { margin-top:20px; }
+#indexBtn, #badgesBtn { margin-top:20px; }
 
 /* --- Score / Lives / Pause --- */
 #scoreContainer { position:fixed; top:20px; left:50%; transform:translateX(-50%); text-align:center; display:none; z-index:1001; }
@@ -64,7 +57,9 @@ button {
 #pauseScreen button{ font-size:26px; padding:15px 40px; margin-top:20px; border:none; border-radius:10px; cursor:pointer; background: linear-gradient(45deg,#ff6600,#ff9900,#ff3300); color:white; }
 
 /* --- Bubbles --- */
-.bubble { position:absolute; border-radius:50%; display:flex; justify-content:center; align-items:center; font-weight:bold; color:#fff; cursor:pointer; text-align:center; }
+.bubble { position:absolute; border-radius:50%; display:flex; justify-content:center; align-items:center; font-weight:bold; color:#fff; cursor:pointer; text-align:center; animation:wave 1.5s infinite alternate; }
+@keyframes wave { 0%{transform:translateY(0);} 100%{transform:translateY(-10px);} }
+
 .bubble.normal{ background: linear-gradient(135deg,#ff6600,#ff9900); width:80px; height:80px; font-size:24px; box-shadow:0 0 15px #ff6600,0 0 30px #ff9900 inset; }
 .bubble.rare2x{ background: linear-gradient(135deg,#ffff00,#ff9900); color:#000; font-size:28px; width:80px; height:80px; box-shadow:0 0 20px #ff0,0 0 40px #ff0 inset;}
 .bubble.rare144{ background: linear-gradient(135deg,#00ff00,#00aa00); color:#000; font-size:28px; width:80px; height:80px; box-shadow:0 0 20px #0f0,0 0 40px #0f0 inset;}
@@ -101,12 +96,21 @@ button {
   <h2>BUBBLES INDEX</h2>
   <div class="indexItem"><div class="bubbleImg">12</div><div class="desc"><span class="rarity">Běžná:</span> +1 skóre</div></div>
   <div class="indexItem"><div class="bubbleImg">12×2</div><div class="desc"><span class="rarity">Vzácná:</span> x2 skóre</div></div>
+  <div class="indexItem"><div class="bubbleImg">12²</div><div class="desc"><span class="rarity">Vzácná:</span> +144 skóre</div></div>
+  <div class="indexItem"><div class="bubbleImg">3×12</div><div class="desc"><span class="rarity">Vzácná:</span> Spawn 3 bubliny</div></div>
+  <div class="indexItem"><div class="bubbleImg">&lt;12&gt;</div><div class="desc"><span class="rarity">Vzácná:</span> Gravitační bublina</div></div>
+  <div class="indexItem"><div class="bubbleImg">!12!</div><div class="desc"><span class="rarity">Vzácná:</span> Obrátí barvy +10 skóre</div></div>
+  <div class="indexItem"><div class="bubbleImg">?12?</div><div class="desc"><span class="rarity">Vzácná:</span> Okamžitá výhra</div></div>
+  <div class="indexItem"><div class="bubbleImg">❄12</div><div class="desc"><span class="rarity">Bonus:</span> Freeze bubliny</div></div>
+  <div class="indexItem"><div class="bubbleImg">⭐12</div><div class="desc"><span class="rarity">Bonus:</span> +50 skóre</div></div>
+  <div class="indexItem"><div class="bubbleImg">💣</div><div class="desc"><span class="rarity">Nešťastná:</span> Odstraní všechny bubliny</div></div>
 </div>
+
 <div id="badgePanel" class="panel">
   <div class="closeBtn">✖</div>
   <h2>BADGES</h2>
-  <div class="indexItem"><div class="bubbleImg">⭐</div><div class="desc">50 bodů</div></div>
-  <div class="indexItem"><div class="bubbleImg">🌟</div><div class="desc">100 bodů</div></div>
+  <div class="indexItem"><div class="bubbleImg">⭐</div><div class="desc">Odemčeno při 50 bodech</div></div>
+  <div class="indexItem"><div class="bubbleImg">🌟</div><div class="desc">Odemčeno při 100 bodech</div></div>
 </div>
 
 <!-- Pause & End -->
@@ -210,7 +214,6 @@ function startGame(){
 function spawnBubble(){
   if(!gameRunning) return;
   const bubble=document.createElement('div');
-  const types=["normal","rare2x","rare144","triple","gravity","invert","instawin","freeze","bonus","bomb"];
   const chance=Math.random();
   let type="normal";
   if(chance<0.05) type="rare2x"; else if(chance<0.10) type="rare144"; else if(chance<0.15) type="triple";
@@ -218,6 +221,9 @@ function spawnBubble(){
   else if(chance<0.28) type="freeze"; else if(chance<0.30) type="bonus"; else if(chance<0.32) type="bomb";
 
   bubble.classList.add('bubble',type);
+  const size=Math.random()*40+60;
+  bubble.style.width=bubble.style.height=size+"px";
+  bubble.style.fontSize=size/3+"px";
   bubble.style.top=Math.random()*(window.innerHeight-100)+"px";
   bubble.style.left=Math.random()*(window.innerWidth-100)+"px";
   bubble.dataset.type=type;
@@ -239,43 +245,42 @@ function popBubble(bubble){
     case "normal": score++; break;
     case "rare2x": score*=2; break;
     case "rare144": score+=144; break;
-    case "triple": for(let i=0;i<2;i++) spawnBubble(); score+=1; break;
-    case "gravity": bubbles.forEach(b=>{b.style.top=bubble.style.top;b.style.left=bubble.style.left;}); score+=5; break;
-    case "invert": document.body.style.filter="invert(1)"; setTimeout(()=>{document.body.style.filter="invert(0)";},5000); score+=10; break;
-    case "instawin": score+=999999999; endGame(); return;
-    case "freeze": bubbles.forEach(b=>b.style.pointerEvents="none"); setTimeout(()=>{bubbles.forEach(b=>b.style.pointerEvents="auto");},3000); score+=5; break;
+    case "triple": for(let i=0;i<3;i++) spawnBubble(); break;
+    case "gravity":
+      const bx=parseFloat(bubble.style.left)+parseFloat(bubble.style.width)/2;
+      const by=parseFloat(bubble.style.top)+parseFloat(bubble.style.height)/2;
+      bubbles.forEach(b=>{b.style.left=(bx-parseFloat(b.style.width)/2)+'px'; b.style.top=(by-parseFloat(b.style.height)/2)+'px';});
+      break;
+    case "invert": document.body.style.filter="invert(1)"; score+=10; setTimeout(()=>{document.body.style.filter="invert(0)";},5000); break;
+    case "instawin": score=999999999; break;
+    case "freeze": bubbles.forEach(b=>b.style.animation=''); setTimeout(()=>{bubbles.forEach(b=>b.style.animation='wave 1.5s infinite alternate');},3000); break;
     case "bonus": score+=50; break;
     case "bomb": bubbles.forEach(b=>b.remove()); bubbles=[]; break;
   }
+  if(score>999999999) score=999999999;
   scoreEl.textContent="Skóre: "+score;
-  if(score>highscore){ highscore=score; highscoreEl.textContent="Nejvyšší skóre: "+highscore; }
+  if(score>highscore){highscore=score; highscoreEl.textContent="Nejvyšší skóre: "+highscore;}
 }
 
-// --- Update Bubbles ---
+// --- Update bubbles ---
 function updateBubbles(){
   if(!gameRunning) return;
   bubbles.forEach(b=>{
     let top=parseFloat(b.style.top);
-    top-=0.5; // pohyb nahoru
-    if(top<0){ b.remove(); bubbles=bubbles.filter(x=>x!==b); lives--; livesEl.textContent="Životy: "+lives; if(lives<=0) endGame();}
-    else b.style.top=top+"px";
+    top-=0.5+Math.random(); // pohyb nahoru
+    b.style.top=top+'px';
+    if(top<0){ lives--; livesEl.textContent="Životy: "+lives; b.remove(); bubbles=bubbles.filter(x=>x!==b); if(lives<=0) endGame();}
   });
   requestAnimationFrame(updateBubbles);
 }
 
 // --- End Game ---
 function endGame(){
-  gameRunning=false;
-  bubbles.forEach(b=>b.remove()); bubbles=[];
+  gameRunning=false; bubbles.forEach(b=>b.remove()); bubbles=[];
   scoreContainer.style.display="none"; pauseBtn.style.display="none";
   finalScoreText.textContent="Tvé skóre: "+score;
   endScreen.style.display='flex';
 }
-
-// --- Show home initially ---
-showHome(true);
-badgesBtn.style.display="block";
-
 </script>
 </body>
 </html>
