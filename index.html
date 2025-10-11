@@ -5,9 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>12 Bubbles</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
 html, body {
   margin:0; padding:0; height:100vh; overflow:hidden;
-  font-family: monospace;
+  font-family: 'Press Start 2P', monospace;
   background-color:#0a0a0a;
   color:#fff;
 }
@@ -16,42 +18,61 @@ html, body {
 #loadingScreen {
   position: fixed; top:0; left:0; width:100%; height:100%;
   background:#000; display:flex; justify-content:center; align-items:center;
-  color:#fff; font-size:50px; font-weight:bold; z-index:3000;
+  color:#fff; font-size:40px; font-weight:bold; z-index:3000;
   text-align:center;
   animation:eyeGlow 2s ease-in-out forwards;
 }
 @keyframes eyeGlow {
   0% { opacity:0.2; text-shadow:none; }
-  50% { opacity:1; text-shadow:0 0 25px #fff,0 0 50px #fff,0 0 75px #fff; }
+  50% { opacity:1; text-shadow:0 0 20px #fff,0 0 40px #fff; }
   100% { opacity:0.2; text-shadow:none; }
 }
 
-/* --- HOME SCREEN --- */
-#homeScreen, #diffScreen, #pauseScreen, #endScreen {
-  position: fixed; top:0; left:0; width:100%; height:100%;
-  display: flex; flex-direction: column; justify-content:center; align-items:center;
-  background: rgba(0,0,0,0.95); z-index:2000; display:none; color:#fff;
+/* --- CENTERED BUTTONS --- */
+.centerScreen {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  position:absolute; top:0; left:0; width:100%; height:100%; z-index:1000;
 }
-.homeBtn, .diffBtn, .pauseBtn, #continueBtn, #endGameBtn {
-  font-size:28px; padding:15px 35px; margin:10px;
+button {
+  font-family: 'Press Start 2P', monospace;
+  font-size:16px; color:#fff;
   background: linear-gradient(45deg,#a044ff,#6a00f4,#d166ff);
-  border:none; border-radius:12px; color:#fff;
-  font-weight:bold; text-transform:uppercase;
-  cursor:pointer; box-shadow:0 0 10px #d166ff,0 0 20px #a044ff;
-}
-#pauseBtn {
-  position:fixed; top:20px; right:20px;
-  width:50px; height:50px; font-size:24px;
+  border:none; border-radius:12px; margin:10px;
+  padding:15px 30px; cursor:pointer;
+  box-shadow:0 0 10px #d166ff,0 0 20px #a044ff;
+  text-transform:uppercase;
 }
 
-/* --- Score / Lives --- */
+/* --- PAUSE BUTTON --- */
+#pauseBtn {
+  position:fixed; top:20px; right:20px; width:50px; height:50px;
+  font-size:24px; line-height:50px; text-align:center;
+  cursor:pointer;
+  border-radius:12px;
+  background: linear-gradient(45deg,#a044ff,#6a00f4,#d166ff);
+  box-shadow:0 0 10px #d166ff,0 0 20px #a044ff;
+  z-index:1001;
+}
+
+/* --- COUNTDOWN & SCORE --- */
+#countdown {
+  position:fixed; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  font-size:60px; color:#d166ff;
+  text-shadow:0 0 20px #d166ff,0 0 40px #a044ff;
+  z-index:1001; display:none;
+}
 #scoreContainer {
-  position:fixed; top:20px; left:50%; transform:translateX(-50%);
+  position:fixed; top:10px; left:50%;
+  transform:translateX(-50%);
   z-index:1001; text-align:center; display:none;
 }
-#highscore, #score, #lives { font-size:24px; margin:5px; }
+#highscore, #score, #lives {
+  font-size:16px;
+  margin:3px 0;
+}
 
-/* --- Bubbles --- */
+/* --- BUBBLES --- */
 .bubble {
   width:80px; height:80px; border-radius:50%;
   display:flex; justify-content:center; align-items:center;
@@ -65,159 +86,207 @@ html, body {
 .bubble.triple { background: linear-gradient(135deg,#f0f,#a0a); color:#fff; font-size:24px; }
 .bubble.gravity { background: linear-gradient(135deg,#fff,#d166ff); color:#000; font-size:28px; }
 .bubble.invert { background: linear-gradient(135deg,#fff,#000); color:#0ff; font-size:26px; }
-.bubble.instawin { background: linear-gradient(135deg,#ff0000,#ffff00); color:#000; font-size:32px; box-shadow:0 0 30px #ff0,0 0 60px #f00; }
+.bubble.instawin { background: linear-gradient(135deg,#ff0000,#ffff00); color:#000; font-size:32px; box-shadow:0 0 30px #ff0, 0 0 60px #f00; }
 
-/* --- Index Panel --- */
+/* --- INDEX PANEL --- */
 #indexPanel {
-  position:fixed; top:100%; left:0; width:100%; max-height:70%; overflow-y:auto;
-  transition:top 0.5s ease; padding:20px; z-index:999;
-  background: rgba(10,10,10,0.95); box-shadow:0 -5px 30px #d166ff;
+  position:fixed; top:100%; left:0; width:100%;
+  max-height:70%; background:rgba(10,10,10,0.95);
+  overflow-y:auto; transition:top 0.5s ease; padding:20px;
+  z-index:999; box-shadow:0 -5px 30px #d166ff;
 }
+#indexPanel h2 { text-transform:uppercase; text-align:center; margin-bottom:15px;}
 #indexPanel .closeBtn {
-  position:absolute; top:15px; right:15px; font-size:28px; cursor:pointer; color:#fff; font-weight:bold;
+  position:absolute; top:10px; right:10px; font-size:28px; cursor:pointer;
+  color:#fff; font-weight:bold; z-index:1001;
 }
 .indexItem { display:flex; align-items:center; margin:10px 0; }
 .indexItem .bubbleImg {
   width:60px; height:60px; margin-right:15px; border-radius:50%;
-  display:flex; justify-content:center; align-items:center; font-weight:bold; color:#fff;
-  border:2px solid #d166ff; box-shadow:0 0 15px #d166ff inset; animation:float 1s infinite alternate;
+  display:flex; justify-content:center; align-items:center;
+  font-weight:bold; color:#fff; border:2px solid #d166ff;
+  box-shadow:0 0 15px #d166ff inset; animation:float 1s infinite alternate;
 }
-.indexItem .desc { flex:1; }
-.indexItem .rarity { font-weight:bold; }
+.indexItem .desc { flex:1; font-size:12px; }
+.indexItem .rarity { font-weight:bold; font-size:12px; }
+
 @keyframes float { 0%{transform:translateY(0);} 100%{transform:translateY(-10px);} }
+
+/* --- PAUSE SCREEN --- */
+#pauseScreen {
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.95);
+  display:none; flex-direction:column; justify-content:center; align-items:center;
+  z-index:1500; color:#fff;
+}
+#pauseScreen h2, #pauseScreen p { margin:10px; font-size:16px; text-align:center; }
+#pauseScreen button { font-size:16px; padding:12px 25px; }
+
+/* --- END SCREEN --- */
+#endScreen {
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.95);
+  display:none; flex-direction:column; justify-content:center; align-items:center;
+  color:#fff; font-size:16px;
+  z-index:1500; text-align:center;
+}
+#endScreen button { font-size:16px; padding:12px 25px; margin-top:15px; }
+
+/* --- DIFFICULTY --- */
+#diffSelect {
+  display:none; flex-direction:column; align-items:center;
+  position:absolute; top:0; left:0; width:100%; height:100%;
+}
+#diffSelect h2 { margin-bottom:20px; font-size:20px; text-align:center; }
 </style>
 </head>
 <body>
 
 <div id="loadingScreen">Level 12 Studio</div>
 
-<div id="homeScreen">
-  <div>12 BUBBLES</div>
-  <button class="homeBtn" id="startGameBtn">START</button>
-  <button class="homeBtn" id="indexOpenBtn">INDEX</button>
-  <div id="homeHighscore">Highscore: 0</div>
+<!-- HOME SCREEN -->
+<div id="homeScreen" class="centerScreen" style="display:none;">
+  <h1 style="font-size:32px;">12 BUBBLES</h1>
+  <div id="homeHighscore" style="margin:15px 0; font-size:16px;"></div>
+  <button id="startBtn">Start</button>
+  <button id="indexBtn">Index</button>
 </div>
 
-<div id="diffScreen">
-  <div>Select Difficulty</div>
-  <button class="diffBtn" data-diff="0.8">Easy</button>
-  <button class="diffBtn" data-diff="1">Normal</button>
-  <button class="diffBtn" data-diff="1.5">Hard</button>
-  <button class="diffBtn" id="diffBackBtn">Back</button>
+<!-- DIFFICULTY SELECTION -->
+<div id="diffSelect">
+  <h2>Select Difficulty</h2>
+  <button class="diffBtn" data-diff="easy">Easy</button>
+  <button class="diffBtn" data-diff="medium">Medium</button>
+  <button class="diffBtn" data-diff="hard">Hard</button>
+  <button id="diffBackBtn">Back</button>
 </div>
 
-<button id="pauseBtn">||</button>
-
+<!-- INDEX -->
 <div id="indexPanel">
   <div class="closeBtn">✖</div>
   <h2>BUBBLES INDEX</h2>
-  <div class="indexItem"><div class="bubbleImg">12</div><div class="desc"><span class="rarity">Normal:</span> +1 score</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ffff00,#a044ff); color:#000;">12×2</div><div class="desc"><span class="rarity">Rare 0.25%:</span> Double score</div></div>
+  <div class="indexItem"><div class="bubbleImg">12</div><div class="desc"><span class="rarity">Common:</span> +1 score</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ffff00,#a044ff); color:#000;">12×2</div><div class="desc"><span class="rarity">Rare 0.25%:</span> Doubles score</div></div>
   <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#0f0,#0a0); color:#000;">12²</div><div class="desc"><span class="rarity">Rare 1%:</span> +144 score</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#f0f,#a0a);">3×12</div><div class="desc"><span class="rarity">Rare 2%:</span> Spawn 3 bubbles</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#fff,#d166ff); color:#000;">&lt;12&gt;</div><div class="desc"><span class="rarity">Rare 3%:</span> Gravity bubble pulls all bubbles</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#fff,#000); color:#0ff;">!12!</div><div class="desc"><span class="rarity">Rare 1.5%:</span> Inverts screen +10 score</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ff0000,#ffff00); color:#000; box-shadow:0 0 30px #ff0,0 0 60px #f00;">?12?</div><div class="desc"><span class="rarity">Rare 0.1%:</span> Instant Win (+999,999,999 score)</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#f0f,#a0a);">3×12</div><div class="desc"><span class="rarity">Rare 2%:</span> Spawns 3 bubbles</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#fff,#d166ff); color:#000;">&lt;12&gt;</div><div class="desc"><span class="rarity">Rare 3%:</span> Gravity bubble</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#fff,#000); color:#0ff;">!12!</div><div class="desc"><span class="rarity">Rare 1.5%:</span> Invert screen +10 score</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ff0000,#ffff00); color:#000; box-shadow:0 0 30px #ff0,0 0 60px #f00;">?12?</div><div class="desc"><span class="rarity">Rare 0.1%:</span> Instawin +999999999</div></div>
 </div>
 
+<!-- PAUSE BUTTON -->
+<div id="pauseBtn">||</div>
+
+<!-- PAUSE SCREEN -->
+<div id="pauseScreen">
+  <h2>Game Paused</h2>
+  <p id="pauseScore"></p>
+  <button id="pauseContinue">Continue</button>
+  <button id="pauseEnd">End Game</button>
+</div>
+
+<!-- COUNTDOWN & SCORE -->
+<div id="countdown"></div>
 <div id="scoreContainer">
   <div id="highscore">Highscore: 0</div>
   <div id="score">Score: 0</div>
   <div id="lives">Lives: 3</div>
 </div>
 
-<div id="pauseScreen">
-  <div>Game Paused</div>
-  <div id="pauseScore">Current Score: 0</div>
-  <button id="continueBtn">Continue</button>
-  <button id="endGameBtn">End Game</button>
-</div>
-
+<!-- END SCREEN -->
 <div id="endScreen">
+  <h2>Your Score</h2>
   <div id="finalScoreText"></div>
-  <button id="endContinueBtn">Continue</button>
+  <button id="continueBtn">Continue</button>
 </div>
 
 <audio id="popSound" src="https://www.soundjay.com/button/sounds/button-16.mp3"></audio>
 
 <script>
-let bubbles=[], score=0, highscore=0, lives=3, gameRunning=false, paused=false, difficulty=1, startTime;
-const loadingScreen=document.getElementById('loadingScreen');
-const homeScreen=document.getElementById('homeScreen');
-const diffScreen=document.getElementById('diffScreen');
-const startGameBtn=document.getElementById('startGameBtn');
-const indexOpenBtn=document.getElementById('indexOpenBtn');
-const indexPanel=document.getElementById('indexPanel');
-const indexCloseBtn=indexPanel.querySelector('.closeBtn');
-const pauseBtn=document.getElementById('pauseBtn');
-const pauseScreen=document.getElementById('pauseScreen');
-const continueBtn=document.getElementById('continueBtn');
-const endGameBtn=document.getElementById('endGameBtn');
-const scoreContainer=document.getElementById('scoreContainer');
-const scoreEl=document.getElementById('score');
-const livesEl=document.getElementById('lives');
-const highscoreEl=document.getElementById('highscore');
-const finalScoreText=document.getElementById('finalScoreText');
-const endContinueBtn=document.getElementById('endContinueBtn');
-const homeHighscore=document.getElementById('homeHighscore');
-const popSound=document.getElementById('popSound');
+const loadingScreen = document.getElementById('loadingScreen');
+const homeScreen = document.getElementById('homeScreen');
+const startBtn = document.getElementById('startBtn');
+const indexBtn = document.getElementById('indexBtn');
+const indexPanel = document.getElementById('indexPanel');
+const closeBtn = document.querySelector('#indexPanel .closeBtn');
+const diffSelect = document.getElementById('diffSelect');
+const diffBackBtn = document.getElementById('diffBackBtn');
+const diffButtons = document.querySelectorAll('.diffBtn');
+const countdownEl = document.getElementById('countdown');
+const scoreContainer = document.getElementById('scoreContainer');
+const scoreEl = document.getElementById('score');
+const highscoreEl = document.getElementById('highscore');
+const livesEl = document.getElementById('lives');
+const popSound = document.getElementById('popSound');
+const pauseBtn = document.getElementById('pauseBtn');
+const pauseScreen = document.getElementById('pauseScreen');
+const pauseScore = document.getElementById('pauseScore');
+const pauseContinue = document.getElementById('pauseContinue');
+const pauseEnd = document.getElementById('pauseEnd');
+const endScreen = document.getElementById('endScreen');
+const finalScoreText = document.getElementById('finalScoreText');
+const continueBtn = document.getElementById('continueBtn');
+const homeHighscore = document.getElementById('homeHighscore');
+
+let score=0, highscore=0, lives=3, bubbles=[], gameRunning=false, startTime, paused=false, difficulty='medium';
 
 // --- LOADING SCREEN ---
-window.addEventListener('load',()=>{
+window.addEventListener('load', ()=>{
   setTimeout(()=>{
     loadingScreen.style.display='none';
     homeScreen.style.display='flex';
-    homeHighscore.textContent="Highscore: "+highscore;
+    homeHighscore.textContent = "Highscore: "+highscore;
   },2000);
 });
 
-// --- BUTTON LOGIC ---
-startGameBtn.addEventListener('click',()=>{ homeScreen.style.display='none'; diffScreen.style.display='flex'; });
-document.querySelectorAll('.diffBtn').forEach(btn=>{
-  btn.addEventListener('click',(e)=>{
-    if(e.target.id==='diffBackBtn'){ diffScreen.style.display='none'; homeScreen.style.display='flex'; return; }
-    difficulty=parseFloat(e.target.dataset.diff);
-    diffScreen.style.display='none';
+// --- HOME SCREEN ---
+startBtn.addEventListener('click', ()=>{
+  homeScreen.style.display='none';
+  diffSelect.style.display='flex';
+});
+indexBtn.addEventListener('click', openIndex);
+closeBtn.addEventListener('click', closeIndex);
+document.body.addEventListener('click', (e)=>{
+  if(indexPanel.style.top==='30%' && !indexPanel.contains(e.target) && e.target!==indexBtn){
+    closeIndex();
+  }
+});
+function openIndex(){
+  indexPanel.style.top='30%';
+}
+function closeIndex(){
+  indexPanel.style.top='100%';
+}
+
+// --- DIFFICULTY ---
+diffBackBtn.addEventListener('click', ()=>{
+  diffSelect.style.display='none';
+  homeScreen.style.display='flex';
+});
+diffButtons.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    difficulty = btn.dataset.diff;
+    diffSelect.style.display='none';
     startCountdown();
   });
 });
 
-indexOpenBtn.addEventListener('click',(e)=>{
-  e.stopPropagation(); indexPanel.style.top='30%'; homeScreen.style.display='none';
-});
-indexCloseBtn.addEventListener('click',(e)=>{ e.stopPropagation(); closeIndex(); });
-document.body.addEventListener('click',()=>{ closeIndex(); });
-indexPanel.addEventListener('click',e=>e.stopPropagation());
+// --- PAUSE ---
+pauseBtn.addEventListener('click', pauseGame);
+pauseContinue.addEventListener('click', resumeGame);
+pauseEnd.addEventListener('click', endGame);
 
-pauseBtn.addEventListener('click',()=>{ togglePause(); });
-window.addEventListener('blur',()=>{ if(gameRunning) pauseGame(); });
-continueBtn.addEventListener('click',()=>{ resumeGame(); });
-endGameBtn.addEventListener('click',()=>{ endGame(); });
-endContinueBtn.addEventListener('click',()=>{
-  endScreen.style.display='none';
-  homeScreen.style.display='flex';
-  homeHighscore.textContent="Highscore: "+highscore;
+document.addEventListener('visibilitychange', ()=>{
+  if(document.hidden && gameRunning && !paused){
+    pauseGame();
+  }
 });
-
-// --- INDEX CLOSE FUNCTION ---
-function closeIndex(){ if(indexPanel.style.top==='30%'){ indexPanel.style.top='100%'; if(!gameRunning) homeScreen.style.display='flex'; } }
 
 // --- COUNTDOWN ---
-const countdownEl=document.createElement('div');
-document.body.appendChild(countdownEl);
-countdownEl.style.position='fixed';
-countdownEl.style.top='50%';
-countdownEl.style.left='50%';
-countdownEl.style.transform='translate(-50%,-50%)';
-countdownEl.style.fontSize='80px';
-countdownEl.style.color='#d166ff';
-countdownEl.style.textShadow='0 0 20px #d166ff,0 0 40px #a044ff';
-countdownEl.style.zIndex='1001';
-countdownEl.style.display='none';
-
 function startCountdown(){
   countdownEl.style.display='block';
-  let count=3; countdownEl.textContent=count;
+  let count=3;
+  countdownEl.textContent=count;
   const interval=setInterval(()=>{
     count--;
     if(count>0) countdownEl.textContent=count;
@@ -225,7 +294,6 @@ function startCountdown(){
       clearInterval(interval);
       countdownEl.style.display='none';
       scoreContainer.style.display='block';
-      pauseBtn.style.display='block';
       startGame();
     }
   },1000);
@@ -233,38 +301,50 @@ function startCountdown(){
 
 // --- GAME LOGIC ---
 function startGame(){
-  score=0; lives=3; bubbles=[]; gameRunning=true; paused=false; startTime=Date.now();
-  scoreEl.textContent="Score: "+score;
-  livesEl.textContent="Lives: "+lives;
-  requestAnimationFrame(updateBubbles);
+  score=0; lives=3; bubbles=[]; gameRunning=true; paused=false;
+  scoreEl.textContent="Score: "+score; livesEl.textContent="Lives: "+lives;
   spawnBubble();
+  requestAnimationFrame(updateBubbles);
 }
 
-function togglePause(){ paused? resumeGame(): pauseGame(); }
 function pauseGame(){
-  paused=true; pauseScreen.style.display='flex';
-  document.getElementById('pauseScore').textContent="Current Score: "+score;
+  paused = true;
+  pauseScreen.style.display='flex';
+  pauseScore.textContent = "Score: "+score;
 }
-function resumeGame(){ paused=false; pauseScreen.style.display='none'; updateBubbles(); spawnBubble(); }
+function resumeGame(){
+  paused = false;
+  pauseScreen.style.display='none';
+}
 
-// --- BUBBLES ---
+function endGame(){
+  paused=false; gameRunning=false; bubbles.forEach(b=>b.remove()); bubbles=[];
+  scoreContainer.style.display='none';
+  pauseScreen.style.display='none';
+  finalScoreText.textContent=score;
+  endScreen.style.display='flex';
+  homeHighscore.textContent = "Highscore: "+highscore;
+}
+
 function spawnBubble(){
   if(!gameRunning || paused) return;
   const elapsed=(Date.now()-startTime)/1000;
-  const speedMultiplier=1+elapsed/120*difficulty;
+  const speedMultiplier=1+elapsed/120;
   const chance=Math.random();
   const bubble=document.createElement('div');
   bubble.classList.add('bubble');
+
   if(chance<=0.001){ bubble.classList.add('instawin'); bubble.textContent="?12?"; bubble.dataset.type="instawin"; }
   else if(chance<=0.016){ bubble.classList.add('invert'); bubble.textContent="!12!"; bubble.dataset.type="invert"; }
   else if(chance<=0.0185){ bubble.classList.add('rare2x'); bubble.textContent="12×2"; bubble.dataset.type="2x"; }
   else if(chance<=0.0285){ bubble.classList.add('rare144'); bubble.textContent="12²"; bubble.dataset.type="144"; }
   else if(chance<=0.0485){ bubble.classList.add('triple'); bubble.textContent="3×12"; bubble.dataset.type="triple"; }
   else if(chance<=0.0785){ bubble.classList.add('gravity'); bubble.textContent="<12>"; bubble.dataset.type="gravity"; }
-  else{ bubble.textContent="12"; bubble.dataset.type="normal"; }
+  else { bubble.textContent="12"; bubble.dataset.type="normal"; }
 
   const size=Math.random()*60+60;
-  bubble.style.width=size+'px'; bubble.style.height=size+'px';
+  bubble.style.width=size+'px';
+  bubble.style.height=size+'px';
   bubble.style.fontSize=(bubble.dataset.type==="144"?size/2.5:size/3)+'px';
   bubble.style.left=Math.random()*(window.innerWidth-size)+'px';
   bubble.style.top=(window.innerHeight-size)+'px';
@@ -274,46 +354,55 @@ function spawnBubble(){
   const pop=()=>{
     if(!gameRunning) return;
     if(['2x','144','triple','gravity','invert','instawin'].includes(bubble.dataset.type)) popSound.currentTime=0,popSound.play();
-    bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble);
+    bubble.remove();
+    bubbles=bubbles.filter(b=>b!==bubble);
+
     if(bubble.dataset.type==="2x") score*=2;
     else if(bubble.dataset.type==="144") score+=144;
     else if(bubble.dataset.type==="triple") for(let i=0;i<3;i++) spawnSingleBubble();
     else if(bubble.dataset.type==="gravity"){
       const bx=parseFloat(bubble.style.left)+parseFloat(bubble.style.width)/2;
       const by=parseFloat(bubble.style.top)+parseFloat(bubble.style.height)/2;
-      bubbles.forEach(b=>{ b.style.left=(bx-parseFloat(b.style.width)/2)+'px'; b.style.top=(by-parseFloat(b.style.height)/2)+'px'; });
+      bubbles.forEach(b=>{
+        b.style.left=(bx-parseFloat(b.style.width)/2)+'px';
+        b.style.top=(by-parseFloat(b.style.height)/2)+'px';
+      });
     }
-    else if(bubble.dataset.type==="invert"){ document.body.style.filter='invert(1)'; score+=10; setTimeout(()=>document.body.style.filter='',5000); }
-    else if(bubble.dataset.type==="instawin"){ score+=999999999; }
+    else if(bubble.dataset.type==="invert"){
+      document.body.style.filter = 'invert(1)';
+      score += 10;
+      setTimeout(()=>document.body.style.filter='',5000);
+    }
+    else if(bubble.dataset.type==="instawin"){ score += 999999999; }
     else score++;
 
     if(score>999999999) score=999999999;
     scoreEl.textContent="Score: "+score;
-    if(score>highscore){ highscore=score; highscoreEl.textContent="Highscore: "+highscore; homeHighscore.textContent="Highscore: "+highscore; }
+    if(score>highscore){ highscore=score; highscoreEl.textContent="Highscore: "+highscore; homeHighscore.textContent="Highscore: "+highscore;}
   };
 
   bubble.addEventListener('click',pop);
   bubble.addEventListener('touchstart',pop);
   bubbles.push(bubble);
-  setTimeout(()=>{ if(!paused) spawnBubble(); }, 500);
+  setTimeout(spawnBubble,500);
 }
 
 function spawnSingleBubble(){
   if(!gameRunning || paused) return;
-  const elapsed=(Date.now()-startTime)/1000;
-  const speedMultiplier=1+elapsed/120*difficulty;
   const bubble=document.createElement('div'); bubble.classList.add('bubble');
   bubble.textContent="12"; bubble.dataset.type="normal";
   const size=Math.random()*60+60;
-  bubble.style.width=size+'px'; bubble.style.height=size+'px'; bubble.style.fontSize=size/3+'px';
+  bubble.style.width=size+'px'; bubble.style.height=size+'px';
+  bubble.style.fontSize=size/3+'px';
   bubble.style.left=Math.random()*(window.innerWidth-size)+'px';
   bubble.style.top=(window.innerHeight-size)+'px';
-  bubble.dataset.speed=(Math.random()*1.5+1)*speedMultiplier;
+  bubble.dataset.speed=Math.random()*2+1;
   document.body.appendChild(bubble);
 
   const pop=()=>{  
-    if(!gameRunning) return; score++; if(score>999999999) score=999999999; scoreEl.textContent="Score: "+score;
-    if(score>highscore){ highscore=score; highscoreEl.textContent="Highscore: "+highscore; homeHighscore.textContent="Highscore: "+highscore; }
+    if(!gameRunning) return; score++;  
+    if(score>999999999) score=999999999; scoreEl.textContent="Score: "+score;  
+    if(score>highscore){ highscore=score; highscoreEl.textContent="Highscore: "+highscore; homeHighscore.textContent="Highscore: "+highscore;}  
     bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble);
   };
   bubble.addEventListener('click',pop); bubble.addEventListener('touchstart',pop);
@@ -324,20 +413,14 @@ function updateBubbles(){
   if(!gameRunning || paused) return;
   bubbles.forEach(bubble=>{
     const top=parseFloat(bubble.style.top);
-    bubble.style.top=(top-parseFloat(bubble.dataset.speed))+'px';
-    if(top<=0){ lives--; livesEl.textContent="Lives: "+lives; bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble); if(lives<=0) endGame(); }
+    bubble.style.top=top-parseFloat(bubble.dataset.speed)+'px';
+    if(top<=0){  
+      lives--; livesEl.textContent="Lives: "+lives;  
+      bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble);  
+      if(lives<=0) endGame();
+    }
   });
-  if(!paused) requestAnimationFrame(updateBubbles);
-}
-
-function endGame(){
-  gameRunning=false; paused=false;
-  bubbles.forEach(b=>b.remove()); bubbles=[];
-  scoreContainer.style.display='none';
-  pauseBtn.style.display='none';
-  pauseScreen.style.display='none';
-  finalScoreText.textContent="Your Score: "+score;
-  endScreen.style.display='flex';
+  requestAnimationFrame(updateBubbles);
 }
 </script>
 </body>
