@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bubble Pop - Verze 12</title>
+<title>12Bubbles</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",sans-serif;}
 body{
@@ -14,26 +14,19 @@ body{
   user-select:none;
 }
 
-/* ---------------------- MENU ---------------------- */
+/* -------- OBECNÉ -------- */
 #mainMenu, #indexMenu, #gameUI, #pauseScreen, #endScreen, #easterEl{
   position:fixed;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;
 }
-#mainMenu.active, #indexMenu.active, #gameUI.active, #pauseScreen.active, #endScreen.active, #easterEl.active{display:flex;}
+.active{display:flex;}
 .menu-btn{
-  background:#08f;
-  color:white;
-  border:none;
-  border-radius:15px;
-  padding:15px 40px;
-  font-size:22px;
-  margin:15px;
-  cursor:pointer;
-  transition:0.3s;
+  background:#08f;color:white;border:none;border-radius:15px;
+  padding:15px 40px;font-size:22px;margin:15px;cursor:pointer;transition:0.3s;
 }
 .menu-btn:hover{background:#0af;transform:scale(1.05);}
 #versionLabel{position:absolute;bottom:15px;opacity:0.5;}
 
-/* ---------------------- GAME UI ---------------------- */
+/* -------- HERNÍ UI -------- */
 #scoreContainer{
   position:fixed;top:10px;left:10px;
   display:flex;flex-direction:column;gap:5px;font-size:20px;z-index:10;
@@ -43,33 +36,27 @@ body{
   background:rgba(255,255,255,0.1);
   border:2px solid rgba(255,255,255,0.4);
   border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  transition:0.2s;
-  z-index:10;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:0.2s;z-index:10;
 }
 #pauseBtn:hover{background:rgba(255,255,255,0.25);transform:scale(1.05);}
 .pause-icon{display:flex;justify-content:space-between;width:14px;height:18px;}
 .pause-icon div{width:4px;height:100%;background:white;border-radius:1px;}
 
-/* ---------------------- PAUSE SCREEN ---------------------- */
+/* -------- PAUSE SCREEN -------- */
 #pauseScreen{
   backdrop-filter:blur(8px);
   background:rgba(0,0,0,0.4);
-  z-index:20;
-  text-align:center;
+  text-align:center;z-index:20;
 }
 #pauseScreen h1{font-size:60px;margin-bottom:20px;}
 .pause-btn{
-  background:#08f;color:white;border:none;
-  padding:12px 24px;font-size:20px;border-radius:12px;cursor:pointer;
-  margin:10px;transition:0.3s;
+  background:#08f;color:white;border:none;padding:12px 24px;font-size:20px;
+  border-radius:12px;cursor:pointer;margin:10px;transition:0.3s;
 }
 .pause-btn:hover{background:#0af;transform:scale(1.05);}
 
-/* ---------------------- END SCREEN ---------------------- */
+/* -------- END SCREEN -------- */
 #endScreen{
   backdrop-filter:blur(5px);
   background:rgba(0,0,0,0.6);
@@ -82,22 +69,17 @@ body{
 }
 #endScreen button:hover{background:#0af;transform:scale(1.05);}
 
-/* ---------------------- BUBBLES ---------------------- */
+/* -------- BUBBLES -------- */
 .bubble{
   position:absolute;
-  background:radial-gradient(circle at 30% 30%,#fff,rgba(255,255,255,0.2));
   border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#fff;
-  font-weight:bold;
-  cursor:pointer;
-  transition:transform 0.2s;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:bold;cursor:pointer;transition:transform 0.2s;
   box-shadow:0 0 10px rgba(255,255,255,0.4);
 }
 .bubble:hover{transform:scale(1.15);}
 .bubble:active{transform:scale(0.9);}
+.bubble.normal{background:radial-gradient(circle at 30% 30%,#fff,rgba(255,255,255,0.2));}
 .bubble.instawin{background:radial-gradient(circle at 30% 30%,#0f0,#040);}
 .bubble.invert{background:radial-gradient(circle at 30% 30%,#ff0,#660);}
 .bubble.rare2x{background:radial-gradient(circle at 30% 30%,#0af,#004);}
@@ -105,7 +87,28 @@ body{
 .bubble.triple{background:radial-gradient(circle at 30% 30%,#fa0,#520);}
 .bubble.gravity{background:radial-gradient(circle at 30% 30%,#0ff,#044);}
 
-/* ---------------------- EASTER ---------------------- */
+/* -------- INDEX MENU -------- */
+#bubbleList{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:20px;
+  max-width:900px;
+  margin-top:20px;
+}
+.bubbleCard{
+  background:rgba(255,255,255,0.1);
+  border:1px solid rgba(255,255,255,0.2);
+  border-radius:15px;
+  padding:15px;text-align:center;
+  transition:0.3s;
+}
+.bubbleCard:hover{background:rgba(255,255,255,0.2);transform:scale(1.05);}
+.bubbleExample{
+  width:60px;height:60px;margin:auto;margin-bottom:10px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-weight:bold;
+}
+
+/* -------- EASTER -------- */
 #easterEl{
   font-size:100px;
   color:white;
@@ -121,26 +124,65 @@ body{
 </head>
 <body>
 
-<!-- ====================== MAIN MENU ====================== -->
+<!-- ===== MAIN MENU ===== -->
 <div id="mainMenu" class="active">
-  <h1 style="font-size:60px;margin-bottom:20px;">🎈 Bubble Pop 12 🎈</h1>
+  <h1 style="font-size:60px;margin-bottom:20px;">💠 12Bubbles 💠</h1>
   <button class="menu-btn" id="playBtn">Hrát</button>
-  <button class="menu-btn" id="indexBtn">Index</button>
-  <div id="versionLabel">Verze 12</div>
+  <button class="menu-btn" id="indexBtn">Index bublin</button>
+  <div id="versionLabel">Verze 1.0</div>
 </div>
 
-<!-- ====================== INDEX MENU ====================== -->
+<!-- ===== INDEX MENU ===== -->
 <div id="indexMenu">
-  <h1>📖 Index</h1>
-  <p style="max-width:500px;text-align:center;margin-bottom:30px;">
-    Cílem hry je klikat na bubliny s číslem <b>12</b> a získávat body.<br>
-    Speciální bubliny mají různé efekty – některé pomáhají, jiné škodí!<br>
-    Pozor na čas – bubliny mizí a za zmeškání ztrácíš život.
-  </p>
+  <h1>📘 Index bublin</h1>
+  <div id="bubbleList">
+    <div class="bubbleCard">
+      <div class="bubbleExample normal">12</div>
+      <h3>Normální bublina</h3>
+      <p>🎯 Základní bublina. Klikni pro +1 bod.</p>
+      <p>Rarita: 🟢 Běžná</p>
+    </div>
+    <div class="bubbleCard">
+      <div class="bubbleExample rare2x" style="background:radial-gradient(circle at 30% 30%,#0af,#004);">×2</div>
+      <h3>Double Bubble</h3>
+      <p>⚡ Zdvojnásobí aktuální skóre.</p>
+      <p>Rarita: 🟣 Vzácná</p>
+    </div>
+    <div class="bubbleCard">
+      <div class="bubbleExample rare144" style="background:radial-gradient(circle at 30% 30%,#f0f,#404);">12²</div>
+      <h3>Power Bubble</h3>
+      <p>💥 Přidá 144 bodů.</p>
+      <p>Rarita: 🔵 Velmi vzácná</p>
+    </div>
+    <div class="bubbleCard">
+      <div class="bubbleExample triple" style="background:radial-gradient(circle at 30% 30%,#fa0,#520);">3×12</div>
+      <h3>Triple Bubble</h3>
+      <p>🫧 Bonusová — dříve spawnovala tři, nyní přidá bonusové body.</p>
+      <p>Rarita: 🟠 Neobvyklá</p>
+    </div>
+    <div class="bubbleCard">
+      <div class="bubbleExample gravity" style="background:radial-gradient(circle at 30% 30%,#0ff,#044);">&lt;12&gt;</div>
+      <h3>Gravity Bubble</h3>
+      <p>🌌 Přitáhne ostatní bubliny k sobě.</p>
+      <p>Rarita: 🟣 Vzácná</p>
+    </div>
+    <div class="bubbleCard">
+      <div class="bubbleExample invert" style="background:radial-gradient(circle at 30% 30%,#ff0,#660);">!12!</div>
+      <h3>Invert Bubble</h3>
+      <p>🌀 Na chvíli obrátí barvy hry.</p>
+      <p>Rarita: 🔴 Ultra vzácná</p>
+    </div>
+    <div class="bubbleCard">
+      <div class="bubbleExample instawin" style="background:radial-gradient(circle at 30% 30%,#0f0,#040);">?12?</div>
+      <h3>Instawin Bubble</h3>
+      <p>🏆 Okamžitě vyhraješ hru. Extrémně vzácná.</p>
+      <p>Rarita: 🟡 Legendární</p>
+    </div>
+  </div>
   <button class="menu-btn" id="backToMenu">Zpět</button>
 </div>
 
-<!-- ====================== GAME UI ====================== -->
+<!-- ===== GAME UI ===== -->
 <div id="gameUI">
   <div id="scoreContainer">
     <div id="score">Skóre: 0</div>
@@ -152,58 +194,44 @@ body{
   </div>
 </div>
 
-<!-- ====================== PAUSE SCREEN ====================== -->
+<!-- ===== PAUSE SCREEN ===== -->
 <div id="pauseScreen">
   <h1>Pauza</h1>
   <button class="pause-btn" id="continueGameBtn">Pokračovat</button>
   <button class="pause-btn" id="endGameBtn">Ukončit hru</button>
 </div>
 
-<!-- ====================== END SCREEN ====================== -->
+<!-- ===== END SCREEN ===== -->
 <div id="endScreen">
   <h1 id="finalScoreText"></h1>
   <button id="continueBtn">Zpět do menu</button>
 </div>
 
-<!-- ====================== EASTER SCREEN ====================== -->
+<!-- ===== EASTER SCREEN ===== -->
 <div id="easterEl"></div>
 
 <script>
-/* ---------------------- PROMĚNNÉ ---------------------- */
-let score=0, lives=3, highscore=0;
-let bubbles=[], gameRunning=false, gamePaused=false, startTime=0;
+let score=0,lives=3,highscore=0;
+let bubbles=[],gameRunning=false,gamePaused=false,startTime=0;
 
-/* ---------------------- ELEMENTY ---------------------- */
 const mainMenu=document.getElementById('mainMenu');
 const indexMenu=document.getElementById('indexMenu');
 const gameUI=document.getElementById('gameUI');
 const pauseScreen=document.getElementById('pauseScreen');
 const endScreen=document.getElementById('endScreen');
 const easterEl=document.getElementById('easterEl');
-
 const scoreEl=document.getElementById('score');
 const livesEl=document.getElementById('lives');
 const highscoreEl=document.getElementById('highscore');
-const pauseBtn=document.getElementById('pauseBtn');
-const continueGameBtn=document.getElementById('continueGameBtn');
-const endGameBtn=document.getElementById('endGameBtn');
-const continueBtn=document.getElementById('continueBtn');
-const playBtn=document.getElementById('playBtn');
-const indexBtn=document.getElementById('indexBtn');
-const backToMenu=document.getElementById('backToMenu');
 
-/* ---------------------- MENU LOGIKA ---------------------- */
-playBtn.onclick=()=>{mainMenu.classList.remove('active');startGame();};
-indexBtn.onclick=()=>{mainMenu.classList.remove('active');indexMenu.classList.add('active');};
-backToMenu.onclick=()=>{indexMenu.classList.remove('active');mainMenu.classList.add('active');};
-continueBtn.onclick=()=>{endScreen.classList.remove('active');mainMenu.classList.add('active');};
+document.getElementById('playBtn').onclick=()=>{mainMenu.classList.remove('active');startGame();};
+document.getElementById('indexBtn').onclick=()=>{mainMenu.classList.remove('active');indexMenu.classList.add('active');};
+document.getElementById('backToMenu').onclick=()=>{indexMenu.classList.remove('active');mainMenu.classList.add('active');};
+document.getElementById('continueBtn').onclick=()=>{endScreen.classList.remove('active');mainMenu.classList.add('active');};
+document.getElementById('pauseBtn').onclick=togglePause;
+document.getElementById('continueGameBtn').onclick=togglePause;
+document.getElementById('endGameBtn').onclick=endGame;
 
-/* ---------------------- PAUZA ---------------------- */
-pauseBtn.onclick=togglePause;
-continueGameBtn.onclick=togglePause;
-endGameBtn.onclick=endGame;
-
-/* ---------------------- HRA ---------------------- */
 function startGame(){
   gameUI.classList.add('active');
   score=0;lives=3;bubbles=[];gameRunning=true;gamePaused=false;startTime=Date.now();
@@ -212,38 +240,34 @@ function startGame(){
   requestAnimationFrame(updateBubbles);
 }
 
-/* ---------------------- PAUZA FUNKCE ---------------------- */
 function togglePause(){
-  if(!gameRunning) return;
+  if(!gameRunning)return;
   gamePaused=!gamePaused;
-  if(gamePaused){pauseScreen.classList.add('active');}
-  else{pauseScreen.classList.remove('active');}
+  pauseScreen.classList.toggle('active',gamePaused);
 }
 
-/* ---------------------- UPDATE ---------------------- */
 function updateBubbles(){
-  if(!gameRunning) return;
+  if(!gameRunning)return;
   if(!gamePaused){
     bubbles.forEach(bubble=>{
       const top=parseFloat(bubble.style.top);
       bubble.style.top=top-parseFloat(bubble.dataset.speed)+'px';
-      if(top<=0){  
-        lives--;livesEl.textContent="Životy: "+lives;  
-        bubble.remove();bubbles=bubbles.filter(b=>b!==bubble);  
-        if(lives<=0) endGame();
+      if(top<=0){
+        lives--;livesEl.textContent="Životy: "+lives;
+        bubble.remove();bubbles=bubbles.filter(b=>b!==bubble);
+        if(lives<=0)endGame();
       }
     });
   }
   requestAnimationFrame(updateBubbles);
 }
 
-/* ---------------------- SPAWN ---------------------- */
 function spawnBubble(){
   if(!gameRunning)return;
   if(gamePaused){setTimeout(spawnBubble,500);return;}
 
   const elapsed=(Date.now()-startTime)/1000;
-  const speedMultiplier=1+elapsed/120;
+  const speedMult=1+elapsed/120;
   const chance=Math.random();
   const bubble=document.createElement('div');bubble.classList.add('bubble');
 
@@ -253,41 +277,40 @@ function spawnBubble(){
   else if(chance<=0.0285){bubble.classList.add('rare144');bubble.textContent="12²";bubble.dataset.type="144";}
   else if(chance<=0.0485){bubble.classList.add('triple');bubble.textContent="3×12";bubble.dataset.type="triple";}
   else if(chance<=0.0785){bubble.classList.add('gravity');bubble.textContent="<12>";bubble.dataset.type="gravity";}
-  else {bubble.textContent="12";bubble.dataset.type="normal";}
+  else {bubble.classList.add('normal');bubble.textContent="12";bubble.dataset.type="normal";}
 
   const size=Math.random()*60+60;
   bubble.style.width=size+'px';bubble.style.height=size+'px';
-  bubble.style.fontSize=(bubble.dataset.type==="144"?size/2.5:size/3)+'px';
   bubble.style.left=Math.random()*(window.innerWidth-size)+'px';
   bubble.style.top=(window.innerHeight-size)+'px';
-  bubble.dataset.speed=(Math.random()*1.5+1)*speedMultiplier;
+  bubble.dataset.speed=(Math.random()*1.5+1)*speedMult;
   document.body.appendChild(bubble);
 
-  const pop=()=>{
-    if(!gameRunning)return;
-    bubble.remove();bubbles=bubbles.filter(b=>b!==bubble);
-    if(bubble.dataset.type==="2x")score*=2;
-    else if(bubble.dataset.type==="144")score+=144;
-    else if(bubble.dataset.type==="gravity"){
-      const bx=parseFloat(bubble.style.left)+parseFloat(bubble.style.width)/2;
-      const by=parseFloat(bubble.style.top)+parseFloat(bubble.style.height)/2;
-      bubbles.forEach(b=>{b.style.left=(bx-parseFloat(b.style.width)/2)+'px';b.style.top=(by-parseFloat(b.style.height)/2)+'px';});
-    }
-    else if(bubble.dataset.type==="invert"){document.body.style.filter='invert(1)';score+=10;setTimeout(()=>document.body.style.filter='',5000);}
-    else if(bubble.dataset.type==="instawin"){score+=999999999;}
-    else score++;
-    if(score>999999999)score=999999999;
-    scoreEl.textContent="Skóre: "+score;
-    if(score>highscore){highscore=score;highscoreEl.textContent="Nejvyšší skóre: "+highscore;}
-  };
-
-  bubble.addEventListener('click',pop);
-  bubble.addEventListener('touchstart',pop);
+  bubble.addEventListener('click',()=>pop(bubble));
   bubbles.push(bubble);
   setTimeout(spawnBubble,700);
 }
 
-/* ---------------------- END GAME ---------------------- */
+function pop(bubble){
+  if(!gameRunning)return;
+  bubble.remove();bubbles=bubbles.filter(b=>b!==bubble);
+  switch(bubble.dataset.type){
+    case "2x":score*=2;break;
+    case "144":score+=144;break;
+    case "gravity":
+      const bx=parseFloat(bubble.style.left)+parseFloat(bubble.style.width)/2;
+      const by=parseFloat(bubble.style.top)+parseFloat(bubble.style.height)/2;
+      bubbles.forEach(b=>{b.style.left=(bx-parseFloat(b.style.width)/2)+'px';b.style.top=(by-parseFloat(b.style.height)/2)+'px';});
+      break;
+    case "invert":document.body.style.filter='invert(1)';score+=10;setTimeout(()=>document.body.style.filter='',5000);break;
+    case "instawin":score+=999999999;break;
+    case "triple":score+=12;break;
+    default:score++;
+  }
+  if(score>highscore){highscore=score;highscoreEl.textContent="Nejvyšší skóre: "+highscore;}
+  scoreEl.textContent="Skóre: "+score;
+}
+
 function endGame(){
   gameRunning=false;
   bubbles.forEach(b=>b.remove());
@@ -298,8 +321,9 @@ function endGame(){
     easterEl.textContent=(score===12?'12':'BRUH');
     easterEl.classList.add('active');
     setTimeout(()=>{easterEl.classList.remove('active');showEndScreen();},1200);
-  } else showEndScreen();
+  }else showEndScreen();
 }
+
 function showEndScreen(){
   endScreen.classList.add('active');
   document.getElementById('finalScoreText').textContent="Tvé skóre: "+score;
