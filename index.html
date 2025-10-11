@@ -9,27 +9,33 @@ html, body {
   margin:0; padding:0; height:100vh; overflow:hidden;
   font-family: monospace;
   background-color:#0a0a0a;
-  background-image: radial-gradient(circle at 30% 30%, #ff66001a 10%, transparent 60%),
-                    radial-gradient(circle at 70% 70%, #ff99001a 10%, transparent 60%),
-                    linear-gradient(180deg, #000 0%, #111 100%);
   color:#ff6600;
   position:relative;
 }
 
-/* --- EMOJI BACKGROUND --- */
-body::before {
-  content: "👻🎃👻🎃👻🎃👻🎃";
-  position:absolute;
-  top:0; left:0;
-  width:100%; height:100%;
-  font-size:80px;
+/* --- EMOJI PO CELÉM POZADÍ --- */
+#emojiBackground {
+  position:absolute; top:0; left:0; width:100%; height:100%;
+  display:grid;
+  grid-template-columns: repeat(auto-fill, 100px);
+  grid-template-rows: repeat(auto-fill, 100px);
+  z-index:0;
+  pointer-events:none;
+}
+#emojiBackground div {
+  font-size:50px;
   color: rgba(255,255,255,0.05);
   display:flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  align-items: center;
-  pointer-events: none;
-  z-index:0;
+  justify-content:center;
+  align-items:center;
+  animation:floatEmoji linear infinite;
+}
+
+/* Pohyb emoji */
+@keyframes floatEmoji {
+  0% { transform: translateY(0) rotate(0deg);}
+  50% { transform: translateY(-10px) rotate(10deg);}
+  100% { transform: translateY(0) rotate(0deg);}
 }
 
 /* --- LOADING SCREEN --- */
@@ -162,6 +168,7 @@ body::before {
 </head>
 <body>
 
+<div id="emojiBackground"></div>
 <div id="loadingScreen">Level 12 studio</div>
 
 <div id="versionLabel">Released 1.2.3</div>
@@ -176,8 +183,8 @@ body::before {
   <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#00ff00,#00aa00); color:#000;">12²</div><div class="desc"><span class="rarity">Vzácná 1%:</span> +144 skóre</div></div>
   <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ff00ff,#9900ff);">3×12</div><div class="desc"><span class="rarity">Vzácná 2%:</span> Spawnuje 3 bubliny</div></div>
   <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ff6600,#ffff00); color:#000;">&lt;12&gt;</div><div class="desc"><span class="rarity">Vzácná 3%:</span> Gravitační bublina teleportuje všechny bubliny k ní</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#000,#fff); color:#ff6600;">!12!</div><div class="desc"><span class="rarity">Vzácná 1,5%:</span> +10 skóre a obrácené barvy</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ff0000,#990000); color:#fff;">?12?</div><div class="desc"><span class="rarity">Vzácná 0,1%:</span> Instawin +999999999 skóre</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#000,#fff); color:#ff6600;">!12!</div><div class="desc"><span class="rarity">Vzácná 1,5%:</span> Invertuje barvy a dává +10 skóre</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ff0000,#990000); color:#fff;">?12?</div><div class="desc"><span class="rarity">Vzácná 0,05%:</span> Insta-win +999999999 skóre</div></div>
 </div>
 
 <div id="countdown"></div>
@@ -223,6 +230,7 @@ window.addEventListener('load',()=>{
     startBtn.style.display='block';
     indexBtn.style.display='block';
     attachButtonEvents();
+    generateEmojiBackground();
   },3550);
 });
 
@@ -300,12 +308,12 @@ function spawnBubble(){
   const bubble=document.createElement('div');
   bubble.classList.add('bubble');
 
-  if(chance<=0.0025){ bubble.classList.add('rare2x'); bubble.textContent="12×2"; bubble.dataset.type="2x"; }
-  else if(chance<=0.0125){ bubble.classList.add('rare144'); bubble.textContent="12²"; bubble.dataset.type="144"; }
-  else if(chance<=0.0325){ bubble.classList.add('triple'); bubble.textContent="3×12"; bubble.dataset.type="triple"; }
-  else if(chance<=0.0625){ bubble.classList.add('gravity'); bubble.textContent="<12>"; bubble.dataset.type="gravity"; }
-  else if(chance<=0.0775){ bubble.classList.add('invert'); bubble.textContent="!12!"; bubble.dataset.type="invert"; }
-  else if(chance<=0.0785){ bubble.classList.add('instawin'); bubble.textContent="?12?"; bubble.dataset.type="instawin"; }
+  if(chance<=0.0005){ bubble.classList.add('instawin'); bubble.textContent="?12?"; bubble.dataset.type="instawin"; }
+  else if(chance<=0.015){ bubble.classList.add('invert'); bubble.textContent="!12!"; bubble.dataset.type="invert"; }
+  else if(chance<=0.0025+0.015){ bubble.classList.add('rare2x'); bubble.textContent="12×2"; bubble.dataset.type="2x"; }
+  else if(chance<=0.0125+0.015){ bubble.classList.add('rare144'); bubble.textContent="12²"; bubble.dataset.type="144"; }
+  else if(chance<=0.0325+0.015){ bubble.classList.add('triple'); bubble.textContent="3×12"; bubble.dataset.type="triple"; }
+  else if(chance<=0.0625+0.015){ bubble.classList.add('gravity'); bubble.textContent="<12>"; bubble.dataset.type="gravity"; }
   else{ bubble.textContent="12"; bubble.dataset.type="normal"; }
 
   const size=Math.random()*60+60;
@@ -334,8 +342,8 @@ function spawnBubble(){
         b.style.top=(by-parseFloat(b.style.height)/2)+'px';
       });
     }
-    else if(bubble.dataset.type==="invert") score+=10;
-    else if(bubble.dataset.type==="instawin") score=999999999;
+    else if(bubble.dataset.type==="invert"){ score+=10; document.body.style.filter=(document.body.style.filter==="invert(1)"?"invert(0)":"invert(1)"); }
+    else if(bubble.dataset.type==="instawin"){ score=999999999; }
     else score++;
 
     if(score>999999999) score=999999999;
@@ -356,7 +364,8 @@ function spawnSingleBubble(){
   const bubble=document.createElement('div'); bubble.classList.add('bubble');
   bubble.textContent="12"; bubble.dataset.type="normal";
   const size=Math.random()*60+60;
-  bubble.style.width=`${size}px`; bubble.style.height=`${size}px`;
+  bubble.style.width=`${size}px`;
+  bubble.style.height=`${size}px`;
   bubble.style.fontSize=size/3+'px';
   bubble.style.left=Math.random()*(window.innerWidth-size)+'px';
   bubble.style.top=(window.innerHeight-size)+'px';
@@ -404,6 +413,20 @@ function endGame(){
 function showEndScreen(){
   finalScoreText.textContent="Tvé skóre: "+score;
   endScreen.style.display='flex';
+}
+
+// --- GENEROVÁNÍ POZADÍ EMOJI ---
+function generateEmojiBackground(){
+  const emojiBg=document.getElementById('emojiBackground');
+  const emojis=["👻","🎃"];
+  const cols=Math.ceil(window.innerWidth/100);
+  const rows=Math.ceil(window.innerHeight/100);
+  for(let i=0;i<cols*rows;i++){
+    const div=document.createElement('div');
+    div.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+    div.style.animationDuration=(Math.random()*5+5)+'s';
+    emojiBg.appendChild(div);
+  }
 }
 </script>
 </body>
