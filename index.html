@@ -8,8 +8,7 @@
 html, body {
   margin:0; padding:0; height:100%; width:100%;
   font-family: monospace; background-color:#0a0a0a; color:#fff;
-  display:flex; justify-content:center; align-items:center;
-  overflow:hidden;
+  display:flex; justify-content:center; align-items:center; overflow:hidden;
 }
 
 /* --- LOADING SCREEN --- */
@@ -25,26 +24,18 @@ html, body {
   100% { opacity:0.2; text-shadow:none; }
 }
 
-/* --- HOME SCREEN --- */
-#homeScreen {
-  display:flex; flex-direction:column; align-items:center; gap:20px;
+/* --- HOME SCREEN & DIFFICULTY --- */
+#homeScreen, #difficultyMenu {
+  display:none; flex-direction:column; gap:20px;
+  align-items:center; justify-content:center;
+  z-index:1000; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
 }
-#homeScreen button {
+button {
   font-size:32px; padding:15px 40px;
   background: linear-gradient(45deg,#a044ff,#6a00f4,#d166ff);
   border:none; border-radius:12px; color:#fff; font-weight:bold;
   text-transform:uppercase; cursor:pointer;
   box-shadow:0 0 10px #d166ff,0 0 20px #a044ff;
-}
-
-/* --- DIFFICULTY --- */
-#difficultyMenu {
-  display:none; flex-direction:column; gap:15px;
-  position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
-  z-index:1001; text-align:center;
-}
-#difficultyMenu button {
-  font-size:28px; padding:15px 35px; display:block; margin:auto;
 }
 
 /* --- INDEX PANEL --- */
@@ -53,8 +44,19 @@ html, body {
   background:rgba(10,10,10,0.95); overflow-y:auto; transition:top 0.5s ease;
   padding:20px; z-index:999; box-shadow:0 -5px 30px #d166ff;
 }
-#indexPanel h2 { text-transform:uppercase; }
+#indexPanel h2 { text-transform:uppercase; margin-top:0; }
 #indexPanel .closeBtn { position:absolute; top:15px; right:15px; font-size:28px; cursor:pointer; color:#fff; font-weight:bold; z-index:1001; }
+.indexItem { display:flex; align-items:center; margin:10px 0; }
+.indexItem .bubbleImg {
+  width:60px; height:60px; margin-right:15px; border-radius:50%;
+  display:flex; justify-content:center; align-items:center;
+  font-weight:bold; color:#fff; border:2px solid #d166ff;
+  box-shadow:0 0 15px #d166ff inset; animation:float 1s infinite alternate;
+}
+.indexItem .desc { flex:1; }
+.indexItem .rarity { font-weight:bold; }
+
+@keyframes float { 0%{transform:translateY(0);} 100%{transform:translateY(-10px);} }
 
 /* --- COUNTDOWN & SCORE --- */
 #countdown {
@@ -113,7 +115,13 @@ html, body {
 <div id="indexPanel">
   <div class="closeBtn">✖</div>
   <h2>BUBBLES INDEX</h2>
-  <p>Index content goes here...</p>
+  <div class="indexItem"><div class="bubbleImg">12</div><div class="desc"><span class="rarity">Common:</span> +1 Score</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ffff00,#a044ff); color:#000;">12×2</div><div class="desc"><span class="rarity">Rare 0.25%:</span> Double Score</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#0f0,#0a0); color:#000;">12²</div><div class="desc"><span class="rarity">Rare 1%:</span> +144 Score</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#f0f,#a0a);">3×12</div><div class="desc"><span class="rarity">Rare 2%:</span> Spawns 3 bubbles</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#fff,#d166ff); color:#000;">&lt;12&gt;</div><div class="desc"><span class="rarity">Rare 3%:</span> Gravity bubble pulls others</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#fff,#000); color:#0ff;">!12!</div><div class="desc"><span class="rarity">Rare 1.5%:</span> Inverts screen colors, +10 Score</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ff0000,#ffff00); color:#000; box-shadow:0 0 30px #ff0,0 0 60px #f00;">?12?</div><div class="desc"><span class="rarity">Rare 0.1%:</span> Instant win (+999,999,999 Score)</div></div>
 </div>
 
 <div id="countdown"></div>
@@ -145,7 +153,7 @@ const livesEl = document.getElementById('lives');
 const endScreen = document.getElementById('endScreen');
 const continueBtn = document.getElementById('continueBtn');
 
-let score = 0, highscore = 0, lives = 3, bubbles = [], gameRunning=false;
+let score=0, highscore=0, lives=3, bubbles=[], gameRunning=false;
 
 // --- LOADING ---
 window.addEventListener('load',()=>{
@@ -155,13 +163,13 @@ window.addEventListener('load',()=>{
   },2000);
 });
 
-// --- HOME BUTTONS ---
+// --- HOME SCREEN BUTTONS ---
 startBtn.onclick = ()=>{ homeScreen.style.display='none'; difficultyMenu.style.display='flex'; };
 indexBtn.onclick = ()=>{ indexPanel.style.top='30%'; homeScreen.style.display='none'; };
 closeBtn.onclick = ()=>{ indexPanel.style.top='100%'; homeScreen.style.display='flex'; };
 backBtn.onclick = ()=>{ difficultyMenu.style.display='none'; homeScreen.style.display='flex'; };
 
-// --- DIFFICULTY ---
+// --- DIFFICULTY SELECTION ---
 difficultyMenu.querySelectorAll('button[data-diff]').forEach(btn=>{
   btn.onclick = ()=>{
     difficultyMenu.style.display='none';
@@ -172,8 +180,8 @@ difficultyMenu.querySelectorAll('button[data-diff]').forEach(btn=>{
 // --- COUNTDOWN ---
 function startCountdown(){
   countdownEl.style.display='block';
-  let count = 3;
-  countdownEl.textContent = count;
+  let count=3;
+  countdownEl.textContent=count;
   const interval = setInterval(()=>{
     count--;
     if(count>0) countdownEl.textContent=count;
@@ -188,26 +196,26 @@ function startCountdown(){
 
 // --- GAME LOGIC ---
 function startGame(){
-  score = 0; lives = 3; bubbles = []; gameRunning=true;
-  scoreEl.textContent = "Score: "+score; livesEl.textContent = "Lives: "+lives;
+  score=0; lives=3; bubbles=[]; gameRunning=true;
+  scoreEl.textContent="Score: "+score; livesEl.textContent="Lives: "+lives;
   spawnBubble();
   requestAnimationFrame(updateBubbles);
 }
 
 function spawnBubble(){
   if(!gameRunning) return;
-  const bubble = document.createElement('div');
+  const bubble=document.createElement('div');
   bubble.classList.add('bubble'); bubble.textContent='12';
-  bubble.style.width = '80px'; bubble.style.height='80px';
-  bubble.style.left = Math.random()*(window.innerWidth-80)+'px';
-  bubble.style.top = window.innerHeight+'px';
+  bubble.style.left=Math.random()*(window.innerWidth-80)+'px';
+  bubble.style.top=window.innerHeight+'px';
   bubble.dataset.speed = 2;
   document.body.appendChild(bubble);
+
   bubble.onclick = ()=>{
     if(!gameRunning) return;
     score++; scoreEl.textContent="Score: "+score;
     bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble);
-    if(score>highscore){ highscore=score; highscoreEl.textContent="High Score: "+highscore;}
+    if(score>highscore){ highscore=score; highscoreEl.textContent="High Score: "+highscore; }
   };
   bubbles.push(bubble);
   setTimeout(spawnBubble,500);
@@ -216,7 +224,7 @@ function spawnBubble(){
 function updateBubbles(){
   if(!gameRunning) return;
   bubbles.forEach(b=>{
-    const top = parseFloat(b.style.top);
+    const top=parseFloat(b.style.top);
     b.style.top = top - parseFloat(b.dataset.speed)+'px';
     if(top<=0){ lives--; livesEl.textContent="Lives: "+lives; b.remove(); bubbles=bubbles.filter(x=>x!==b); if(lives<=0) endGame();}
   });
