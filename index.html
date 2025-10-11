@@ -3,24 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>12 Bubbles Extended</title>
+<title>12 Bubbles Ultimate</title>
 <style>
+/* ================== Reset & Basic ================== */
 html, body { margin:0; padding:0; height:100vh; overflow:hidden; font-family: monospace; background-color:#0a0a0a; color:#fff; }
-/* --- LOADING SCREEN --- */
+/* ================== LOADING SCREEN ================== */
 #loadingScreen { position: fixed; top:0; left:0; width:100%; height:100%; background:#000; display:flex; justify-content:center; align-items:center; color:#fff; font-size:50px; font-weight:bold; z-index:3000; text-align:center; animation:eyeGlow 2s ease-in-out forwards;}
 @keyframes eyeGlow { 0% { opacity:0.2; text-shadow:none; } 50% { opacity:1; text-shadow:0 0 25px #fff,0 0 50px #fff,0 0 75px #fff; } 100% { opacity:0.2; text-shadow:none; } }
-/* --- HOME SCREEN --- */
-#startBtn, #indexBtn { display:none; margin:0 auto; font-size:28px; padding:15px 35px; background: linear-gradient(45deg,#a044ff,#6a00f4,#d166ff); border:none; border-radius:12px; color:#fff; font-weight:bold; text-transform:uppercase; cursor:pointer; box-shadow:0 0 10px #d166ff,0 0 20px #a044ff; z-index:1000; }
+/* ================== BUTTONS ================== */
+#startBtn, #indexBtn { display:none; margin:0 auto; font-size:28px; padding:15px 35px; background: linear-gradient(45deg,#a044ff,#6a00f4,#d166ff); border:none; border-radius:12px; color:#fff; font-weight:bold; text-transform:uppercase; cursor:pointer; box-shadow:0 0 10px #d166ff,0 0 20px #a044ff; z-index:1000; transition: transform 0.2s; }
+#startBtn:hover, #indexBtn:hover { transform: scale(1.05); }
 #startBtn { margin-top:30vh; }
 #indexBtn { margin-top:20px; }
-/* --- Countdown & Score --- */
+/* ================== COUNTDOWN & SCORE ================== */
 #countdown { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); font-size:80px; color:#d166ff; text-shadow:0 0 20px #d166ff,0 0 40px #a044ff; z-index:1001; display:none; }
 #scoreContainer { position:fixed; top:20px; left:50%; transform:translateX(-50%); z-index:1001; text-align:center; display:none; }
 #highscore { font-size:20px; color:#ff0; margin-bottom:5px; }
 #score { font-size:28px; color:#d166ff; }
 #lives { font-size:20px; color:#f00; margin-top:5px; }
-/* --- Bubbles --- */
-.bubble { width:80px; height:80px; border-radius:50%; display:flex; justify-content:center; align-items:center; font-size:24px; font-weight:bold; color:#fff; background:linear-gradient(135deg,#a044ff,#6a00f4); border:2px solid #d166ff; box-shadow:0 0 10px #d166ff,0 0 20px #a044ff inset; position:absolute; cursor:pointer; animation:floatY 3s infinite alternate ease-in-out; }
+/* ================== BUBBLES ================== */
+.bubble { width:80px; height:80px; border-radius:50%; display:flex; justify-content:center; align-items:center; font-size:24px; font-weight:bold; color:#fff; background:linear-gradient(135deg,#a044ff,#6a00f4); border:2px solid #d166ff; box-shadow:0 0 10px #d166ff,0 0 20px #a044ff inset; position:absolute; cursor:pointer; animation:floatY 3s infinite alternate ease-in-out; transition: transform 0.2s; }
+.bubble:hover { transform: scale(1.1); }
 .bubble.rare2x { background: linear-gradient(135deg,#ffff00,#a044ff); color:#000; font-size:28px; animation:floatY 2.5s infinite alternate ease-in-out; }
 .bubble.rare144 { background: linear-gradient(135deg,#0f0,#0a0); color:#000; font-size:28px; animation:floatY 2s infinite alternate ease-in-out; }
 .bubble.triple { background: linear-gradient(135deg,#f0f,#a0a); color:#fff; font-size:24px; animation:floatY 3s infinite alternate ease-in-out; }
@@ -28,7 +31,7 @@ html, body { margin:0; padding:0; height:100vh; overflow:hidden; font-family: mo
 .bubble.invert { background: linear-gradient(135deg,#fff,#000); color:#0ff; font-size:26px; animation:floatY 2.8s infinite alternate ease-in-out; }
 .bubble.instawin { background: linear-gradient(135deg,#ff0000,#ffff00); color:#000; font-size:32px; box-shadow:0 0 30px #ff0, 0 0 60px #f00; animation:floatY 1.8s infinite alternate ease-in-out; }
 @keyframes floatY { 0% { transform: translateY(0);} 100% { transform: translateY(-15px);} }
-/* --- Index Panel --- */
+/* ================== INDEX PANEL ================== */
 #indexPanel { position:fixed; top:100%; left:0; width:100%; max-height:70%; background:rgba(10,10,10,0.95); overflow-y:auto; transition:top 0.5s ease; padding:20px; z-index:999; box-shadow:0 -5px 30px #d166ff; }
 #indexPanel h2 { text-transform:uppercase; }
 #indexPanel .closeBtn { position:absolute; top:15px; right:15px; font-size:28px; cursor:pointer; color:#fff; font-weight:bold; z-index:1001; }
@@ -37,15 +40,15 @@ html, body { margin:0; padding:0; height:100vh; overflow:hidden; font-family: mo
 .indexItem .desc { flex:1; }
 .indexItem .rarity { font-weight:bold; }
 @keyframes float { 0%{transform:translateY(0);} 100%{transform:translateY(-10px);} }
-/* --- End Screen --- */
+/* ================== END SCREEN ================== */
 #endScreen { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); display:none; flex-direction:column; justify-content:center; align-items:center; color:#fff; font-size:40px; z-index:1500; text-align:center; }
 #continueBtn { margin-top:30px; font-size:26px; padding:15px 40px; border:none; border-radius:10px; cursor:pointer; color:#fff; background: linear-gradient(45deg,#a044ff,#6a00f4,#d166ff); box-shadow:0 0 10px #d166ff,0 0 20px #a044ff; }
-/* --- Version --- */
+/* ================== VERSION LABEL ================== */
 #versionLabel { position:fixed; top:10px; right:10px; font-size:16px; color:rgba(255,255,255,0.3); font-weight:bold; z-index:1002; pointer-events:none; }
-/* --- Easter Egg --- */
+/* ================== EASTER EGG ================== */
 #easterEgg { position: fixed; top: 0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); color:red; font-size:150px; font-weight:bold; display:flex; justify-content:center; align-items:center; z-index:2000; display:none; text-transform:uppercase; opacity:0; animation:fadeShake 5s forwards; }
 @keyframes fadeShake { 0%{opacity:0; transform:translateX(0);} 10%{opacity:1; transform:translateX(-5px);} 20%{transform:translateX(5px);} 30%{transform:translateX(-5px);} 40%{transform:translateX(5px);} 50%{transform:translateX(-5px);} 60%{transform:translateX(5px);} 70%{transform:translateX(-5px);} 80%{transform:translateX(5px);} 90%{transform:translateX(-5px);} 100%{opacity:0; transform:translateX(0);} }
-/* --- PAUSE SCREEN --- */
+/* ================== PAUSE SCREEN ================== */
 #pauseScreen { position: fixed; top: 0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); color:#fff; display: none; flex-direction: column; justify-content: center; align-items: center; z-index:2000; text-align:center; opacity:0; backdrop-filter: blur(5px); animation-fill-mode: forwards; }
 #pauseScreen.fadeIn { animation: fadeIn 0.5s forwards; }
 #pauseScreen.fadeOut { animation: fadeOut 0.5s forwards; }
@@ -53,8 +56,9 @@ html, body { margin:0; padding:0; height:100vh; overflow:hidden; font-family: mo
 @keyframes fadeOut { 0% { opacity:1; transform:scale(1);} 100%{ opacity:0; transform:scale(0.9);} }
 #pauseText { font-size:60px; font-weight:bold; margin-bottom:30px; text-shadow:0 0 20px #fff; }
 #continueGameBtn, #endGameBtn { font-size:28px; padding:15px 40px; margin:10px; border:none; border-radius:10px; cursor:pointer; color:#fff; background:linear-gradient(45deg,#a044ff,#6a00f4,#d166ff); box-shadow:0 0 10px #d166ff,0 0 20px #a044ff; }
-/* --- PAUSE BUTTON --- */
+/* ================== PAUSE BUTTON ================== */
 #pauseBtn { position: fixed; top:10px; left:10px; font-size:28px; padding:10px 18px; border:none; border-radius:8px; background: linear-gradient(45deg,#a044ff,#6a00f4); color:#fff; cursor:pointer; z-index:1001; display:none; text-shadow:0 0 10px #fff; }
+
 </style>
 </head>
 <body>
@@ -101,7 +105,7 @@ html, body { margin:0; padding:0; height:100vh; overflow:hidden; font-family: mo
 <audio id="popSound" src="https://www.soundjay.com/button/sounds/button-16.mp3"></audio>
 
 <script>
-// --- ELEMENTS ---
+// ================== ELEMENTS ==================
 const startBtn=document.getElementById('startBtn');
 const indexBtn=document.getElementById('indexBtn');
 const indexPanel=document.getElementById('indexPanel');
@@ -113,20 +117,19 @@ const livesEl=document.getElementById('lives');
 const popSound=document.getElementById('popSound');
 const endScreen=document.getElementById('endScreen');
 const finalScoreText=document.getElementById('finalScoreText');
-const continueBtn=document.getElementById('continueBtn');
 const versionLabel=document.getElementById('versionLabel');
 const easterEl=document.getElementById('easterEgg');
 const closeBtn=document.querySelector('#indexPanel .closeBtn');
-const loadingScreen=document.getElementById('loadingScreen');
 
 const pauseBtn=document.getElementById('pauseBtn');
 const pauseScreen=document.getElementById('pauseScreen');
 const continueGameBtn=document.getElementById('continueGameBtn');
 const endGameBtn=document.getElementById('endGameBtn');
+const continueBtn=document.getElementById('continueBtn');
 
 let score=0, highscore=0, lives=3, bubbles=[], gameRunning=false, gamePaused=false, startTime;
 
-// --- LOADING SCREEN ---
+// ================== LOADING SCREEN ==================
 window.addEventListener('load',()=>{
   setTimeout(()=>{
     loadingScreen.style.display='none';
@@ -136,7 +139,7 @@ window.addEventListener('load',()=>{
   },2000);
 });
 
-// --- BUTTON LOGIC ---
+// ================== BUTTON LOGIC ==================
 function attachButtonEvents(){
   startBtn.addEventListener('click',startCountdown);
   indexBtn.addEventListener('click',(e)=>{
@@ -145,7 +148,6 @@ function attachButtonEvents(){
     else { indexPanel.style.top='30%'; startBtn.style.display='none'; indexBtn.style.display='none'; }
   });
   closeBtn.addEventListener('click',(e)=>{ e.stopPropagation(); indexPanel.style.top='100%'; startBtn.style.display='block'; indexBtn.style.display='block'; });
-  indexPanel.addEventListener('click',e=>e.stopPropagation());
   document.body.addEventListener('click',()=>{
     if(indexPanel.style.top==='30%'){ indexPanel.style.top='100%'; startBtn.style.display='block'; indexBtn.style.display='block'; }
   });
@@ -157,7 +159,7 @@ function attachButtonEvents(){
   endGameBtn.addEventListener('click', endGame);
 }
 
-// --- Countdown ---
+// ================== COUNTDOWN ==================
 function startCountdown(){
   versionLabel.style.display='none';
   startBtn.style.display='none';
@@ -178,7 +180,7 @@ function startCountdown(){
   },1000);
 }
 
-// --- GAME LOGIC ---
+// ================== GAME LOGIC ==================
 function startGame(){
   score=0; lives=3; bubbles=[]; gameRunning=true; gamePaused=false; startTime=Date.now();
   scoreEl.textContent="Skóre: "+score; livesEl.textContent="Životy: "+lives;
@@ -196,6 +198,7 @@ function togglePause(){
   }
 }
 
+// ================== UPDATE BUBBLES ==================
 function updateBubbles(){
   if(!gameRunning) return;
   if(!gamePaused){
@@ -212,8 +215,9 @@ function updateBubbles(){
   requestAnimationFrame(updateBubbles);
 }
 
-// --- Spawn Bubble Functions ---
-function spawnBubble(){ if(!gameRunning || gamePaused) { setTimeout(spawnBubble,500); return; }
+// ================== SPAWN BUBBLES ==================
+function spawnBubble(){ 
+  if(!gameRunning || gamePaused) { setTimeout(spawnBubble,500); return; }
   const elapsed=(Date.now()-startTime)/1000; const speedMultiplier=1+elapsed/120; const chance=Math.random();
   const bubble=document.createElement('div'); bubble.classList.add('bubble');
   if(chance<=0.001){ bubble.classList.add('instawin'); bubble.textContent="?12?"; bubble.dataset.type="instawin"; }
@@ -235,7 +239,6 @@ function spawnBubble(){ if(!gameRunning || gamePaused) { setTimeout(spawnBubble,
     if(!gameRunning) return;
     if(['2x','144','triple','gravity','invert','instawin'].includes(bubble.dataset.type)) popSound.currentTime=0, popSound.play();
     bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble);
-
     if(bubble.dataset.type==="2x") score*=2;
     else if(bubble.dataset.type==="144") score+=144;
     else if(bubble.dataset.type==="triple") for(let i=0;i<3;i++) spawnSingleBubble();
@@ -247,7 +250,6 @@ function spawnBubble(){ if(!gameRunning || gamePaused) { setTimeout(spawnBubble,
     else if(bubble.dataset.type==="invert"){ document.body.style.filter='invert(1)'; score+=10; setTimeout(()=>document.body.style.filter='',5000); }
     else if(bubble.dataset.type==="instawin"){ score+=999999999; }
     else score++;
-
     if(score>999999999) score=999999999;
     scoreEl.textContent="Skóre: "+score;
     if(score>highscore){ highscore=score; highscoreEl.textContent="Nejvyšší skóre: "+highscore; }
@@ -274,6 +276,7 @@ function spawnSingleBubble(){ if(!gameRunning || gamePaused) return;
   bubbles.push(bubble);
 }
 
+// ================== END GAME ==================
 function endGame(){
   gameRunning=false; bubbles.forEach(b=>b.remove()); bubbles=[];
   scoreContainer.style.display='none'; pauseBtn.style.display='none'; pauseScreen.style.display='none';
