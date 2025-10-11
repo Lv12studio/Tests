@@ -12,212 +12,122 @@ html, body {
   color:#ff6600;
 }
 
-/* --- LOADING SCREEN --- */
-#loadingScreen {
-  position: fixed; top:0; left:0; width:100%; height:100%;
-  background:#000; display:flex; justify-content:center; align-items:center;
-  color:#ff6600; font-size:12vw; font-weight:bold; z-index:3000;
-  text-align:center;
-  animation:glowPulse 3.5s forwards;
+/* --- HOME BUTTONS --- */
+button {
+  font-family: monospace;
+  font-weight: bold;
+  cursor: pointer;
 }
-@keyframes glowPulse {
-  0% { text-shadow:0 0 5px #ff3300,0 0 10px #ff6600; opacity:0.2; }
-  50% { text-shadow:0 0 20px #ff6600,0 0 40px #ff9900,0 0 60px #ffcc00; opacity:1; }
-  100% { text-shadow:0 0 5px #ff3300,0 0 10px #ff6600; opacity:0.2; }
-}
-
-/* --- HOME SCREEN BUTTONS --- */
-#startBtn, #indexBtn, #pauseBtn {
-  display:none; margin:0 auto;
-  font-size:28px; padding:15px 35px;
+#startBtn, #indexBtn, #badgesBtn {
+  display:none; margin:0 auto; font-size:28px; padding:15px 35px;
   background: linear-gradient(45deg,#ff6600,#ff9900,#ff3300);
   border:none; border-radius:12px; color:white;
-  font-weight:bold; text-transform:uppercase;
-  cursor:pointer; box-shadow:0 0 20px #ff6600,0 0 40px #ff6600,0 0 60px #ff3300;
-  z-index:1000;
+  text-transform:uppercase;
+  box-shadow:0 0 20px #ff6600,0 0 40px #ff6600;
 }
-#startBtn { margin-top:30vh; }
+#startBtn { margin-top:25vh; }
 #indexBtn { margin-top:20px; }
-#pauseBtn { position: fixed; top:60px; right:20px; font-size:20px; padding:10px 20px; display:none; }
+#badgesBtn { margin-top:20px; }
 
-/* --- Countdown & Score --- */
+/* --- Score / Lives / Pause --- */
+#scoreContainer { position:fixed; top:20px; left:50%; transform:translateX(-50%); text-align:center; display:none; z-index:1001; }
+#score, #highscore, #lives { margin:2px; font-weight:bold; }
+#pauseBtn { position:fixed; top:20px; right:20px; font-size:20px; padding:10px 20px; display:none; z-index:1000; }
+
+/* --- Countdown --- */
 #countdown {
-  position:fixed; top:50%; left:50%;
-  transform:translate(-50%,-50%);
-  font-size:80px; color:#ff6600;
-  text-shadow:0 0 20px #ff6600,0 0 40px #ff9900;
-  z-index:1001; display:none;
+  position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+  font-size:80px; color:#ff6600; text-shadow:0 0 20px #ff6600,0 0 40px #ff9900; display:none;
+  z-index:1001;
 }
-#scoreContainer {
-  position:fixed; top:20px; left:50%;
-  transform:translateX(-50%);
-  z-index:1001; text-align:center; display:none;
-}
-#highscore { font-size:20px; color:#ff0; margin-bottom:5px; }
-#score { font-size:28px; color:#ff6600; }
-#lives { font-size:20px; color:#f00; margin-top:5px; }
 
-/* --- Bubbles --- */
-.bubble {
-  width:80px; height:80px; border-radius:50%;
-  display:flex; justify-content:center; align-items:center;
-  font-size:24px; font-weight:bold; color:#fff;
-  background:linear-gradient(135deg,#ff6600,#ff9900);
-  border:2px solid #ff6600; box-shadow:0 0 15px #ff6600,0 0 30px #ff9900 inset;
-  position:absolute; cursor:pointer;
-}
-.bubble.rare2x { background: linear-gradient(135deg,#ffff00,#ff9900); color:#000; font-size:28px; box-shadow:0 0 20px #ff0,0 0 40px #ff0 inset;}
-.bubble.rare144 { background: linear-gradient(135deg,#00ff00,#00aa00); color:#000; font-size:28px; box-shadow:0 0 20px #0f0,0 0 40px #0f0 inset;}
-.bubble.triple { background: linear-gradient(135deg,#ff00ff,#9900ff); color:#fff; font-size:24px; box-shadow:0 0 20px #f0f,0 0 40px #f0f inset;}
-.bubble.gravity { background: linear-gradient(135deg,#ff6600,#ffff00); color:#000; font-size:28px; box-shadow:0 0 25px #ff6600,0 0 50px #ffff00 inset;}
-.bubble.invert { background: linear-gradient(135deg,#000,#fff); color:#000; font-size:24px; box-shadow:0 0 20px #fff inset;}
-.bubble.instawin { background: linear-gradient(135deg,#ff0000,#990000); color:#fff; font-size:24px; box-shadow:0 0 20px #f00 inset;}
-.bubble.freeze { background: linear-gradient(135deg,#00ffff,#0099ff); color:#000; font-size:24px; box-shadow:0 0 20px #0ff,0 0 40px #0ff inset;}
-.bubble.bomb { background: linear-gradient(135deg,#ff0000,#660000); color:#fff; font-size:24px; box-shadow:0 0 25px #f00,0 0 50px #900 inset;}
-.bubble.bonus { background: linear-gradient(135deg,#ffff00,#ffcc00); color:#000; font-size:24px; box-shadow:0 0 20px #ff0,0 0 40px #ff0 inset;}
-
-/* --- Index Panel --- */
+/* --- Panels --- */
 .panel {
-  position:fixed; top:100%; left:0; width:100%;
-  max-height:70%; background:rgba(10,10,10,0.95);
-  overflow-y:auto; transition:top 0.5s ease; padding:20px;
+  position:fixed; top:100%; left:0; width:100%; max-height:70%;
+  background:rgba(10,10,10,0.95); overflow-y:auto; transition:top 0.5s ease; padding:20px;
   z-index:999; box-shadow:0 -5px 30px #ff6600;
 }
 .panel h2 { text-transform:uppercase; }
-.panel .closeBtn {
-  position:absolute; top:15px; right:15px; font-size:28px; cursor:pointer;
-  color:#fff; font-weight:bold; z-index:1001;
-}
+.panel .closeBtn { position:absolute; top:15px; right:15px; font-size:28px; cursor:pointer; color:#fff; font-weight:bold; z-index:1001; }
 .indexItem { display:flex; align-items:center; margin:10px 0; }
-.indexItem .bubbleImg {
-  width:60px; height:60px; margin-right:15px; border-radius:50%;
-  display:flex; justify-content:center; align-items:center;
-  font-weight:bold; color:#fff; border:2px solid #ff6600;
-  box-shadow:0 0 15px #ff6600 inset; animation:float 1s infinite alternate;
-}
+.indexItem .bubbleImg { width:60px; height:60px; margin-right:15px; border-radius:50%; display:flex; justify-content:center; align-items:center; font-weight:bold; color:#fff; border:2px solid #ff6600; box-shadow:0 0 15px #ff6600 inset; animation:float 1s infinite alternate; }
 .indexItem .desc { flex:1; }
 .indexItem .rarity { font-weight:bold; }
-
 @keyframes float { 0%{transform:translateY(0);} 100%{transform:translateY(-10px);} }
 
 /* --- End Screen --- */
-#endScreen {
-  position:fixed; top:0; left:0; width:100%; height:100%;
-  background:rgba(0,0,0,0.9); display:none; flex-direction:column;
-  justify-content:center; align-items:center; color:#ff6600; font-size:40px;
-  z-index:1500; text-align:center;
-}
-#continueBtn {
-  margin-top:30px; font-size:26px; padding:15px 40px;
-  border:none; border-radius:10px; cursor:pointer; color:white;
-  background: linear-gradient(45deg,#ff6600,#ff9900,#ff3300);
-  box-shadow:0 0 20px #ff6600,0 0 40px #ff6600;
-}
+#endScreen { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:none; flex-direction:column; justify-content:center; align-items:center; color:#ff6600; font-size:40px; z-index:1500; text-align:center; }
+#endScreen button { margin-top:30px; font-size:26px; padding:15px 40px; border:none; border-radius:10px; cursor:pointer; color:white; background: linear-gradient(45deg,#ff6600,#ff9900,#ff3300); }
 
 /* --- Pause Screen --- */
-#pauseScreen{
-  position:fixed; top:0; left:0; width:100%; height:100%;
-  background: rgba(0,0,0,0.95); color:#ff6600;
-  display:none; flex-direction:column; justify-content:center; align-items:center;
-  font-size:40px; z-index:2000;
-}
-#pauseScreen button{
-  font-size:26px; padding:15px 40px; margin-top:20px;
-  border:none; border-radius:10px; cursor:pointer;
-  background: linear-gradient(45deg,#ff6600,#ff9900,#ff3300);
-  color:white;
-}
+#pauseScreen{ position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.95); color:#ff6600; display:none; flex-direction:column; justify-content:center; align-items:center; font-size:40px; z-index:2000; }
+#pauseScreen button{ font-size:26px; padding:15px 40px; margin-top:20px; border:none; border-radius:10px; cursor:pointer; background: linear-gradient(45deg,#ff6600,#ff9900,#ff3300); color:white; }
 
-/* --- Version --- */
-#versionLabel {
-  position:fixed; top:10px; right:10px; font-size:16px;
-  color:rgba(255,255,255,0.3); font-weight:bold; z-index:1002; pointer-events:none;
-}
-
-/* --- Easter Egg --- */
-#easterEgg {
-  position: fixed; top: 0; left:0; width:100%; height:100%;
-  background:rgba(0,0,0,0.9); color:red; font-size:150px;
-  font-weight:bold; display:flex; justify-content:center; align-items:center;
-  z-index:2000; display:none; text-transform:uppercase; opacity:0;
-  animation:fadeShake 5s forwards;
-}
-@keyframes fadeShake {
-  0%{opacity:0; transform:translateX(0);}
-  10%{opacity:1; transform:translateX(-5px);}
-  20%{transform:translateX(5px);}
-  30%{transform:translateX(-5px);}
-  40%{transform:translateX(5px);}
-  50%{transform:translateX(-5px);}
-  60%{transform:translateX(5px);}
-  70%{transform:translateX(-5px);}
-  80%{transform:translateX(5px);}
-  90%{transform:translateX(-5px);}
-  100%{opacity:0; transform:translateX(0);}
-}
+/* --- Bubbles --- */
+.bubble { position:absolute; border-radius:50%; display:flex; justify-content:center; align-items:center; font-weight:bold; color:#fff; cursor:pointer; text-align:center; }
+.bubble.normal{ background: linear-gradient(135deg,#ff6600,#ff9900); width:80px; height:80px; font-size:24px; box-shadow:0 0 15px #ff6600,0 0 30px #ff9900 inset; }
+.bubble.rare2x{ background: linear-gradient(135deg,#ffff00,#ff9900); color:#000; font-size:28px; width:80px; height:80px; box-shadow:0 0 20px #ff0,0 0 40px #ff0 inset;}
+.bubble.rare144{ background: linear-gradient(135deg,#00ff00,#00aa00); color:#000; font-size:28px; width:80px; height:80px; box-shadow:0 0 20px #0f0,0 0 40px #0f0 inset;}
+.bubble.triple{ background: linear-gradient(135deg,#ff00ff,#9900ff); color:#fff; font-size:24px; width:80px; height:80px; box-shadow:0 0 20px #f0f,0 0 40px #f0f inset;}
+.bubble.gravity{ background: linear-gradient(135deg,#ff6600,#ffff00); color:#000; font-size:28px; width:80px; height:80px; box-shadow:0 0 25px #ff6600,0 0 50px #ffff00 inset;}
+.bubble.invert{ background: linear-gradient(135deg,#000,#fff); color:#000; font-size:24px; width:80px; height:80px; box-shadow:0 0 20px #fff inset;}
+.bubble.instawin{ background: linear-gradient(135deg,#ff0000,#990000); color:#fff; font-size:24px; width:80px; height:80px; box-shadow:0 0 20px #f00 inset;}
+.bubble.freeze{ background: linear-gradient(135deg,#00ffff,#0099ff); color:#000; font-size:24px; width:80px; height:80px; box-shadow:0 0 20px #0ff,0 0 40px #0ff inset;}
+.bubble.bonus{ background: linear-gradient(135deg,#ffff00,#ffcc00); color:#000; font-size:24px; width:80px; height:80px; box-shadow:0 0 20px #ff0,0 0 40px #ff0 inset;}
+.bubble.bomb{ background: linear-gradient(135deg,#ff0000,#660000); color:#fff; font-size:24px; width:80px; height:80px; box-shadow:0 0 25px #f00,0 0 50px #900 inset;}
 </style>
 </head>
 <body>
 
-<div id="loadingScreen">Level 12 studio</div>
-<div id="versionLabel">Released 1.2.3</div>
+<!-- Home Screen -->
 <button id="startBtn">START</button>
 <button id="indexBtn">INDEX</button>
-<button id="pauseBtn">PAUSE</button>
+<button id="badgesBtn">BADGES</button>
 
-<!-- Index Panel -->
-<div id="indexPanel" class="panel">
-  <div class="closeBtn">✖</div>
-  <h2>BUBBLES INDEX</h2>
-  <div class="indexItem"><div class="bubbleImg">12</div><div class="desc"><span class="rarity">Běžná:</span> +1 skóre</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ffff00,#ff9900); color:#000;">12×2</div><div class="desc"><span class="rarity">Vzácná 0,25%:</span> Zdvojnásobí skóre</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#00ff00,#00aa00); color:#000;">12²</div><div class="desc"><span class="rarity">Vzácná 1%:</span> +144 skóre</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ff00ff,#9900ff);">3×12</div><div class="desc"><span class="rarity">Vzácná 2%:</span> Spawnuje 3 bubliny</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ff6600,#ffff00); color:#000;">&lt;12&gt;</div><div class="desc"><span class="rarity">Vzácná 3%:</span> Gravitační bublina teleportuje všechny bubliny k ní</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#000,#fff); color:#000;">!12!</div><div class="desc"><span class="rarity">Vzácná 1,5%:</span> Obrátí barvy na 5s +10 skóre</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ff0000,#990000); color:#fff;">?12?</div><div class="desc"><span class="rarity">Vzácná 0,1%:</span> Okamžitá výhra +999999999 skóre</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#00ffff,#0099ff); color:#000;">❄12</div><div class="desc"><span class="rarity">Zvláštní 4%:</span> Zamrzne ostatní bubliny na 3s</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ffff00,#ffcc00); color:#000;">⭐12</div><div class="desc"><span class="rarity">Zvláštní 1%:</span> +50 skóre</div></div>
-</div>
-
-<!-- Badges Panel -->
-<div id="badgePanel" class="panel">
-  <div class="closeBtn">✖</div>
-  <h2>BADGES</h2>
-  <div class="indexItem"><div class="bubbleImg">⭐</div><div class="desc">50 bodů</div></div>
-  <div class="indexItem"><div class="bubbleImg">🌟</div><div class="desc">100 bodů</div></div>
-  <div class="indexItem"><div class="bubbleImg">🏆</div><div class="desc">500 bodů</div></div>
-</div>
-
-<div id="countdown"></div>
+<!-- Score / Pause -->
 <div id="scoreContainer">
   <div id="highscore">Nejvyšší skóre: 0</div>
   <div id="score">Skóre: 0</div>
   <div id="lives">Životy: 3</div>
 </div>
+<button id="pauseBtn">PAUSE</button>
 
+<!-- Countdown -->
+<div id="countdown"></div>
+
+<!-- Panels -->
+<div id="indexPanel" class="panel">
+  <div class="closeBtn">✖</div>
+  <h2>BUBBLES INDEX</h2>
+  <div class="indexItem"><div class="bubbleImg">12</div><div class="desc"><span class="rarity">Běžná:</span> +1 skóre</div></div>
+  <div class="indexItem"><div class="bubbleImg">12×2</div><div class="desc"><span class="rarity">Vzácná:</span> x2 skóre</div></div>
+</div>
+<div id="badgePanel" class="panel">
+  <div class="closeBtn">✖</div>
+  <h2>BADGES</h2>
+  <div class="indexItem"><div class="bubbleImg">⭐</div><div class="desc">50 bodů</div></div>
+  <div class="indexItem"><div class="bubbleImg">🌟</div><div class="desc">100 bodů</div></div>
+</div>
+
+<!-- Pause & End -->
 <div id="pauseScreen">
   <h1>PAUSE</h1>
   <button id="resumeBtn">Continue</button>
   <button id="endBtn">End Game</button>
 </div>
-
 <div id="endScreen">
   <div id="finalScoreText"></div>
   <button id="continueBtn">POKRAČOVAT</button>
 </div>
 
-<div id="easterEgg"></div>
-
 <audio id="popSound" src="https://www.soundjay.com/button/sounds/button-16.mp3"></audio>
 
 <script>
-// --- Základní proměnné ---
 let score=0, highscore=0, lives=3, bubbles=[], gameRunning=false, startTime;
 
-// --- Elementy ---
 const startBtn=document.getElementById('startBtn');
 const indexBtn=document.getElementById('indexBtn');
+const badgesBtn=document.getElementById('badgesBtn');
 const pauseBtn=document.getElementById('pauseBtn');
 const countdownEl=document.getElementById('countdown');
 const scoreContainer=document.getElementById('scoreContainer');
@@ -231,21 +141,32 @@ const continueBtn=document.getElementById('continueBtn');
 const pauseScreen=document.getElementById('pauseScreen');
 const resumeBtn=document.getElementById('resumeBtn');
 const endBtn=document.getElementById('endBtn');
-const loadingScreen=document.getElementById('loadingScreen');
-const versionLabel=document.getElementById('versionLabel');
+const indexPanel=document.getElementById('indexPanel');
+const badgePanel=document.getElementById('badgePanel');
 
-// --- Load ---
-window.addEventListener('load',()=>{
-  setTimeout(()=>{
-    loadingScreen.style.display='none';
-    startBtn.style.display='block';
-    indexBtn.style.display='block';
-    pauseBtn.style.display='block';
-  },3550);
-});
+// --- Home Buttons ---
+startBtn.addEventListener('click',()=>{startCountdown(); showHome(false);});
+indexBtn.addEventListener('click',()=>{indexPanel.style.top="15%";});
+indexPanel.querySelector('.closeBtn').addEventListener('click',()=>{indexPanel.style.top="100%";});
+badgesBtn.addEventListener('click',()=>{badgePanel.style.top="15%";});
+badgePanel.querySelector('.closeBtn').addEventListener('click',()=>{badgePanel.style.top="100%";});
 
-// --- Start ---
-startBtn.addEventListener('click', startCountdown);
+// --- Countdown ---
+function startCountdown(){
+  countdownEl.style.display="block"; 
+  let count=3; countdownEl.textContent=count;
+  const interval=setInterval(()=>{
+    count--;
+    if(count>0) countdownEl.textContent=count;
+    else{
+      clearInterval(interval);
+      countdownEl.style.display="none";
+      scoreContainer.style.display="block";
+      pauseBtn.style.display="block";
+      startGame();
+    }
+  },1000);
+}
 
 // --- Pause ---
 pauseBtn.addEventListener('click',()=>{
@@ -262,80 +183,64 @@ endBtn.addEventListener('click',()=>{
   endGame();
 });
 
-// --- Countdown ---
-function startCountdown(){
-  versionLabel.style.display='none';
-  startBtn.style.display='none';
-  indexBtn.style.display='none';
-  countdownEl.style.display='block';
-  let count=3;
-  countdownEl.textContent=count;
-  const interval=setInterval(()=>{
-    count--;
-    if(count>0) countdownEl.textContent=count;
-    else{
-      clearInterval(interval);
-      countdownEl.style.display='none';
-      scoreContainer.style.display='block';
-      startGame();
-    }
-  },1000);
+// --- Continue from end ---
+continueBtn.addEventListener('click',()=>{
+  endScreen.style.display='none';
+  showHome(true);
+});
+
+// --- Show Home ---
+function showHome(show){
+  startBtn.style.display=show?"block":"none";
+  indexBtn.style.display=show?"block":"none";
+  badgesBtn.style.display=show?"block":"none";
+  scoreContainer.style.display="none";
+  pauseBtn.style.display="none";
 }
 
-// --- Game logic ---
+// --- Game ---
 function startGame(){
   score=0; lives=3; bubbles=[]; gameRunning=true; startTime=Date.now();
-  scoreEl.textContent="Skóre: "+score;
-  livesEl.textContent="Životy: "+lives;
+  scoreEl.textContent="Skóre: "+score; livesEl.textContent="Životy: "+lives;
   spawnBubble();
   requestAnimationFrame(updateBubbles);
 }
 
-// --- Bubble spawning ---
+// --- Bubble ---
 function spawnBubble(){
   if(!gameRunning) return;
-  const elapsed=(Date.now()-startTime)/1000;
-  const speedMultiplier=1+elapsed/120;
-  const chance=Math.random();
   const bubble=document.createElement('div');
-  bubble.classList.add('bubble');
+  const types=["normal","rare2x","rare144","triple","gravity","invert","instawin","freeze","bonus","bomb"];
+  const chance=Math.random();
+  let type="normal";
+  if(chance<0.05) type="rare2x"; else if(chance<0.10) type="rare144"; else if(chance<0.15) type="triple";
+  else if(chance<0.20) type="gravity"; else if(chance<0.23) type="invert"; else if(chance<0.24) type="instawin";
+  else if(chance<0.28) type="freeze"; else if(chance<0.30) type="bonus"; else if(chance<0.32) type="bomb";
 
-  if(chance<=0.0025){ bubble.classList.add('rare2x'); bubble.textContent="12×2"; bubble.dataset.type="2x"; }
-  else if(chance<=0.0125){ bubble.classList.add('rare144'); bubble.textContent="12²"; bubble.dataset.type="144"; }
-  else if(chance<=0.0325){ bubble.classList.add('triple'); bubble.textContent="3×12"; bubble.dataset.type="triple"; }
-  else if(chance<=0.0625){ bubble.classList.add('gravity'); bubble.textContent="<12>"; bubble.dataset.type="gravity"; }
-  else if(chance<=0.0775){ bubble.classList.add('invert'); bubble.textContent="!12!"; bubble.dataset.type="invert"; }
-  else if(chance<=0.0785){ bubble.classList.add('instawin'); bubble.textContent="?12?"; bubble.dataset.type="instawin"; }
-  else if(chance<=0.1185){ bubble.classList.add('freeze'); bubble.textContent="❄12"; bubble.dataset.type="freeze"; }
-  else if(chance<=0.1285){ bubble.classList.add('bonus'); bubble.textContent="⭐12"; bubble.dataset.type="bonus"; }
-  else if(chance<=0.1485){ bubble.classList.add('bomb'); bubble.textContent="💣"; bubble.dataset.type="bomb"; }
-  else { bubble.textContent="12"; bubble.dataset.type="normal"; }
-
+  bubble.classList.add('bubble',type);
   bubble.style.top=Math.random()*(window.innerHeight-100)+"px";
   bubble.style.left=Math.random()*(window.innerWidth-100)+"px";
+  bubble.dataset.type=type;
+
+  bubble.addEventListener('click',()=>{popBubble(bubble);});
   document.body.appendChild(bubble);
-
-  bubble.addEventListener('click',()=>{
-    popSound.currentTime=0;
-    popSound.play();
-    handleBubbleClick(bubble);
-  });
-
   bubbles.push(bubble);
+
   setTimeout(spawnBubble, Math.random()*1000+500);
 }
 
-// --- Handle click ---
-function handleBubbleClick(bubble){
+// --- Pop Bubble ---
+function popBubble(bubble){
   const type=bubble.dataset.type;
   bubble.remove();
   bubbles=bubbles.filter(b=>b!==bubble);
+  if(['rare2x','rare144','triple','gravity','invert','instawin','freeze','bonus','bomb'].includes(type)) {popSound.currentTime=0; popSound.play();}
   switch(type){
-    case "normal": score+=1; break;
-    case "2x": score*=2; break;
-    case "144": score+=144; break;
+    case "normal": score++; break;
+    case "rare2x": score*=2; break;
+    case "rare144": score+=144; break;
     case "triple": for(let i=0;i<2;i++) spawnBubble(); score+=1; break;
-    case "gravity": bubbles.forEach(b=>{b.style.top=bubble.style.top; b.style.left=bubble.style.left;}); score+=5; break;
+    case "gravity": bubbles.forEach(b=>{b.style.top=bubble.style.top;b.style.left=bubble.style.left;}); score+=5; break;
     case "invert": document.body.style.filter="invert(1)"; setTimeout(()=>{document.body.style.filter="invert(0)";},5000); score+=10; break;
     case "instawin": score+=999999999; endGame(); return;
     case "freeze": bubbles.forEach(b=>b.style.pointerEvents="none"); setTimeout(()=>{bubbles.forEach(b=>b.style.pointerEvents="auto");},3000); score+=5; break;
@@ -349,35 +254,27 @@ function handleBubbleClick(bubble){
 // --- Update Bubbles ---
 function updateBubbles(){
   if(!gameRunning) return;
+  bubbles.forEach(b=>{
+    let top=parseFloat(b.style.top);
+    top-=0.5; // pohyb nahoru
+    if(top<0){ b.remove(); bubbles=bubbles.filter(x=>x!==b); lives--; livesEl.textContent="Životy: "+lives; if(lives<=0) endGame();}
+    else b.style.top=top+"px";
+  });
   requestAnimationFrame(updateBubbles);
 }
 
 // --- End Game ---
 function endGame(){
   gameRunning=false;
-  finalScoreText.textContent="KONEC HRY\nSkóre: "+score;
+  bubbles.forEach(b=>b.remove()); bubbles=[];
+  scoreContainer.style.display="none"; pauseBtn.style.display="none";
+  finalScoreText.textContent="Tvé skóre: "+score;
   endScreen.style.display='flex';
 }
 
-// --- Index Panel ---
-const indexPanelEl=document.getElementById('indexPanel');
-indexBtn.addEventListener('click',()=>{ indexPanelEl.style.top='15%'; });
-indexPanelEl.querySelector('.closeBtn').addEventListener('click',()=>{ indexPanelEl.style.top='100%'; });
-
-// --- Badges Panel ---
-const badgePanelEl=document.getElementById('badgePanel');
-const badgesButton=document.createElement('button');
-badgesButton.textContent="BADGES";
-badgesButton.style.position="fixed";
-badgesButton.style.top="60px";
-badgesButton.style.left="20px";
-badgesButton.style.zIndex="1000";
-badgesButton.style.fontSize="18px";
-badgesButton.style.padding="10px";
-badgesButton.style.cursor="pointer";
-document.body.appendChild(badgesButton);
-badgesButton.addEventListener('click',()=>{ badgePanelEl.style.top='15%'; });
-badgePanelEl.querySelector('.closeBtn').addEventListener('click',()=>{ badgePanelEl.style.top='100%'; });
+// --- Show home initially ---
+showHome(true);
+badgesBtn.style.display="block";
 
 </script>
 </body>
