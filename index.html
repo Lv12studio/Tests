@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>12 Bubbles</title>
+<title>12 Bubbles Extended</title>
 <style>
 html, body { margin:0; padding:0; height:100vh; overflow:hidden; font-family: monospace; background-color:#0a0a0a; color:#fff; }
 /* --- LOADING SCREEN --- */
@@ -20,13 +20,14 @@ html, body { margin:0; padding:0; height:100vh; overflow:hidden; font-family: mo
 #score { font-size:28px; color:#d166ff; }
 #lives { font-size:20px; color:#f00; margin-top:5px; }
 /* --- Bubbles --- */
-.bubble { width:80px; height:80px; border-radius:50%; display:flex; justify-content:center; align-items:center; font-size:24px; font-weight:bold; color:#fff; background:linear-gradient(135deg,#a044ff,#6a00f4); border:2px solid #d166ff; box-shadow:0 0 10px #d166ff,0 0 20px #a044ff inset; position:absolute; cursor:pointer; }
-.bubble.rare2x { background: linear-gradient(135deg,#ffff00,#a044ff); color:#000; font-size:28px; }
-.bubble.rare144 { background: linear-gradient(135deg,#0f0,#0a0); color:#000; font-size:28px; }
-.bubble.triple { background: linear-gradient(135deg,#f0f,#a0a); color:#fff; font-size:24px; }
-.bubble.gravity { background: linear-gradient(135deg,#fff,#d166ff); color:#000; font-size:28px; }
-.bubble.invert { background: linear-gradient(135deg,#fff,#000); color:#0ff; font-size:26px; }
-.bubble.instawin { background: linear-gradient(135deg,#ff0000,#ffff00); color:#000; font-size:32px; box-shadow:0 0 30px #ff0, 0 0 60px #f00; }
+.bubble { width:80px; height:80px; border-radius:50%; display:flex; justify-content:center; align-items:center; font-size:24px; font-weight:bold; color:#fff; background:linear-gradient(135deg,#a044ff,#6a00f4); border:2px solid #d166ff; box-shadow:0 0 10px #d166ff,0 0 20px #a044ff inset; position:absolute; cursor:pointer; animation:floatY 3s infinite alternate ease-in-out; }
+.bubble.rare2x { background: linear-gradient(135deg,#ffff00,#a044ff); color:#000; font-size:28px; animation:floatY 2.5s infinite alternate ease-in-out; }
+.bubble.rare144 { background: linear-gradient(135deg,#0f0,#0a0); color:#000; font-size:28px; animation:floatY 2s infinite alternate ease-in-out; }
+.bubble.triple { background: linear-gradient(135deg,#f0f,#a0a); color:#fff; font-size:24px; animation:floatY 3s infinite alternate ease-in-out; }
+.bubble.gravity { background: linear-gradient(135deg,#fff,#d166ff); color:#000; font-size:28px; animation:floatY 3s infinite alternate ease-in-out; }
+.bubble.invert { background: linear-gradient(135deg,#fff,#000); color:#0ff; font-size:26px; animation:floatY 2.8s infinite alternate ease-in-out; }
+.bubble.instawin { background: linear-gradient(135deg,#ff0000,#ffff00); color:#000; font-size:32px; box-shadow:0 0 30px #ff0, 0 0 60px #f00; animation:floatY 1.8s infinite alternate ease-in-out; }
+@keyframes floatY { 0% { transform: translateY(0);} 100% { transform: translateY(-15px);} }
 /* --- Index Panel --- */
 #indexPanel { position:fixed; top:100%; left:0; width:100%; max-height:70%; background:rgba(10,10,10,0.95); overflow-y:auto; transition:top 0.5s ease; padding:20px; z-index:999; box-shadow:0 -5px 30px #d166ff; }
 #indexPanel h2 { text-transform:uppercase; }
@@ -37,7 +38,7 @@ html, body { margin:0; padding:0; height:100vh; overflow:hidden; font-family: mo
 .indexItem .rarity { font-weight:bold; }
 @keyframes float { 0%{transform:translateY(0);} 100%{transform:translateY(-10px);} }
 /* --- End Screen --- */
-#endScreen { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:none; flex-direction:column; justify-content:center; align-items:center; color:#fff; font-size:40px; z-index:1500; text-align:center; }
+#endScreen { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); display:none; flex-direction:column; justify-content:center; align-items:center; color:#fff; font-size:40px; z-index:1500; text-align:center; }
 #continueBtn { margin-top:30px; font-size:26px; padding:15px 40px; border:none; border-radius:10px; cursor:pointer; color:#fff; background: linear-gradient(45deg,#a044ff,#6a00f4,#d166ff); box-shadow:0 0 10px #d166ff,0 0 20px #a044ff; }
 /* --- Version --- */
 #versionLabel { position:fixed; top:10px; right:10px; font-size:16px; color:rgba(255,255,255,0.3); font-weight:bold; z-index:1002; pointer-events:none; }
@@ -45,15 +46,15 @@ html, body { margin:0; padding:0; height:100vh; overflow:hidden; font-family: mo
 #easterEgg { position: fixed; top: 0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); color:red; font-size:150px; font-weight:bold; display:flex; justify-content:center; align-items:center; z-index:2000; display:none; text-transform:uppercase; opacity:0; animation:fadeShake 5s forwards; }
 @keyframes fadeShake { 0%{opacity:0; transform:translateX(0);} 10%{opacity:1; transform:translateX(-5px);} 20%{transform:translateX(5px);} 30%{transform:translateX(-5px);} 40%{transform:translateX(5px);} 50%{transform:translateX(-5px);} 60%{transform:translateX(5px);} 70%{transform:translateX(-5px);} 80%{transform:translateX(5px);} 90%{transform:translateX(-5px);} 100%{opacity:0; transform:translateX(0);} }
 /* --- PAUSE SCREEN --- */
-#pauseScreen { position: fixed; top: 0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); color:#fff; display: none; flex-direction: column; justify-content: center; align-items: center; z-index:2000; text-align:center; opacity:0; animation-fill-mode: forwards; }
+#pauseScreen { position: fixed; top: 0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); color:#fff; display: none; flex-direction: column; justify-content: center; align-items: center; z-index:2000; text-align:center; opacity:0; backdrop-filter: blur(5px); animation-fill-mode: forwards; }
 #pauseScreen.fadeIn { animation: fadeIn 0.5s forwards; }
 #pauseScreen.fadeOut { animation: fadeOut 0.5s forwards; }
 @keyframes fadeIn { 0% { opacity:0; transform:scale(0.9);} 100%{ opacity:1; transform:scale(1);} }
 @keyframes fadeOut { 0% { opacity:1; transform:scale(1);} 100%{ opacity:0; transform:scale(0.9);} }
-#pauseText { font-size:60px; font-weight:bold; margin-bottom:30px; }
+#pauseText { font-size:60px; font-weight:bold; margin-bottom:30px; text-shadow:0 0 20px #fff; }
 #continueGameBtn, #endGameBtn { font-size:28px; padding:15px 40px; margin:10px; border:none; border-radius:10px; cursor:pointer; color:#fff; background:linear-gradient(45deg,#a044ff,#6a00f4,#d166ff); box-shadow:0 0 10px #d166ff,0 0 20px #a044ff; }
 /* --- PAUSE BUTTON --- */
-#pauseBtn { position: fixed; top:10px; left:10px; font-size:28px; padding:10px 18px; border:none; border-radius:8px; background: linear-gradient(45deg,#a044ff,#6a00f4); color:#fff; cursor:pointer; z-index:1001; display:none; }
+#pauseBtn { position: fixed; top:10px; left:10px; font-size:28px; padding:10px 18px; border:none; border-radius:8px; background: linear-gradient(45deg,#a044ff,#6a00f4); color:#fff; cursor:pointer; z-index:1001; display:none; text-shadow:0 0 10px #fff; }
 </style>
 </head>
 <body>
