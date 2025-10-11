@@ -1,286 +1,108 @@
-<!DOCTYPE html>
-<html lang="cs">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>12 Bubbles - HALLOWEEN</title>
-<style>
-html, body {
-  margin:0; padding:0; height:100vh; overflow:hidden;
-  font-family: monospace; background-color:#0a0a0a; color:#ff6600;
-}
-
-/* --- HOME BUTTONS --- */
-button { font-family: monospace; font-weight:bold; cursor:pointer; }
-#startBtn, #indexBtn, #badgesBtn {
-  display:none; margin:0 auto; font-size:28px; padding:15px 35px;
-  background: linear-gradient(45deg,#ff6600,#ff9900,#ff3300);
-  border:none; border-radius:12px; color:white;
-  text-transform:uppercase;
-  box-shadow:0 0 20px #ff6600,0 0 40px #ff6600;
-}
-#startBtn { margin-top:25vh; }
-#indexBtn, #badgesBtn { margin-top:20px; }
-
-/* --- Score / Lives / Pause --- */
-#scoreContainer { position:fixed; top:20px; left:50%; transform:translateX(-50%); text-align:center; display:none; z-index:1001; }
-#score, #highscore, #lives { margin:2px; font-weight:bold; }
-#pauseBtn { position:fixed; top:20px; right:20px; font-size:20px; padding:10px 20px; display:none; z-index:1000; }
-
-/* --- Countdown --- */
-#countdown {
-  position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
-  font-size:80px; color:#ff6600; text-shadow:0 0 20px #ff6600,0 0 40px #ff9900; display:none;
-  z-index:1001;
-}
-
-/* --- Panels --- */
-.panel {
-  position:fixed; top:100%; left:0; width:100%; max-height:70%;
-  background:rgba(10,10,10,0.95); overflow-y:auto; transition:top 0.5s ease; padding:20px;
-  z-index:999; box-shadow:0 -5px 30px #ff6600;
-}
-.panel h2 { text-transform:uppercase; }
-.panel .closeBtn { position:absolute; top:15px; right:15px; font-size:28px; cursor:pointer; color:#fff; font-weight:bold; z-index:1001; }
-.indexItem { display:flex; align-items:center; margin:10px 0; }
-.indexItem .bubbleImg { width:60px; height:60px; margin-right:15px; border-radius:50%; display:flex; justify-content:center; align-items:center; font-weight:bold; color:#fff; border:2px solid #ff6600; box-shadow:0 0 15px #ff6600 inset; animation:float 1s infinite alternate; }
-.indexItem .desc { flex:1; }
-.indexItem .rarity { font-weight:bold; }
-@keyframes float { 0%{transform:translateY(0);} 100%{transform:translateY(-10px);} }
-
-/* --- End Screen --- */
-#endScreen { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:none; flex-direction:column; justify-content:center; align-items:center; color:#ff6600; font-size:40px; z-index:1500; text-align:center; }
-#endScreen button { margin-top:30px; font-size:26px; padding:15px 40px; border:none; border-radius:10px; cursor:pointer; color:white; background: linear-gradient(45deg,#ff6600,#ff9900,#ff3300); }
-
-/* --- Pause Screen --- */
-#pauseScreen{ position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.95); color:#ff6600; display:none; flex-direction:column; justify-content:center; align-items:center; font-size:40px; z-index:2000; }
-#pauseScreen button{ font-size:26px; padding:15px 40px; margin-top:20px; border:none; border-radius:10px; cursor:pointer; background: linear-gradient(45deg,#ff6600,#ff9900,#ff3300); color:white; }
-
-/* --- Bubbles --- */
-.bubble { position:absolute; border-radius:50%; display:flex; justify-content:center; align-items:center; font-weight:bold; color:#fff; cursor:pointer; text-align:center; animation:wave 1.5s infinite alternate; }
-@keyframes wave { 0%{transform:translateY(0);} 100%{transform:translateY(-10px);} }
-
-.bubble.normal{ background: linear-gradient(135deg,#ff6600,#ff9900); width:80px; height:80px; font-size:24px; box-shadow:0 0 15px #ff6600,0 0 30px #ff9900 inset; }
-.bubble.rare2x{ background: linear-gradient(135deg,#ffff00,#ff9900); color:#000; font-size:28px; width:80px; height:80px; box-shadow:0 0 20px #ff0,0 0 40px #ff0 inset;}
-.bubble.rare144{ background: linear-gradient(135deg,#00ff00,#00aa00); color:#000; font-size:28px; width:80px; height:80px; box-shadow:0 0 20px #0f0,0 0 40px #0f0 inset;}
-.bubble.triple{ background: linear-gradient(135deg,#ff00ff,#9900ff); color:#fff; font-size:24px; width:80px; height:80px; box-shadow:0 0 20px #f0f,0 0 40px #f0f inset;}
-.bubble.gravity{ background: linear-gradient(135deg,#ff6600,#ffff00); color:#000; font-size:28px; width:80px; height:80px; box-shadow:0 0 25px #ff6600,0 0 50px #ffff00 inset;}
-.bubble.invert{ background: linear-gradient(135deg,#000,#fff); color:#000; font-size:24px; width:80px; height:80px; box-shadow:0 0 20px #fff inset;}
-.bubble.instawin{ background: linear-gradient(135deg,#ff0000,#990000); color:#fff; font-size:24px; width:80px; height:80px; box-shadow:0 0 20px #f00 inset;}
-.bubble.freeze{ background: linear-gradient(135deg,#00ffff,#0099ff); color:#000; font-size:24px; width:80px; height:80px; box-shadow:0 0 20px #0ff,0 0 40px #0ff inset;}
-.bubble.bonus{ background: linear-gradient(135deg,#ffff00,#ffcc00); color:#000; font-size:24px; width:80px; height:80px; box-shadow:0 0 20px #ff0,0 0 40px #ff0 inset;}
-.bubble.bomb{ background: linear-gradient(135deg,#ff0000,#660000); color:#fff; font-size:24px; width:80px; height:80px; box-shadow:0 0 25px #f00,0 0 50px #900 inset;}
-</style>
-</head>
-<body>
-
-<!-- Home Screen -->
-<button id="startBtn">START</button>
-<button id="indexBtn">INDEX</button>
-<button id="badgesBtn">BADGES</button>
-
-<!-- Score / Pause -->
-<div id="scoreContainer">
-  <div id="highscore">Nejvyšší skóre: 0</div>
-  <div id="score">Skóre: 0</div>
-  <div id="lives">Životy: 3</div>
-</div>
-<button id="pauseBtn">PAUSE</button>
-
-<!-- Countdown -->
-<div id="countdown"></div>
-
-<!-- Panels -->
-<div id="indexPanel" class="panel">
-  <div class="closeBtn">✖</div>
-  <h2>BUBBLES INDEX</h2>
-  <div class="indexItem"><div class="bubbleImg">12</div><div class="desc"><span class="rarity">Běžná:</span> +1 skóre</div></div>
-  <div class="indexItem"><div class="bubbleImg">12×2</div><div class="desc"><span class="rarity">Vzácná:</span> x2 skóre</div></div>
-  <div class="indexItem"><div class="bubbleImg">12²</div><div class="desc"><span class="rarity">Vzácná:</span> +144 skóre</div></div>
-  <div class="indexItem"><div class="bubbleImg">3×12</div><div class="desc"><span class="rarity">Vzácná:</span> Spawn 3 bubliny</div></div>
-  <div class="indexItem"><div class="bubbleImg">&lt;12&gt;</div><div class="desc"><span class="rarity">Vzácná:</span> Gravitační bublina</div></div>
-  <div class="indexItem"><div class="bubbleImg">!12!</div><div class="desc"><span class="rarity">Vzácná:</span> Obrátí barvy +10 skóre</div></div>
-  <div class="indexItem"><div class="bubbleImg">?12?</div><div class="desc"><span class="rarity">Vzácná:</span> Okamžitá výhra</div></div>
-  <div class="indexItem"><div class="bubbleImg">❄12</div><div class="desc"><span class="rarity">Bonus:</span> Freeze bubliny</div></div>
-  <div class="indexItem"><div class="bubbleImg">⭐12</div><div class="desc"><span class="rarity">Bonus:</span> +50 skóre</div></div>
-  <div class="indexItem"><div class="bubbleImg">💣</div><div class="desc"><span class="rarity">Nešťastná:</span> Odstraní všechny bubliny</div></div>
-</div>
-
-<div id="badgePanel" class="panel">
-  <div class="closeBtn">✖</div>
-  <h2>BADGES</h2>
-  <div class="indexItem"><div class="bubbleImg">⭐</div><div class="desc">Odemčeno při 50 bodech</div></div>
-  <div class="indexItem"><div class="bubbleImg">🌟</div><div class="desc">Odemčeno při 100 bodech</div></div>
-</div>
-
-<!-- Pause & End -->
+<!-- Přidejte do <body> mezi existující divy -->
 <div id="pauseScreen">
-  <h1>PAUSE</h1>
-  <button id="resumeBtn">Continue</button>
-  <button id="endBtn">End Game</button>
-</div>
-<div id="endScreen">
-  <div id="finalScoreText"></div>
-  <button id="continueBtn">POKRAČOVAT</button>
+  <div id="pauseText">PAUZA</div>
+  <button id="continueGameBtn">POKRAČOVAT</button>
+  <button id="endGameBtn">KONEC</button>
 </div>
 
-<audio id="popSound" src="https://www.soundjay.com/button/sounds/button-16.mp3"></audio>
+<style>
+  /* --- PAUSE SCREEN --- */
+  #pauseScreen {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85);
+    color: #fff;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    text-align: center;
+  }
+  #pauseText {
+    font-size: 60px;
+    font-weight: bold;
+    margin-bottom: 30px;
+  }
+  #continueGameBtn, #endGameBtn {
+    font-size: 28px;
+    padding: 15px 40px;
+    margin: 10px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    color: #fff;
+    background: linear-gradient(45deg,#a044ff,#6a00f4,#d166ff);
+    box-shadow: 0 0 10px #d166ff, 0 0 20px #a044ff;
+  }
+
+  /* --- PAUSE BUTTON --- */
+  #pauseBtn {
+    position: fixed;
+    top: 10px; left: 10px;
+    font-size: 20px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(45deg,#a044ff,#6a00f4);
+    color: #fff;
+    cursor: pointer;
+    z-index: 1001;
+    display: none;
+  }
+</style>
+
+<button id="pauseBtn">PAUZA</button>
 
 <script>
-let score=0, highscore=0, lives=3, bubbles=[], gameRunning=false, startTime;
+  const pauseScreen = document.getElementById('pauseScreen');
+  const continueGameBtn = document.getElementById('continueGameBtn');
+  const endGameBtn = document.getElementById('endGameBtn');
+  const pauseBtn = document.getElementById('pauseBtn');
 
-const startBtn=document.getElementById('startBtn');
-const indexBtn=document.getElementById('indexBtn');
-const badgesBtn=document.getElementById('badgesBtn');
-const pauseBtn=document.getElementById('pauseBtn');
-const countdownEl=document.getElementById('countdown');
-const scoreContainer=document.getElementById('scoreContainer');
-const scoreEl=document.getElementById('score');
-const highscoreEl=document.getElementById('highscore');
-const livesEl=document.getElementById('lives');
-const popSound=document.getElementById('popSound');
-const endScreen=document.getElementById('endScreen');
-const finalScoreText=document.getElementById('finalScoreText');
-const continueBtn=document.getElementById('continueBtn');
-const pauseScreen=document.getElementById('pauseScreen');
-const resumeBtn=document.getElementById('resumeBtn');
-const endBtn=document.getElementById('endBtn');
-const indexPanel=document.getElementById('indexPanel');
-const badgePanel=document.getElementById('badgePanel');
+  let gamePaused = false;
 
-// --- Home Buttons ---
-startBtn.addEventListener('click',()=>{startCountdown(); showHome(false);});
-indexBtn.addEventListener('click',()=>{indexPanel.style.top="15%";});
-indexPanel.querySelector('.closeBtn').addEventListener('click',()=>{indexPanel.style.top="100%";});
-badgesBtn.addEventListener('click',()=>{badgePanel.style.top="15%";});
-badgePanel.querySelector('.closeBtn').addEventListener('click',()=>{badgePanel.style.top="100%";});
-
-// --- Countdown ---
-function startCountdown(){
-  countdownEl.style.display="block"; 
-  let count=3; countdownEl.textContent=count;
-  const interval=setInterval(()=>{
-    count--;
-    if(count>0) countdownEl.textContent=count;
-    else{
-      clearInterval(interval);
-      countdownEl.style.display="none";
-      scoreContainer.style.display="block";
-      pauseBtn.style.display="block";
-      startGame();
+  function togglePause(){
+    if(!gameRunning) return;
+    gamePaused = !gamePaused;
+    if(gamePaused){
+      pauseScreen.style.display = 'flex';
+    } else {
+      pauseScreen.style.display = 'none';
+      requestAnimationFrame(updateBubbles);
     }
-  },1000);
-}
-
-// --- Pause ---
-pauseBtn.addEventListener('click',()=>{
-  gameRunning=false;
-  pauseScreen.style.display='flex';
-});
-resumeBtn.addEventListener('click',()=>{
-  pauseScreen.style.display='none';
-  gameRunning=true;
-  requestAnimationFrame(updateBubbles);
-});
-endBtn.addEventListener('click',()=>{
-  pauseScreen.style.display='none';
-  endGame();
-});
-
-// --- Continue from end ---
-continueBtn.addEventListener('click',()=>{
-  endScreen.style.display='none';
-  showHome(true);
-});
-
-// --- Show Home ---
-function showHome(show){
-  startBtn.style.display=show?"block":"none";
-  indexBtn.style.display=show?"block":"none";
-  badgesBtn.style.display=show?"block":"none";
-  scoreContainer.style.display="none";
-  pauseBtn.style.display="none";
-}
-
-// --- Game ---
-function startGame(){
-  score=0; lives=3; bubbles=[]; gameRunning=true; startTime=Date.now();
-  scoreEl.textContent="Skóre: "+score; livesEl.textContent="Životy: "+lives;
-  spawnBubble();
-  requestAnimationFrame(updateBubbles);
-}
-
-// --- Bubble ---
-function spawnBubble(){
-  if(!gameRunning) return;
-  const bubble=document.createElement('div');
-  const chance=Math.random();
-  let type="normal";
-  if(chance<0.05) type="rare2x"; else if(chance<0.10) type="rare144"; else if(chance<0.15) type="triple";
-  else if(chance<0.20) type="gravity"; else if(chance<0.23) type="invert"; else if(chance<0.24) type="instawin";
-  else if(chance<0.28) type="freeze"; else if(chance<0.30) type="bonus"; else if(chance<0.32) type="bomb";
-
-  bubble.classList.add('bubble',type);
-  const size=Math.random()*40+60;
-  bubble.style.width=bubble.style.height=size+"px";
-  bubble.style.fontSize=size/3+"px";
-  bubble.style.top=Math.random()*(window.innerHeight-100)+"px";
-  bubble.style.left=Math.random()*(window.innerWidth-100)+"px";
-  bubble.dataset.type=type;
-
-  bubble.addEventListener('click',()=>{popBubble(bubble);});
-  document.body.appendChild(bubble);
-  bubbles.push(bubble);
-
-  setTimeout(spawnBubble, Math.random()*1000+500);
-}
-
-// --- Pop Bubble ---
-function popBubble(bubble){
-  const type=bubble.dataset.type;
-  bubble.remove();
-  bubbles=bubbles.filter(b=>b!==bubble);
-  if(['rare2x','rare144','triple','gravity','invert','instawin','freeze','bonus','bomb'].includes(type)) {popSound.currentTime=0; popSound.play();}
-  switch(type){
-    case "normal": score++; break;
-    case "rare2x": score*=2; break;
-    case "rare144": score+=144; break;
-    case "triple": for(let i=0;i<3;i++) spawnBubble(); break;
-    case "gravity":
-      const bx=parseFloat(bubble.style.left)+parseFloat(bubble.style.width)/2;
-      const by=parseFloat(bubble.style.top)+parseFloat(bubble.style.height)/2;
-      bubbles.forEach(b=>{b.style.left=(bx-parseFloat(b.style.width)/2)+'px'; b.style.top=(by-parseFloat(b.style.height)/2)+'px';});
-      break;
-    case "invert": document.body.style.filter="invert(1)"; score+=10; setTimeout(()=>{document.body.style.filter="invert(0)";},5000); break;
-    case "instawin": score=999999999; break;
-    case "freeze": bubbles.forEach(b=>b.style.animation=''); setTimeout(()=>{bubbles.forEach(b=>b.style.animation='wave 1.5s infinite alternate');},3000); break;
-    case "bonus": score+=50; break;
-    case "bomb": bubbles.forEach(b=>b.remove()); bubbles=[]; break;
   }
-  if(score>999999999) score=999999999;
-  scoreEl.textContent="Skóre: "+score;
-  if(score>highscore){highscore=score; highscoreEl.textContent="Nejvyšší skóre: "+highscore;}
-}
 
-// --- Update bubbles ---
-function updateBubbles(){
-  if(!gameRunning) return;
-  bubbles.forEach(b=>{
-    let top=parseFloat(b.style.top);
-    top-=0.5+Math.random(); // pohyb nahoru
-    b.style.top=top+'px';
-    if(top<0){ lives--; livesEl.textContent="Životy: "+lives; b.remove(); bubbles=bubbles.filter(x=>x!==b); if(lives<=0) endGame();}
+  pauseBtn.addEventListener('click', togglePause);
+  continueGameBtn.addEventListener('click', () => { gamePaused = false; togglePause(); });
+  endGameBtn.addEventListener('click', () => {
+    gamePaused = false;
+    pauseScreen.style.display = 'none';
+    endGame();
   });
-  requestAnimationFrame(updateBubbles);
-}
 
-// --- End Game ---
-function endGame(){
-  gameRunning=false; bubbles.forEach(b=>b.remove()); bubbles=[];
-  scoreContainer.style.display="none"; pauseBtn.style.display="none";
-  finalScoreText.textContent="Tvé skóre: "+score;
-  endScreen.style.display='flex';
-}
+  // Zobrazit pause button při startu hry
+  function startGame(){
+    score=0; lives=3; bubbles=[]; gameRunning=true; startTime=Date.now();
+    scoreEl.textContent="Skóre: "+score; livesEl.textContent="Životy: "+lives;
+    pauseBtn.style.display = 'block'; // <-- Přidáno
+    spawnBubble();
+    requestAnimationFrame(updateBubbles);
+  }
+
+  // Upravit updateBubbles pro pauzu
+  function updateBubbles(){
+    if(!gameRunning || gamePaused) return;
+    bubbles.forEach(bubble=>{
+      const top=parseFloat(bubble.style.top);
+      bubble.style.top=top-parseFloat(bubble.dataset.speed)+'px';
+      if(top<=0){  
+        lives--; livesEl.textContent="Životy: "+lives;  
+        bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble);  
+        if(lives<=0) endGame();
+      }
+    });
+    requestAnimationFrame(updateBubbles);
+  }
 </script>
-</body>
-</html>
