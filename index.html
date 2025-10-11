@@ -281,10 +281,10 @@ function spawnBubble(){
 
   if(chance<=0.0025){ bubble.classList.add('rare2x'); bubble.textContent="12×2"; bubble.dataset.type="2x"; }
   else if(chance<=0.0125){ bubble.classList.add('rare144'); bubble.textContent="12²"; bubble.dataset.type="144"; }
-  else if(chance<=0.0325){ bubble.classList.add('triple'); bubble.textContent="3×12"; bubble.dataset.type="triple"; }
+  else if(chance<=1.0000){ bubble.classList.add('triple'); bubble.textContent="3×12"; bubble.dataset.type="triple"; }
   else if(chance<=0.0625){ bubble.classList.add('gravity'); bubble.textContent="<12>"; bubble.dataset.type="gravity"; }
   else if(chance<=0.0775){ bubble.classList.add('invert'); bubble.textContent="!12!"; bubble.dataset.type="invert"; }
-  else if(chance<=1.0000){ bubble.classList.add('instawin'); bubble.textContent="?12?"; bubble.dataset.type="instawin"; }
+  else if(chance<=0.0005){ bubble.classList.add('instawin'); bubble.textContent="?12?"; bubble.dataset.type="instawin"; }
   else{ bubble.textContent="12"; bubble.dataset.type="normal"; }
 
   const size=Math.random()*60+60;
