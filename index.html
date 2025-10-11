@@ -26,7 +26,7 @@ html, body {
   100% { text-shadow:0 0 5px #ff3300, 0 0 10px #ff6600; opacity:0.2; }
 }
 
-/* --- HOME SCREEN --- */
+/* --- HOME SCREEN BUTTONS --- */
 #startBtn, #indexBtn {
   display:none; margin:0 auto;
   font-size:28px; padding:15px 35px;
@@ -39,7 +39,7 @@ html, body {
 #startBtn { margin-top:30vh; }
 #indexBtn { margin-top:20px; }
 
-/* --- Countdown & Score --- */
+/* --- SCORE / COUNTDOWN --- */
 #countdown {
   position:fixed; top:50%; left:50%;
   transform:translate(-50%,-50%);
@@ -56,7 +56,7 @@ html, body {
 #score { font-size:28px; color:#ff6600; }
 #lives { font-size:20px; color:#f00; margin-top:5px; }
 
-/* --- Bubbles --- */
+/* --- BUBBLES --- */
 .bubble {
   width:80px; height:80px; border-radius:50%;
   display:flex; justify-content:center; align-items:center;
@@ -72,7 +72,7 @@ html, body {
 .bubble.invert { background: linear-gradient(135deg,#000,#fff); color:#000; font-size:24px; box-shadow:0 0 20px #fff inset;}
 .bubble.instawin { background: linear-gradient(135deg,#ff0000,#990000); color:#fff; font-size:24px; box-shadow:0 0 20px #f00 inset;}
 
-/* --- Index Panel --- */
+/* --- INDEX PANEL --- */
 #indexPanel {
   position:fixed; top:100%; left:0; width:100%;
   max-height:70%; background:rgba(10,10,10,0.95);
@@ -96,7 +96,7 @@ html, body {
 
 @keyframes float { 0%{transform:translateY(0);} 100%{transform:translateY(-10px);} }
 
-/* --- End Screen --- */
+/* --- END SCREEN --- */
 #endScreen {
   position:fixed; top:0; left:0; width:100%; height:100%;
   background:rgba(0,0,0,0.9); display:none; flex-direction:column;
@@ -110,43 +110,23 @@ html, body {
   box-shadow:0 0 20px #ff6600,0 0 40px #ff6600;
 }
 
-/* --- Version --- */
+/* --- Version Label --- */
 #versionLabel {
   position:fixed; top:10px; right:10px; font-size:16px;
   color:rgba(255,255,255,0.3); font-weight:bold; z-index:1002; pointer-events:none;
-}
-
-/* --- Easter Egg --- */
-#easterEgg {
-  position: fixed; top: 0; left:0; width:100%; height:100%;
-  background:rgba(0,0,0,0.9); color:red; font-size:150px;
-  font-weight:bold; display:flex; justify-content:center; align-items:center;
-  z-index:2000; display:none; text-transform:uppercase; opacity:0;
-  animation:fadeShake 5s forwards;
-}
-@keyframes fadeShake {
-  0%{opacity:0; transform:translateX(0);}
-  10%{opacity:1; transform:translateX(-5px);}
-  20%{transform:translateX(5px);}
-  30%{transform:translateX(-5px);}
-  40%{transform:translateX(5px);}
-  50%{transform:translateX(-5px);}
-  60%{transform:translateX(5px);}
-  70%{transform:translateX(-5px);}
-  80%{transform:translateX(5px);}
-  90%{transform:translateX(-5px);}
-  100%{opacity:0; transform:translateX(0);}
 }
 </style>
 </head>
 <body>
 
+<!-- LOADING SCREEN -->
 <div id="loadingScreen">Level 12 studio</div>
 
 <div id="versionLabel">Released 1.2.3</div>
 <button id="startBtn">START</button>
 <button id="indexBtn">INDEX</button>
 
+<!-- INDEX PANEL -->
 <div id="indexPanel">
   <div class="closeBtn">✖</div>
   <h2>BUBBLES INDEX</h2>
@@ -154,30 +134,27 @@ html, body {
   <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ffff00,#ff9900); color:#000;">12×2</div><div class="desc"><span class="rarity">Vzácná 0,25%:</span> Zdvojnásobí skóre</div></div>
   <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#00ff00,#00aa00); color:#000;">12²</div><div class="desc"><span class="rarity">Vzácná 1%:</span> +144 skóre</div></div>
   <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ff00ff,#9900ff);">3×12</div><div class="desc"><span class="rarity">Vzácná 2%:</span> Spawnuje 3 bubliny</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ff6600,#ffff00); color:#000;">&lt;12&gt;</div><div class="desc"><span class="rarity">Vzácná 3%:</span> Gravitační bublina teleportuje všechny bubliny k ní</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#000,#fff); color:#000;">!12!</div><div class="desc"><span class="rarity">Vzácná 1,5%:</span> Obrátí barvy na 5s +10 skóre</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ff0000,#990000); color:#fff;">?12?</div><div class="desc"><span class="rarity">Vzácná 0,1%:</span> Okamžitá výhra +999999999 skóre</div></div>
 </div>
 
+<!-- SCORE, COUNTDOWN, END SCREEN -->
 <div id="countdown"></div>
 <div id="scoreContainer">
   <div id="highscore">Nejvyšší skóre: 0</div>
   <div id="score">Skóre: 0</div>
   <div id="lives">Životy: 3</div>
 </div>
-
 <div id="endScreen">
   <div id="finalScoreText"></div>
   <button id="continueBtn">POKRAČOVAT</button>
 </div>
 
-<div id="easterEgg"></div>
-
-<!-- Zvukové efekty -->
+<!-- ZVUKY -->
 <audio id="popSound" src="https://www.soundjay.com/button/sounds/button-16.mp3"></audio>
 
-<!-- 🎃 Halloweenská hudba na pozadí -->
-<audio id="bgMusic" src="halloween_theme.mp3" loop autoplay></audio>
+<!-- 🎃 YouTube background music (HALLOWEEN LOOP) -->
+<iframe id="ytMusic" width="0" height="0"
+src="https://www.youtube.com/embed/CvhBXyRkB3Y?autoplay=1&loop=1&playlist=CvhBXyRkB3Y&controls=0&mute=0"
+frameborder="0" allow="autoplay"></iframe>
 
 <script>
 const startBtn=document.getElementById('startBtn');
@@ -193,26 +170,21 @@ const endScreen=document.getElementById('endScreen');
 const finalScoreText=document.getElementById('finalScoreText');
 const continueBtn=document.getElementById('continueBtn');
 const versionLabel=document.getElementById('versionLabel');
-const easterEl=document.getElementById('easterEgg');
 const closeBtn=document.querySelector('#indexPanel .closeBtn');
 const loadingScreen=document.getElementById('loadingScreen');
-const bgMusic=document.getElementById('bgMusic');
 
-let score=0, highscore=0, lives=3, bubbles=[], gameRunning=false, startTime;
+let score=0, highscore=0, lives=3, bubbles=[], gameRunning=false;
 
-// --- LOADING SCREEN ---
+// LOADING
 window.addEventListener('load',()=>{
   setTimeout(()=>{
     loadingScreen.style.display='none';
     startBtn.style.display='block';
     indexBtn.style.display='block';
     attachButtonEvents();
-    bgMusic.volume = 0.4; // hlasitost
-    bgMusic.play().catch(()=>{}); // spustí hudbu po interakci
-  },3550);
+  },3500);
 });
 
-// --- BUTTON LOGIC ---
 function attachButtonEvents(){
   startBtn.addEventListener('click',startCountdown);
   indexBtn.addEventListener('click',(e)=>{
@@ -227,19 +199,10 @@ function attachButtonEvents(){
       indexBtn.style.display='none';
     }
   });
-  closeBtn.addEventListener('click',(e)=>{
-    e.stopPropagation();
+  closeBtn.addEventListener('click',()=>{
     indexPanel.style.top='100%';
     startBtn.style.display='block';
     indexBtn.style.display='block';
-  });
-  indexPanel.addEventListener('click',e=>e.stopPropagation());
-  document.body.addEventListener('click',()=>{
-    if(indexPanel.style.top==='30%'){
-      indexPanel.style.top='100%';
-      startBtn.style.display='block';
-      indexBtn.style.display='block';
-    }
   });
   continueBtn.addEventListener('click',()=>{
     endScreen.style.display='none';
@@ -249,7 +212,6 @@ function attachButtonEvents(){
   });
 }
 
-// --- Countdown ---
 function startCountdown(){
   versionLabel.style.display='none';
   startBtn.style.display='none';
@@ -269,15 +231,29 @@ function startCountdown(){
   },1000);
 }
 
-// --- GAME LOGIC ---
 function startGame(){
-  score=0; lives=3; bubbles=[]; gameRunning=true; startTime=Date.now();
-  scoreEl.textContent="Skóre: "+score; livesEl.textContent="Životy: "+lives;
+  score=0; lives=3; bubbles=[]; gameRunning=true;
+  scoreEl.textContent="Skóre: "+score;
+  livesEl.textContent="Životy: "+lives;
   spawnBubble();
-  requestAnimationFrame(updateBubbles);
 }
 
-// ... (zbytek herní logiky zůstává stejný)
+function spawnBubble(){
+  if(!gameRunning) return;
+  const b=document.createElement('div');
+  b.classList.add('bubble');
+  b.style.top=Math.random()*80+'vh';
+  b.style.left=Math.random()*80+'vw';
+  b.textContent="12";
+  b.addEventListener('click',()=>{
+    score++;
+    scoreEl.textContent="Skóre: "+score;
+    popSound.play();
+    b.remove();
+    spawnBubble();
+  });
+  document.body.appendChild(b);
+}
 </script>
 </body>
 </html>
