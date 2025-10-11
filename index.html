@@ -1,483 +1,396 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>12Bubbles — funkční verze</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>12 Bubbles</title>
 <style>
-/* --- Reset & base --- */
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;width:100%;font-family:Inter,Segoe UI,system-ui,Arial,sans-serif;background:#07060a;color:#fff;overflow:hidden}
-button{font-family:inherit}
+html, body {
+  margin:0; padding:0; height:100vh; overflow:hidden;
+  font-family: monospace;
+  background-color:#0a0a0a;
+  color:#fff;
+}
 
-/* --- Main layouts (menus/screens) --- */
-.screen{position:fixed;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;gap:18px}
-.screen.active{display:flex}
-.menu-btn{background:linear-gradient(45deg,#6a00f4,#a044ff);border:none;color:#fff;padding:12px 30px;border-radius:12px;font-size:18px;cursor:pointer;box-shadow:0 6px 20px rgba(106,0,244,0.25)}
-.menu-btn:hover{transform:translateY(-3px)}
+/* --- LOADING SCREEN --- */
+#loadingScreen {
+  position: fixed; top:0; left:0; width:100%; height:100%;
+  background:#000; display:flex; justify-content:center; align-items:center;
+  color:#fff; font-size:50px; font-weight:bold; z-index:3000;
+  text-align:center;
+  animation:eyeGlow 2s ease-in-out forwards;
+}
+@keyframes eyeGlow {
+  0% { opacity:0.2; text-shadow:none; }
+  50% { opacity:1; text-shadow:0 0 25px #fff,0 0 50px #fff,0 0 75px #fff; }
+  100% { opacity:0.2; text-shadow:none; }
+}
 
-/* --- Title --- */
-h1.title{font-size:48px;letter-spacing:1px}
+/* --- HOME BUTTONS --- */
+#startBtn, #indexBtn {
+  display:none; margin:0 auto;
+  font-size:28px; padding:15px 35px;
+  background: linear-gradient(45deg,#a044ff,#6a00f4,#d166ff);
+  border:none; border-radius:12px; color:#fff;
+  font-weight:bold; text-transform:uppercase;
+  cursor:pointer; box-shadow:0 0 10px #d166ff,0 0 20px #a044ff;
+  z-index:1000;
+}
+#startBtn { margin-top:30vh; }
+#indexBtn { margin-top:20px; }
 
-/* --- Game UI (overlay) --- */
-#gameUI{display:none}
-#hud{position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:1200;text-align:center}
-#hud .row{display:flex;gap:14px;align-items:center;justify-content:center}
-.stat{background:rgba(255,255,255,0.04);padding:8px 12px;border-radius:10px;font-weight:600;color:#f0eefd}
-#pauseBtn{position:fixed;top:16px;right:18px;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.06);border:2px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:1200}
-#pauseBtn:hover{transform:scale(1.06)}
-.pause-icon{display:flex;justify-content:space-between;width:14px;height:18px}
-.pause-icon div{width:4px;height:100%;background:#fff;border-radius:1px}
+/* --- Countdown & Score --- */
+#countdown {
+  position:fixed; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  font-size:80px; color:#d166ff;
+  text-shadow:0 0 20px #d166ff,0 0 40px #a044ff;
+  z-index:1001; display:none;
+}
+#scoreContainer {
+  position:fixed; top:20px; left:50%;
+  transform:translateX(-50%);
+  z-index:1001; text-align:center; display:none;
+}
+#highscore { font-size:20px; color:#ff0; margin-bottom:5px; }
+#score { font-size:28px; color:#d166ff; }
+#lives { font-size:20px; color:#f00; margin-top:5px; }
 
-/* --- Pause screen --- */
-#pauseScreen{backdrop-filter:blur(6px);background:rgba(0,0,0,0.45);z-index:1300;padding:30px;border-radius:14px;text-align:center;min-width:320px}
-#pauseScreen h2{font-size:34px;margin-bottom:10px}
-.pause-controls{display:flex;gap:12px;justify-content:center;margin-top:12px}
+/* --- Bubbles --- */
+.bubble {
+  width:80px; height:80px; border-radius:50%;
+  display:flex; justify-content:center; align-items:center;
+  font-size:24px; font-weight:bold; color:#fff;
+  background:linear-gradient(135deg,#a044ff,#6a00f4);
+  border:2px solid #d166ff; box-shadow:0 0 10px #d166ff,0 0 20px #a044ff inset;
+  position:absolute; cursor:pointer;
+}
+.bubble.rare2x { background: linear-gradient(135deg,#ffff00,#a044ff); color:#000; font-size:28px; }
+.bubble.rare144 { background: linear-gradient(135deg,#0f0,#0a0); color:#000; font-size:28px; }
+.bubble.triple { background: linear-gradient(135deg,#f0f,#a0a); color:#fff; font-size:24px; }
+.bubble.gravity { background: linear-gradient(135deg,#fff,#d166ff); color:#000; font-size:28px; }
+.bubble.invert { background: linear-gradient(135deg,#fff,#000); color:#0ff; font-size:26px; }
+.bubble.instawin { background: linear-gradient(135deg,#ff0000,#ffff00); color:#000; font-size:32px; box-shadow:0 0 30px #ff0, 0 0 60px #f00; }
 
-/* --- End screen --- */
-#endScreen{backdrop-filter:blur(6px);background:rgba(0,0,0,0.6);z-index:1300;padding:28px;border-radius:14px;text-align:center;min-width:320px}
+/* --- Index Panel --- */
+#indexPanel {
+  position:fixed; top:100%; left:0; width:100%;
+  max-height:70%; background:rgba(10,10,10,0.95);
+  overflow-y:auto; transition:top 0.5s ease; padding:20px;
+  z-index:999; box-shadow:0 -5px 30px #d166ff;
+}
+#indexPanel h2 { text-transform:uppercase; }
+#indexPanel .closeBtn {
+  position:absolute; top:15px; right:15px; font-size:28px; cursor:pointer;
+  color:#fff; font-weight:bold; z-index:1001;
+}
+.indexItem { display:flex; align-items:center; margin:10px 0; }
+.indexItem .bubbleImg {
+  width:60px; height:60px; margin-right:15px; border-radius:50%;
+  display:flex; justify-content:center; align-items:center;
+  font-weight:bold; color:#fff; border:2px solid #d166ff;
+  box-shadow:0 0 15px #d166ff inset; animation:float 1s infinite alternate;
+}
+.indexItem .desc { flex:1; }
+.indexItem .rarity { font-weight:bold; }
 
-/* --- Index menu --- */
-#indexMenu .panel{max-width:1000px;padding:18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
-.bubbleCard{background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01));padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);text-align:center}
-.bubbleExample{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-weight:700;box-shadow:inset 0 -10px rgba(0,0,0,0.25)}
-.rarity{font-weight:700;margin-top:8px}
+@keyframes float { 0%{transform:translateY(0);} 100%{transform:translateY(-10px);} }
 
-/* --- Bubbles (in-game) --- */
-.bubble{position:absolute;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#000;font-weight:700;cursor:pointer;box-shadow:0 6px 22px rgba(0,0,0,0.6);user-select:none}
-.bubble.normal{background:linear-gradient(135deg,#a044ff,#6a00f4);color:#fff}
-.bubble.rare2x{background:linear-gradient(135deg,#ffff00,#d1c100);color:#000}
-.bubble.rare144{background:linear-gradient(135deg,#6af06a,#049004);color:#000}
-.bubble.triple{background:linear-gradient(135deg,#ffa62b,#9b4200);color:#fff}
-.bubble.gravity{background:linear-gradient(135deg,#dff7ff,#60c0ff);color:#000}
-.bubble.invert{background:linear-gradient(135deg,#ffffff,#000000);color:#00f8ff;border:2px solid rgba(0,0,0,0.6)}
-.bubble.instawin{background:linear-gradient(135deg,#ffef7a,#ff6b6b);color:#000;box-shadow:0 10px 40px rgba(255,107,107,0.25)}
+/* --- Pause Button --- */
+#pauseBtn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  font-size: 36px;
+  font-weight: bold;
+  color: #fff;
+  background: rgba(161, 66, 255, 0.3);
+  border: 2px solid #d166ff;
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 0 15px #d166ff, 0 0 25px #a044ff inset;
+  transition: all 0.2s ease;
+}
+#pauseBtn:hover {
+  transform: scale(1.1);
+  background: rgba(209, 102, 255, 0.5);
+}
 
-/* --- small helpers --- */
-.row{display:flex;gap:10px;align-items:center}
-.center{display:flex;align-items:center;justify-content:center}
+/* --- Pause Menu --- */
+#pauseScreen {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.9);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+.pauseBox {
+  text-align: center;
+  background: rgba(20,20,20,0.9);
+  border: 2px solid #d166ff;
+  box-shadow: 0 0 20px #a044ff;
+  padding: 30px 50px;
+  border-radius: 20px;
+}
+.pauseBox h2 {
+  font-size: 48px;
+  color: #d166ff;
+  margin-bottom: 30px;
+}
+.pauseBox button {
+  font-size: 22px;
+  margin: 10px;
+  padding: 12px 35px;
+  background: linear-gradient(45deg,#a044ff,#6a00f4,#d166ff);
+  border: none;
+  color: white;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 0 10px #d166ff, 0 0 20px #a044ff;
+}
+.pauseBox button:hover {
+  transform: scale(1.05);
+}
 
-/* --- responsive tweaks --- */
-@media (max-width:520px){
-  h1.title{font-size:28px}
-  .menu-btn{padding:10px 18px}
-  #hud{top:10px}
+/* --- End Screen --- */
+#endScreen {
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.9); display:none; flex-direction:column;
+  justify-content:center; align-items:center; color:#fff; font-size:40px;
+  z-index:1500; text-align:center;
+}
+#continueBtn {
+  margin-top:30px; font-size:26px; padding:15px 40px;
+  border:none; border-radius:10px; cursor:pointer; color:#fff;
+  background: linear-gradient(45deg,#a044ff,#6a00f4,#d166ff);
+  box-shadow:0 0 10px #d166ff,0 0 20px #a044ff;
+}
+
+/* --- Version --- */
+#versionLabel {
+  position:fixed; top:10px; right:10px; font-size:16px;
+  color:rgba(255,255,255,0.3); font-weight:bold; z-index:1002; pointer-events:none;
+}
+
+/* --- Easter Egg --- */
+#easterEgg {
+  position: fixed; top: 0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.9); color:red; font-size:150px;
+  font-weight:bold; display:flex; justify-content:center; align-items:center;
+  z-index:2000; display:none; text-transform:uppercase; opacity:0;
+  animation:fadeShake 5s forwards;
+}
+@keyframes fadeShake {
+  0%{opacity:0; transform:translateX(0);}
+  10%{opacity:1; transform:translateX(-5px);}
+  20%{transform:translateX(5px);}
+  30%{transform:translateX(-5px);}
+  40%{transform:translateX(5px);}
+  50%{transform:translateX(-5px);}
+  60%{transform:translateX(5px);}
+  70%{transform:translateX(-5px);}
+  80%{transform:translateX(5px);}
+  90%{transform:translateX(-5px);}
+  100%{opacity:0; transform:translateX(0);}
 }
 </style>
 </head>
 <body>
 
-<!-- MAIN MENU -->
-<div id="mainMenu" class="screen active">
-  <h1 class="title">12Bubbles</h1>
-  <button id="btnPlay" class="menu-btn">Hrát</button>
-  <button id="btnIndex" class="menu-btn">Index bublin</button>
-  <div style="opacity:.6;margin-top:6px">Verze 1.0</div>
+<div id="loadingScreen">Level 12 studio</div>
+<div id="versionLabel">Released 1.2.3</div>
+
+<button id="startBtn">START</button>
+<button id="indexBtn">INDEX</button>
+
+<div id="indexPanel">
+  <div class="closeBtn">✖</div>
+  <h2>BUBBLES INDEX</h2>
+  <div class="indexItem"><div class="bubbleImg">12</div><div class="desc"><span class="rarity">Běžná:</span> +1 skóre</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ffff00,#a044ff); color:#000;">12×2</div><div class="desc"><span class="rarity">Vzácná 0,25 %:</span> Zdvojnásobí skóre</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#0f0,#0a0); color:#000;">12²</div><div class="desc"><span class="rarity">Vzácná 1 %:</span> +144 skóre</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#f0f,#a0a);">3×12</div><div class="desc"><span class="rarity">Vzácná 2 %:</span> Spawnuje 3 bubliny</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#fff,#d166ff); color:#000;">&lt;12&gt;</div><div class="desc"><span class="rarity">Vzácná 3 %:</span> Přitáhne všechny bubliny k sobě</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#fff,#000); color:#0ff;">!12!</div><div class="desc"><span class="rarity">Vzácná 1,5 %:</span> Invertuje barvy +10 skóre</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ff0000,#ffff00); color:#000;">?12?</div><div class="desc"><span class="rarity">Vzácná 0,1 %:</span> Okamžité vítězství</div></div>
 </div>
 
-<!-- INDEX MENU -->
-<div id="indexMenu" class="screen">
-  <h2>Index bublin</h2>
-  <div class="panel" style="width:94%;max-width:1100px;">
-    <div class="bubbleCard">
-      <div class="bubbleExample" style="background:linear-gradient(135deg,#a044ff,#6a00f4);color:#fff">12</div>
-      <div><b>Normální</b></div>
-      <div>+1 skóre</div>
-      <div class="rarity">Rarita: Běžná</div>
-    </div>
+<div id="countdown"></div>
+<div id="scoreContainer">
+  <div id="highscore">Nejvyšší skóre: 0</div>
+  <div id="score">Skóre: 0</div>
+  <div id="lives">Životy: 3</div>
+</div>
 
-    <div class="bubbleCard">
-      <div class="bubbleExample" style="background:linear-gradient(135deg,#ffff00,#d1c100);color:#000">12×2</div>
-      <div><b>Double</b></div>
-      <div>Zdvojnásobí skóre</div>
-      <div class="rarity">Rarita: Velmi vzácná (≈0.25%)</div>
-    </div>
-
-    <div class="bubbleCard">
-      <div class="bubbleExample" style="background:linear-gradient(135deg,#6af06a,#049004);color:#000">12²</div>
-      <div><b>Power</b></div>
-      <div>+144 skóre</div>
-      <div class="rarity">Rarita: Vzácná (≈1%)</div>
-    </div>
-
-    <div class="bubbleCard">
-      <div class="bubbleExample" style="background:linear-gradient(135deg,#ffa62b,#9b4200);color:#fff">3×12</div>
-      <div><b>Triple</b></div>
-      <div>Přidá bonus (nyní +12 místo spawn více)</div>
-      <div class="rarity">Rarita: Neobvyklá (≈2%)</div>
-    </div>
-
-    <div class="bubbleCard">
-      <div class="bubbleExample" style="background:linear-gradient(135deg,#dff7ff,#60c0ff);color:#000">&lt;12&gt;</div>
-      <div><b>Gravity</b></div>
-      <div>Přitáhne ostatní bubliny k sobě</div>
-      <div class="rarity">Rarita: Vzácná (≈3%)</div>
-    </div>
-
-    <div class="bubbleCard">
-      <div class="bubbleExample" style="background:linear-gradient(135deg,#ffffff,#000000);color:#00f8ff">!12!</div>
-      <div><b>Invert</b></div>
-      <div>Invertuje barvy na 5s a dává +10</div>
-      <div class="rarity">Rarita: Ultra vzácná (≈1.5%)</div>
-    </div>
-
-    <div class="bubbleCard">
-      <div class="bubbleExample" style="background:linear-gradient(135deg,#ffef7a,#ff6b6b);color:#000">?12?</div>
-      <div><b>Instawin</b></div>
-      <div>Okamžité vítězství (obrovský bonus skóre)</div>
-      <div class="rarity">Rarita: Legenda (≈0.1%)</div>
-    </div>
-  </div>
-
-  <div style="margin-top:20px">
-    <button id="btnIndexBack" class="menu-btn">Zpět do menu</button>
+<!-- PAUSE BUTTON + MENU -->
+<button id="pauseBtn">|  |</button>
+<div id="pauseScreen">
+  <div class="pauseBox">
+    <h2>PAUZA</h2>
+    <button id="continueGameBtn">Pokračovat</button>
+    <button id="endGameBtn">Ukončit hru</button>
   </div>
 </div>
 
-<!-- GAME UI (HUD + Pause button only; in-game bubbles appended to body) -->
-<div id="gameUI" class="screen">
-  <div id="hud" style="pointer-events:none">
-    <div class="row">
-      <div id="displayScore" class="stat">Skóre: 0</div>
-      <div id="displayLives" class="stat">Životy: 3</div>
-      <div id="displayHigh" class="stat">Nejvyšší: 0</div>
-    </div>
-  </div>
-
-  <div id="pauseBtn" title="Pauza" style="pointer-events:auto">
-    <div class="pause-icon"><div></div><div></div></div>
-  </div>
+<div id="endScreen">
+  <div id="finalScoreText"></div>
+  <button id="continueBtn">ZPĚT</button>
 </div>
 
-<!-- Pause dialog (center) -->
-<div id="pauseOverlay" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:1400">
-  <div id="pauseScreen">
-    <h2>Pauza</h2>
-    <div class="pause-controls">
-      <button id="btnContinue" class="menu-btn">Pokračovat</button>
-      <button id="btnEnd" class="menu-btn">Ukončit</button>
-    </div>
-  </div>
-</div>
-
-<!-- End screen -->
-<div id="endOverlay" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:1500">
-  <div id="endScreen">
-    <h2 id="finalText">Tvé skóre: 0</h2>
-    <div style="display:flex;gap:12px;justify-content:center">
-      <button id="btnEndToMenu" class="menu-btn">Zpět do menu</button>
-      <button id="btnPlayAgain" class="menu-btn">Hrát znovu</button>
-    </div>
-  </div>
-</div>
-
-<!-- Easter (short) -->
-<div id="easter" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:1600">
-  <div style="font-size:96px;font-weight:800">12</div>
-</div>
+<div id="easterEgg"></div>
 
 <script>
-/* =========================
-   Proměnné / Stav
-   ========================= */
-let score = 0;
-let lives = 3;
-let highscore = Number(localStorage.getItem('12bubbles_high') || 0);
-let bubbles = []; // DOM nodes
-let gameRunning = false;
-let gamePaused = false;
-let startTime = 0; // pro scaling speed
+const startBtn=document.getElementById('startBtn');
+const indexBtn=document.getElementById('indexBtn');
+const indexPanel=document.getElementById('indexPanel');
+const countdownEl=document.getElementById('countdown');
+const scoreContainer=document.getElementById('scoreContainer');
+const scoreEl=document.getElementById('score');
+const highscoreEl=document.getElementById('highscore');
+const livesEl=document.getElementById('lives');
+const endScreen=document.getElementById('endScreen');
+const finalScoreText=document.getElementById('finalScoreText');
+const continueBtn=document.getElementById('continueBtn');
+const versionLabel=document.getElementById('versionLabel');
+const easterEl=document.getElementById('easterEgg');
+const closeBtn=document.querySelector('#indexPanel .closeBtn');
+const loadingScreen=document.getElementById('loadingScreen');
+const pauseBtn=document.getElementById('pauseBtn');
+const pauseScreen=document.getElementById('pauseScreen');
+const continueGameBtn=document.getElementById('continueGameBtn');
+const endGameBtn=document.getElementById('endGameBtn');
 
-// elementy
-const mainMenu = document.getElementById('mainMenu');
-const indexMenu = document.getElementById('indexMenu');
-const gameUI = document.getElementById('gameUI');
-const pauseOverlay = document.getElementById('pauseOverlay');
-const endOverlay = document.getElementById('endOverlay');
-const easter = document.getElementById('easter');
+let score=0,highscore=0,lives=3,bubbles=[],gameRunning=false,gamePaused=false,startTime;
 
-const displayScore = document.getElementById('displayScore');
-const displayLives = document.getElementById('displayLives');
-const displayHigh = document.getElementById('displayHigh');
+// --- LOADING ---
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    loadingScreen.style.display='none';
+    startBtn.style.display='block';
+    indexBtn.style.display='block';
+    attachButtonEvents();
+  },2000);
+});
 
-const btnPlay = document.getElementById('btnPlay');
-const btnIndex = document.getElementById('btnIndex');
-const btnIndexBack = document.getElementById('btnIndexBack');
-const btnPause = document.getElementById('pauseBtn');
-const btnContinue = document.getElementById('btnContinue');
-const btnEnd = document.getElementById('btnEnd');
-const btnEndToMenu = document.getElementById('btnEndToMenu');
-const btnPlayAgain = document.getElementById('btnPlayAgain');
-
-/* =========================
-   Helper UI functions
-   ========================= */
-function showScreen(el){ el.classList.add('active'); }
-function hideScreen(el){ el.classList.remove('active'); }
-
-/* update HUD */
-function updateHUD(){
-  displayScore.textContent = 'Skóre: ' + score;
-  displayLives.textContent = 'Životy: ' + lives;
-  displayHigh.textContent = 'Nejvyšší: ' + highscore;
-  // save highscore
-  localStorage.setItem('12bubbles_high', String(highscore));
+function attachButtonEvents(){
+  startBtn.addEventListener('click',startCountdown);
+  indexBtn.addEventListener('click',(e)=>{
+    e.stopPropagation();
+    if(indexPanel.style.top==='30%'){indexPanel.style.top='100%';startBtn.style.display='block';indexBtn.style.display='block';}
+    else{indexPanel.style.top='30%';startBtn.style.display='none';indexBtn.style.display='none';}
+  });
+  closeBtn.addEventListener('click',()=>{
+    indexPanel.style.top='100%';startBtn.style.display='block';indexBtn.style.display='block';
+  });
+  continueBtn.addEventListener('click',()=>{
+    endScreen.style.display='none';startBtn.style.display='block';indexBtn.style.display='block';versionLabel.style.display='block';
+  });
+  pauseBtn.addEventListener('click',togglePause);
+  continueGameBtn.addEventListener('click',togglePause);
+  endGameBtn.addEventListener('click',()=>{pauseScreen.style.display='none';pauseBtn.style.display='none';endGame();});
+  window.addEventListener('blur',()=>{if(gameRunning&&!gamePaused)togglePause();});
 }
 
-/* clear all game bubbles */
-function clearBubbles(){
-  bubbles.forEach(b => b.remove());
-  bubbles = [];
+function startCountdown(){
+  versionLabel.style.display='none';startBtn.style.display='none';indexBtn.style.display='none';
+  countdownEl.style.display='block';
+  let count=3;countdownEl.textContent=count;
+  const interval=setInterval(()=>{
+    count--;if(count>0)countdownEl.textContent=count;
+    else{clearInterval(interval);countdownEl.style.display='none';scoreContainer.style.display='block';pauseBtn.style.display='flex';startGame();}
+  },1000);
 }
 
-/* =========================
-   Menu wiring
-   ========================= */
-btnPlay.addEventListener('click', () => {
-  mainMenu.classList.remove('active');
-  startGame();
-});
-btnIndex.addEventListener('click', () => {
-  mainMenu.classList.remove('active');
-  indexMenu.classList.add('active');
-});
-btnIndexBack.addEventListener('click', () => {
-  indexMenu.classList.remove('active');
-  mainMenu.classList.add('active');
-});
-btnEndToMenu.addEventListener('click', () => {
-  endOverlay.style.display = 'none';
-  endOverlay.style.opacity = '';
-  endOverlay.classList.remove('active');
-  mainMenu.classList.add('active');
-});
-btnPlayAgain.addEventListener('click', () => {
-  endOverlay.style.display = 'none';
-  endOverlay.classList.remove('active');
-  startGame();
-});
-
-/* pause / continue wiring */
-btnPause.addEventListener('click', togglePause);
-btnContinue.addEventListener('click', togglePause);
-btnEnd.addEventListener('click', () => { endGame(); });
-
-/* when page visibility changes -> pause on hidden */
-document.addEventListener('visibilitychange', () => {
-  if (document.hidden) {
-    // pokud hra běží a není už pozastavená, pozastavíme a vyvoláme overlay,
-    // při návratu nechceme automaticky resume, necháme hráče stisknout Pokračovat
-    if (gameRunning && !gamePaused) {
-      setPaused(true, true); // autoPause = true => show message or mark it
-    }
-  }
-});
-
-/* also pause on blur (some browsers) */
-window.addEventListener('blur', ()=> {
-  if (gameRunning && !gamePaused) setPaused(true, true);
-});
-
-/* =========================
-   Game lifecycle
-   ========================= */
 function startGame(){
-  // show game UI and reset
-  gameUI.classList.add('active');
-  score = 0;
-  lives = 3;
-  startTime = Date.now();
-  gameRunning = true;
-  gamePaused = false;
-  clearBubbles();
-  updateHUD();
-  spawnBubble();
-  requestAnimationFrame(gameLoop);
+  score=0;lives=3;bubbles=[];gameRunning=true;gamePaused=false;startTime=Date.now();
+  scoreEl.textContent="Skóre: "+score;livesEl.textContent="Životy: "+lives;
+  spawnBubble();requestAnimationFrame(updateBubbles);
+}
+
+function togglePause(){
+  if(!gameRunning)return;
+  gamePaused=!gamePaused;
+  pauseScreen.style.display=gamePaused?'flex':'none';
+}
+
+function updateBubbles(){
+  if(!gameRunning)return;
+  if(!gamePaused){
+    bubbles.forEach(b=>{
+      const top=parseFloat(b.style.top);
+      b.style.top=top-parseFloat(b.dataset.speed)+'px';
+      if(top<=0){lives--;livesEl.textContent="Životy: "+lives;b.remove();bubbles=bubbles.filter(x=>x!==b);if(lives<=0)endGame();}
+    });
+  }
+  requestAnimationFrame(updateBubbles);
+}
+
+function spawnBubble(){
+  if(!gameRunning)return;
+  if(gamePaused){setTimeout(spawnBubble,500);return;}
+  const elapsed=(Date.now()-startTime)/1000;
+  const speedMultiplier=1+elapsed/120;
+  const typeRand=Math.random()*100;
+  let type='normal';
+  if(typeRand<0.1)type='instawin';
+  else if(typeRand<1.6)type='invert';
+  else if(typeRand<4.6)type='gravity';
+  else if(typeRand<6.6)type='triple';
+  else if(typeRand<7.6)type='rare144';
+  else if(typeRand<7.85)type='rare2x';
+  const bubble=document.createElement('div');
+  bubble.className='bubble '+type;
+  bubble.textContent='12';
+  bubble.style.left=Math.random()*(window.innerWidth-80)+'px';
+  bubble.style.top=window.innerHeight+'px';
+  bubble.dataset.speed=(1.5+Math.random()*1.5)*speedMultiplier;
+  bubble.dataset.type=type;
+  bubble.addEventListener('click',()=>popBubble(bubble));
+  document.body.appendChild(bubble);bubbles.push(bubble);
+  const nextDelay=Math.max(300,1500-speedMultiplier*200);
+  setTimeout(spawnBubble,nextDelay);
+}
+
+function popBubble(bubble){
+  if(!gameRunning)return;
+  const type=bubble.dataset.type;
+  if(type==='normal')score++;
+  else if(type==='rare2x')score*=2;
+  else if(type==='rare144')score+=144;
+  else if(type==='triple')for(let i=0;i<3;i++)spawnExtraBubble();
+  else if(type==='gravity')bubbles.forEach(b=>b.style.top='100px');
+  else if(type==='invert'){document.body.style.filter='invert(1)';setTimeout(()=>document.body.style.filter='invert(0)',2000);score+=10;}
+  else if(type==='instawin'){score+=9999;endGame();}
+  bubble.remove();bubbles=bubbles.filter(b=>b!==bubble);
+  scoreEl.textContent="Skóre: "+score;
+}
+
+function spawnExtraBubble(){
+  const bubble=document.createElement('div');
+  bubble.className='bubble';
+  bubble.textContent='12';
+  bubble.style.left=Math.random()*(window.innerWidth-80)+'px';
+  bubble.style.top=window.innerHeight+'px';
+  bubble.dataset.speed=2.5;bubble.dataset.type='normal';
+  bubble.addEventListener('click',()=>popBubble(bubble));
+  document.body.appendChild(bubble);bubbles.push(bubble);
 }
 
 function endGame(){
-  // stop game
-  gameRunning = false;
-  gamePaused = false;
-  clearBubbles();
-  gameUI.classList.remove('active');
-  pauseOverlay.style.display = 'none';
-  pauseOverlay.classList.remove('active');
-  // show end overlay
-  document.getElementById('finalText').textContent = 'Tvé skóre: ' + score;
-  endOverlay.style.display = 'flex';
-  endOverlay.classList.add('active');
+  gameRunning=false;pauseBtn.style.display='none';
+  bubbles.forEach(b=>b.remove());bubbles=[];
+  finalScoreText.textContent="KONEC HRY\nSKÓRE: "+score;
+  endScreen.style.display='flex';
+  if(score>highscore){highscore=score;highscoreEl.textContent="Nejvyšší skóre: "+highscore;}
 }
-
-/* toggle pause via button */
-function togglePause(){
-  if (!gameRunning) return;
-  setPaused(!gamePaused, false);
-}
-
-/* setPaused(actualState, autoTriggered)
-   autoTriggered: pokud true, znamená to, že pauza vznikla např. z visibilitychange
-   v tom případě nechceme nic jiného dělat, pouze zobrazit overlay a nastavit flag.
-*/
-function setPaused(paused, autoTriggered){
-  gamePaused = paused;
-  if (gamePaused) {
-    // show overlay
-    pauseOverlay.style.display = 'flex';
-    pauseOverlay.classList.add('active');
-    // optionally show small note if autoTriggered (not implemented UI-wise, reserved)
-  } else {
-    pauseOverlay.style.display = 'none';
-    pauseOverlay.classList.remove('active');
-    // update startTime so speed scaling doesn't jump too much
-    const elapsedBefore = (Date.now() - startTime);
-    // shift startTime forward by elapsed time lost while paused
-    // (we keep startTime so speedMultiplier = 1 + elapsed/120s continues smoothly)
-    startTime = Date.now() - elapsedBefore;
-  }
-}
-
-/* =========================
-   Game core: spawn, pop, movement
-   ========================= */
-
-/* spawn bubliny po 1 */
-function spawnBubble(){
-  if (!gameRunning) return;
-  if (gamePaused) {
-    // poll again later while paused
-    setTimeout(spawnBubble, 500);
-    return;
-  }
-
-  // spawn exactly one bubble, decide type by chance
-  const chance = Math.random();
-  const elapsed = (Date.now() - startTime) / 1000;
-  const speedMultiplier = 1 + elapsed / 120; // lehce zrychluje přes čas
-
-  const bubble = document.createElement('div');
-  bubble.classList.add('bubble');
-
-  // assign type and visual
-  if (chance <= 0.001) { bubble.classList.add('instawin'); bubble.textContent = '?12?'; bubble.dataset.type = 'instawin'; }
-  else if (chance <= 0.016) { bubble.classList.add('invert'); bubble.textContent = '!12!'; bubble.dataset.type = 'invert'; }
-  else if (chance <= 0.0185) { bubble.classList.add('rare2x'); bubble.textContent = '12×2'; bubble.dataset.type = '2x'; }
-  else if (chance <= 0.0285) { bubble.classList.add('rare144'); bubble.textContent = '12²'; bubble.dataset.type = '144'; }
-  else if (chance <= 0.0485) { bubble.classList.add('triple'); bubble.textContent = '3×12'; bubble.dataset.type = 'triple'; }
-  else if (chance <= 0.0785) { bubble.classList.add('gravity'); bubble.textContent = '<12>'; bubble.dataset.type = 'gravity'; }
-  else { bubble.classList.add('normal'); bubble.textContent = '12'; bubble.dataset.type = 'normal'; }
-
-  // size and position
-  const size = Math.round(Math.random() * 60 + 60); // 60..120 px
-  bubble.style.width = size + 'px';
-  bubble.style.height = size + 'px';
-  bubble.style.fontSize = (bubble.dataset.type === '144' ? Math.round(size / 2.8) : Math.round(size / 3)) + 'px';
-
-  bubble.style.left = Math.round(Math.random() * (window.innerWidth - size)) + 'px';
-  bubble.style.top = (window.innerHeight - size) + 'px';
-  bubble.dataset.speed = ((Math.random() * 1.5 + 1) * speedMultiplier).toFixed(3);
-
-  // click handler
-  bubble.addEventListener('click', () => {
-    popBubble(bubble);
-  });
-
-  document.body.appendChild(bubble);
-  bubbles.push(bubble);
-
-  // schedule next spawn (po jedné)
-  // kratší interval pokud tempo male
-  setTimeout(spawnBubble, 600);
-}
-
-/* pop action */
-function popBubble(bubble){
-  if (!gameRunning) return;
-  // remove immediately
-  bubble.remove();
-  bubbles = bubbles.filter(b => b !== bubble);
-
-  const t = bubble.dataset.type;
-  if (t === '2x') {
-    score = score * 2;
-  } else if (t === '144') {
-    score += 144;
-  } else if (t === 'triple') {
-    // triple nyní přidá +12 (nemá spawnovat více bublin)
-    score += 12;
-  } else if (t === 'gravity') {
-    // teleport all bubbles to this center
-    const bx = parseFloat(bubble.style.left) + parseFloat(bubble.style.width) / 2;
-    const by = parseFloat(bubble.style.top) + parseFloat(bubble.style.height) / 2;
-    bubbles.forEach(b => {
-      b.style.left = (bx - parseFloat(b.style.width) / 2) + 'px';
-      b.style.top = (by - parseFloat(b.style.height) / 2) + 'px';
-    });
-    score += 1;
-  } else if (t === 'invert') {
-    document.documentElement.style.filter = 'invert(1)';
-    score += 10;
-    setTimeout(() => { document.documentElement.style.filter = ''; }, 5000);
-  } else if (t === 'instawin') {
-    score += 999999999;
-  } else { // normal
-    score += 1;
-  }
-
-  if (score > 999999999) score = 999999999;
-  if (score > highscore) highscore = score;
-  updateHUD();
-}
-
-/* movement loop */
-function gameLoop(){
-  if (!gameRunning) return;
-  // always run requestAnimationFrame loop so pause can continue to show overlay smoothly
-  if (!gamePaused) {
-    const toRemove = [];
-    for (const b of bubbles) {
-      const top = parseFloat(b.style.top);
-      const sp = parseFloat(b.dataset.speed);
-      b.style.top = (top - sp) + 'px';
-      // when off the top -> remove and take a life
-      if (top <= 0) {
-        toRemove.push(b);
-      }
-    }
-    if (toRemove.length > 0) {
-      toRemove.forEach(b => {
-        b.remove();
-        bubbles = bubbles.filter(x => x !== b);
-        lives -= 1;
-      });
-      if (lives < 0) lives = 0;
-      updateHUD();
-      if (lives <= 0) {
-        // tiny delay so UI reflects last life lost
-        setTimeout(() => endGame(), 80);
-      }
-    }
-  }
-  requestAnimationFrame(gameLoop);
-}
-
-/* =========================
-   Init: show highscore
-   ========================= */
-displayHigh.textContent = 'Nejvyšší: ' + highscore;
-updateHUD();
-
-/* ensure pause when leaving tab/window - already wired by visibilitychange and blur above */
-
-/* handle resize so bubbles stay within bounds (optional) */
-window.addEventListener('resize', () => {
-  // clamp existing bubble positions to new window size
-  for (const b of bubbles) {
-    const w = parseFloat(b.style.width);
-    const left = parseFloat(b.style.left);
-    if (left + w > window.innerWidth) b.style.left = Math.max(0, window.innerWidth - w) + 'px';
-  }
-});
 </script>
 </body>
 </html>
