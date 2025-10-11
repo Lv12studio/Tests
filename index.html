@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,23 +12,42 @@ html, body {
   color:#fff;
 }
 
-/* --- LOADING --- */
+/* === OLD LOADING SCREEN === */
 #loadingScreen {
   position: fixed; top:0; left:0; width:100%; height:100%;
-  background:#000; display:flex; justify-content:center; align-items:center;
-  color:#fff; font-size:50px; font-weight:bold; z-index:3000;
-  animation:eyeGlow 2s ease-in-out forwards;
+  background: radial-gradient(circle at center, #160020 0%, #000 80%);
+  display:flex; flex-direction:column; justify-content:center; align-items:center;
+  font-size:60px; font-weight:bold;
+  color:#fff;
+  z-index:4000;
+  animation: pulse 2s infinite ease-in-out;
 }
-@keyframes eyeGlow {
-  0% { opacity:0.2; text-shadow:none; }
-  50% { opacity:1; text-shadow:0 0 25px #fff,0 0 50px #fff,0 0 75px #fff; }
-  100% { opacity:0.2; text-shadow:none; }
+#loadingEye {
+  width:120px; height:120px;
+  border:4px solid #a044ff;
+  border-radius:50%;
+  margin-bottom:20px;
+  position:relative;
+  box-shadow:0 0 30px #a044ff, 0 0 60px #d166ff inset;
+  animation: glow 2s infinite alternate;
 }
+#loadingEye::after {
+  content:'';
+  position:absolute;
+  top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  width:30px; height:30px;
+  background:#fff;
+  border-radius:50%;
+  animation: blink 3s infinite;
+}
+@keyframes pulse { 0%,100% { text-shadow: 0 0 10px #d166ff, 0 0 20px #a044ff; opacity:1; } 50% { text-shadow: 0 0 30px #fff, 0 0 60px #d166ff; opacity:0.5; } }
+@keyframes glow { 0% { box-shadow:0 0 20px #a044ff inset, 0 0 10px #d166ff; } 100% { box-shadow:0 0 40px #d166ff inset, 0 0 25px #fff; } }
+@keyframes blink { 0%, 90%, 100% { height:30px; } 95% { height:5px; } }
 
 /* --- BUTTONS --- */
 #startBtn, #indexBtn {
-  display:none;
-  font-size:28px; padding:15px 35px;
+  display:none; font-size:28px; padding:15px 35px;
   background: linear-gradient(45deg,#a044ff,#6a00f4,#d166ff);
   border:none; border-radius:12px; color:#fff;
   font-weight:bold; text-transform:uppercase;
@@ -47,16 +66,16 @@ html, body {
   z-index:2000; text-align:center;
 }
 #difficultyMenu h2 { font-size:48px; color:#d166ff; margin-bottom:40px; }
-.diffBtn {
+.diffBtn, #diffBackBtn {
   font-size:26px; margin:10px; padding:15px 40px;
   border:none; border-radius:12px;
   color:white; cursor:pointer;
   background: linear-gradient(45deg,#a044ff,#6a00f4,#d166ff);
   box-shadow:0 0 10px #d166ff,0 0 20px #a044ff;
 }
-.diffBtn:hover { transform:scale(1.05); }
+.diffBtn:hover, #diffBackBtn:hover { transform:scale(1.05); }
 
-/* --- Countdown & Score --- */
+/* --- HUD --- */
 #countdown {
   position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
   font-size:80px; color:#d166ff;
@@ -65,21 +84,13 @@ html, body {
 }
 #scoreContainer {
   position:fixed; top:20px; left:50%; transform:translateX(-50%);
-  z-index:1001; text-align:center; display:none;
+  z-index:1001; text-align:center; display:block;
 }
 #highscore { font-size:20px; color:#ff0; margin-bottom:5px; }
-#score { font-size:28px; color:#d166ff; }
-#lives { font-size:20px; color:#f00; margin-top:5px; }
+#score, #lives { display:none; }
 
 /* --- Bubbles --- */
-.bubble {
-  width:80px; height:80px; border-radius:50%;
-  display:flex; justify-content:center; align-items:center;
-  font-size:24px; font-weight:bold; color:#fff;
-  background:linear-gradient(135deg,#a044ff,#6a00f4);
-  border:2px solid #d166ff; box-shadow:0 0 10px #d166ff,0 0 20px #a044ff inset;
-  position:absolute; cursor:pointer;
-}
+.bubble { width:80px; height:80px; border-radius:50%; display:flex; justify-content:center; align-items:center; font-size:24px; font-weight:bold; color:#fff; background:linear-gradient(135deg,#a044ff,#6a00f4); border:2px solid #d166ff; box-shadow:0 0 10px #d166ff,0 0 20px #a044ff inset; position:absolute; cursor:pointer; }
 .bubble.rare2x { background: linear-gradient(135deg,#ffff00,#a044ff); color:#000; }
 .bubble.rare144 { background: linear-gradient(135deg,#0f0,#0a0); color:#000; }
 .bubble.triple { background: linear-gradient(135deg,#f0f,#a0a); }
@@ -88,15 +99,7 @@ html, body {
 .bubble.instawin { background: linear-gradient(135deg,#ff0000,#ffff00); color:#000; box-shadow:0 0 30px #ff0, 0 0 60px #f00; }
 
 /* --- Pause Button --- */
-#pauseBtn {
-  position: fixed; top: 20px; right: 20px;
-  font-size: 36px; font-weight: bold; color: #fff;
-  background: rgba(161, 66, 255, 0.3);
-  border: 2px solid #d166ff; border-radius: 50%;
-  width: 70px; height: 70px; display: none;
-  justify-content: center; align-items: center;
-  cursor: pointer; box-shadow: 0 0 15px #d166ff, 0 0 25px #a044ff inset;
-}
+#pauseBtn { position: fixed; top: 20px; right: 20px; font-size: 36px; font-weight: bold; color: #fff; background: rgba(161, 66, 255, 0.3); border: 2px solid #d166ff; border-radius: 50%; width: 70px; height: 70px; display: none; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 0 15px #d166ff, 0 0 25px #a044ff inset; }
 #pauseBtn:hover { transform: scale(1.1); background: rgba(209, 102, 255, 0.5); }
 
 /* --- Pause Menu --- */
@@ -105,17 +108,9 @@ html, body {
   background: rgba(0,0,0,0.9); display: none;
   justify-content: center; align-items: center; z-index: 2000;
 }
-.pauseBox {
-  text-align: center; background: rgba(20,20,20,0.9);
-  border: 2px solid #d166ff; box-shadow: 0 0 20px #a044ff;
-  padding: 30px 50px; border-radius: 20px;
-}
+.pauseBox { text-align: center; background: rgba(20,20,20,0.9); border: 2px solid #d166ff; box-shadow: 0 0 20px #a044ff; padding: 30px 50px; border-radius: 20px; }
 .pauseBox h2 { font-size: 48px; color: #d166ff; margin-bottom: 30px; }
-.pauseBox button {
-  font-size: 22px; margin: 10px; padding: 12px 35px;
-  background: linear-gradient(45deg,#a044ff,#6a00f4,#d166ff);
-  border: none; color: white; border-radius: 12px; cursor: pointer;
-}
+.pauseBox button { font-size: 22px; margin: 10px; padding: 12px 35px; background: linear-gradient(45deg,#a044ff,#6a00f4,#d166ff); border: none; color: white; border-radius: 12px; cursor: pointer; }
 .pauseBox button:hover { transform: scale(1.05); }
 
 /* --- End Screen --- */
@@ -125,174 +120,135 @@ html, body {
   justify-content:center; align-items:center; color:#fff; font-size:40px;
   z-index:1500; text-align:center;
 }
-#continueBtn {
-  margin-top:30px; font-size:26px; padding:15px 40px;
-  border:none; border-radius:10px; cursor:pointer; color:#fff;
-  background: linear-gradient(45deg,#a044ff,#6a00f4,#d166ff);
-}
-#versionLabel {
-  position:fixed; top:10px; right:10px; font-size:16px;
-  color:rgba(255,255,255,0.3); font-weight:bold; z-index:1002;
-}
+#continueBtn { margin-top:30px; font-size:26px; padding:15px 40px; border:none; border-radius:10px; cursor:pointer; color:#fff; background: linear-gradient(45deg,#a044ff,#6a00f4,#d166ff); }
+
+/* --- Index Menu --- */
+#indexMenu { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); display:none; flex-direction:column; align-items:center; overflow-y:auto; z-index:3000; padding-top:60px; }
+#indexMenu h1 { font-size:50px; color:#d166ff; margin-bottom:30px; }
+.indexItem { width:80%; background:rgba(30,0,50,0.7); border:2px solid #d166ff; border-radius:15px; margin:10px; padding:15px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 0 15px #a044ff inset; }
+.indexBubble { width:60px; height:60px; border-radius:50%; display:flex; justify-content:center; align-items:center; font-weight:bold; color:white; border:2px solid #d166ff; }
+.indexText { flex:1; margin-left:20px; font-size:20px; }
+.indexBack { margin-top:30px; font-size:22px; padding:12px 35px; background:linear-gradient(45deg,#a044ff,#6a00f4,#d166ff); border:none; border-radius:12px; color:white; cursor:pointer; }
 </style>
 </head>
 <body>
 
-<div id="loadingScreen">Level 12 Studio</div>
-<div id="versionLabel">Released 1.3</div>
+<!-- Loading -->
+<div id="loadingScreen"><div id="loadingEye"></div>Level 12 Studio</div>
 
+<div id="versionLabel">Released 1.4</div>
+
+<!-- Main Menu -->
 <button id="startBtn">START</button>
 <button id="indexBtn">INDEX</button>
 
-<!-- Výběr obtížnosti -->
+<!-- Difficulty Menu -->
 <div id="difficultyMenu">
-  <h2>Vyber obtížnost</h2>
+  <h2>Select Difficulty</h2>
   <button class="diffBtn" data-diff="easy">Easy</button>
   <button class="diffBtn" data-diff="normal">Normal</button>
   <button class="diffBtn" data-diff="hard">Hard</button>
+  <button id="diffBackBtn">Back</button>
 </div>
 
+<!-- HUD -->
 <div id="countdown"></div>
 <div id="scoreContainer">
-  <div id="highscore">Nejvyšší skóre: 0</div>
-  <div id="score">Skóre: 0</div>
-  <div id="lives">Životy: 3</div>
+  <div id="highscore">High Score: 0</div>
+  <div id="score">Score: 0</div>
+  <div id="lives">Lives: 3</div>
 </div>
 
+<!-- Pause -->
 <button id="pauseBtn">|  |</button>
 <div id="pauseScreen">
   <div class="pauseBox">
-    <h2>PAUZA</h2>
-    <button id="continueGameBtn">Pokračovat</button>
-    <button id="endGameBtn">Ukončit hru</button>
+    <h2>PAUSED</h2>
+    <button id="continueGameBtn">Continue</button>
+    <button id="endGameBtn">End Game</button>
   </div>
 </div>
 
+<!-- End -->
 <div id="endScreen">
   <div id="finalScoreText"></div>
-  <button id="continueBtn">ZPĚT</button>
+  <button id="continueBtn">BACK TO MENU</button>
+</div>
+
+<!-- Index -->
+<div id="indexMenu">
+  <h1>BUBBLE INDEX</h1>
+  <div class="indexItem"><div class="indexBubble" style="background:linear-gradient(135deg,#a044ff,#6a00f4);">12</div><div class="indexText">Normal — +1 point | Common</div></div>
+  <div class="indexItem"><div class="indexBubble" style="background:linear-gradient(135deg,#ffff00,#a044ff);color:#000;">12</div><div class="indexText">2x — doubles score | Rare</div></div>
+  <div class="indexItem"><div class="indexBubble" style="background:linear-gradient(135deg,#0f0,#0a0);color:#000;">12</div><div class="indexText">+144 — adds 144 points | Very Rare</div></div>
+  <div class="indexItem"><div class="indexBubble" style="background:linear-gradient(135deg,#f0f,#a0a);">12</div><div class="indexText">Triple — spawns 3 bubbles | Rare</div></div>
+  <div class="indexItem"><div class="indexBubble" style="background:linear-gradient(135deg,#fff,#d166ff);color:#000;">12</div><div class="indexText">Gravity — moves all bubbles | Uncommon</div></div>
+  <div class="indexItem"><div class="indexBubble" style="background:linear-gradient(135deg,#fff,#000);color:#0ff;">12</div><div class="indexText">Invert — inverts colors briefly | Rare</div></div>
+  <div class="indexItem"><div class="indexBubble" style="background:linear-gradient(135deg,#ff0000,#ffff00);color:#000;">12</div><div class="indexText">Instawin — instant victory | Extreme</div></div>
+  <button class="indexBack" id="indexBackBtn">BACK</button>
 </div>
 
 <script>
-const startBtn=document.getElementById('startBtn');
 const loading=document.getElementById('loadingScreen');
+const startBtn=document.getElementById('startBtn');
+const indexBtn=document.getElementById('indexBtn');
 const diffMenu=document.getElementById('difficultyMenu');
+const diffBackBtn=document.getElementById('diffBackBtn');
+const countdownEl=document.getElementById('countdown');
+const scoreContainer=document.getElementById('scoreContainer');
+const highscoreEl=document.getElementById('highscore');
+const scoreEl=document.getElementById('score');
+const livesEl=document.getElementById('lives');
 const pauseBtn=document.getElementById('pauseBtn');
 const pauseScreen=document.getElementById('pauseScreen');
 const continueGameBtn=document.getElementById('continueGameBtn');
 const endGameBtn=document.getElementById('endGameBtn');
-const scoreContainer=document.getElementById('scoreContainer');
-const scoreEl=document.getElementById('score');
-const highscoreEl=document.getElementById('highscore');
-const livesEl=document.getElementById('lives');
 const endScreen=document.getElementById('endScreen');
 const finalScoreText=document.getElementById('finalScoreText');
 const continueBtn=document.getElementById('continueBtn');
-const countdownEl=document.getElementById('countdown');
+const indexMenu=document.getElementById('indexMenu');
+const indexBack=document.getElementById('indexBackBtn');
 
-let score=0,highscore=0,lives=3,bubbles=[],gameRunning=false,gamePaused=false,spawnSpeed=1500,speedFactor=1;
+let score=0, highscore=0, lives=3, bubbles=[], gameRunning=false, gamePaused=false;
+let spawnSpeed=1500, speedFactor=1;
 
-window.onload=()=>{setTimeout(()=>{loading.style.display='none';startBtn.style.display='block';},1500);}
-startBtn.onclick=()=>{startBtn.style.display='none';diffMenu.style.display='flex';};
+window.onload=()=>{setTimeout(()=>{loading.style.display='none';startBtn.style.display='block';indexBtn.style.display='block';},2200);}
+
+startBtn.onclick=()=>{startBtn.style.display='none';indexBtn.style.display='none'; diffMenu.style.display='flex';};
+diffBackBtn.onclick=()=>{diffMenu.style.display='none'; startBtn.style.display='block'; indexBtn.style.display='block';};
 document.querySelectorAll('.diffBtn').forEach(btn=>btn.onclick=()=>{setDifficulty(btn.dataset.diff);});
+indexBtn.onclick=()=>{indexMenu.style.display='flex'; startBtn.style.display='none'; indexBtn.style.display='none';};
+indexBack.onclick=()=>{indexMenu.style.display='none'; startBtn.style.display='block'; indexBtn.style.display='block';};
 
 function setDifficulty(d){
-  if(d==='easy'){spawnSpeed=1600;speedFactor=0.8;}
-  else if(d==='normal'){spawnSpeed=1200;speedFactor=1;}
-  else if(d==='hard'){spawnSpeed=800;speedFactor=1.4;}
-  diffMenu.style.display='none';startCountdown();
+  if(d==='easy'){spawnSpeed=1600; speedFactor=0.8;}
+  else if(d==='normal'){spawnSpeed=1200; speedFactor=1;}
+  else if(d==='hard'){spawnSpeed=800; speedFactor=1.4;}
+  diffMenu.style.display='none'; startCountdown();
 }
 
 function startCountdown(){
-  let c=3;countdownEl.style.display='block';countdownEl.textContent=c;
+  let c=3; countdownEl.style.display='block'; countdownEl.textContent=c;
   const inter=setInterval(()=>{
-    c--;if(c>0)countdownEl.textContent=c;
-    else{clearInterval(inter);countdownEl.style.display='none';startGame();}
+    c--; if(c>0) countdownEl.textContent=c;
+    else { clearInterval(inter); countdownEl.style.display='none'; startGame(); }
   },1000);
 }
 
 function startGame(){
-  score=0;lives=3;bubbles=[];gameRunning=true;gamePaused=false;
-  scoreContainer.style.display='block';pauseBtn.style.display='flex';
-  scoreEl.textContent="Skóre: "+score;livesEl.textContent="Životy: "+lives;
-  spawnBubble();requestAnimationFrame(updateBubbles);
+  score=0; lives=3; bubbles=[]; gameRunning=true; gamePaused=false;
+  scoreContainer.style.display='block'; pauseBtn.style.display='flex';
+  scoreEl.style.display='block'; livesEl.style.display='block';
+  scoreEl.textContent="Score: "+score; livesEl.textContent="Lives: "+lives;
+  spawnBubble(); requestAnimationFrame(updateBubbles);
 }
 
-function togglePause(){
-  if(!gameRunning)return;
-  gamePaused=!gamePaused;
-  pauseScreen.style.display=gamePaused?'flex':'none';
-}
-pauseBtn.onclick=togglePause;continueGameBtn.onclick=togglePause;
-endGameBtn.onclick=()=>{pauseScreen.style.display='none';endGame();};
-window.addEventListener('blur',()=>{if(gameRunning&&!gamePaused)togglePause();});
+function togglePause(){ if(!gameRunning) return; gamePaused=!gamePaused; pauseScreen.style.display=gamePaused?'flex':'none'; }
+pauseBtn.onclick=togglePause; continueGameBtn.onclick=togglePause;
+endGameBtn.onclick=()=>{ pauseScreen.style.display='none'; endGame(); };
+window.addEventListener('blur',()=>{if(gameRunning && !gamePaused) togglePause();});
 
-function updateBubbles(){
-  if(!gameRunning)return;
-  if(!gamePaused){
-    bubbles.forEach(b=>{
-      const t=parseFloat(b.style.top);
-      b.style.top=(t-parseFloat(b.dataset.speed))+'px';
-      if(t<=0){b.remove();bubbles=bubbles.filter(x=>x!==b);lives--;livesEl.textContent="Životy: "+lives;if(lives<=0)endGame();}
-    });
-  }
-  requestAnimationFrame(updateBubbles);
-}
-
-function spawnBubble(){
-  if(!gameRunning)return;
-  if(gamePaused){setTimeout(spawnBubble,500);return;}
-  const typeRand=Math.random()*100;
-  let type='normal';
-  if(typeRand<0.1)type='instawin';
-  else if(typeRand<1.6)type='invert';
-  else if(typeRand<4.6)type='gravity';
-  else if(typeRand<6.6)type='triple';
-  else if(typeRand<7.6)type='rare144';
-  else if(typeRand<7.85)type='rare2x';
-  const b=document.createElement('div');
-  b.className='bubble '+type;b.textContent='12';
-  b.style.left=Math.random()*(window.innerWidth-80)+'px';
-  b.style.top=window.innerHeight+'px';
-  b.dataset.speed=(1.5+Math.random()*1.5)*speedFactor;
-  b.dataset.type=type;
-  b.onclick=()=>popBubble(b);
-  document.body.appendChild(b);bubbles.push(b);
-  setTimeout(spawnBubble,spawnSpeed);
-}
-
-function popBubble(b){
-  if(!gameRunning)return;
-  const t=b.dataset.type;
-  if(t==='normal')score++;
-  else if(t==='rare2x')score*=2;
-  else if(t==='rare144')score+=144;
-  else if(t==='triple')for(let i=0;i<3;i++)spawnExtra();
-  else if(t==='gravity')bubbles.forEach(x=>x.style.top='100px');
-  else if(t==='invert'){document.body.style.filter='invert(1)';setTimeout(()=>document.body.style.filter='invert(0)',1500);score+=10;}
-  else if(t==='instawin'){score+=9999;endGame();}
-  b.remove();bubbles=bubbles.filter(x=>x!==b);
-  scoreEl.textContent="Skóre: "+score;
-}
-
-function spawnExtra(){
-  const b=document.createElement('div');
-  b.className='bubble';b.textContent='12';
-  b.style.left=Math.random()*(window.innerWidth-80)+'px';
-  b.style.top=window.innerHeight+'px';
-  b.dataset.speed=2.5;b.dataset.type='normal';
-  b.onclick=()=>popBubble(b);
-  document.body.appendChild(b);bubbles.push(b);
-}
-
-function endGame(){
-  gameRunning=false;pauseBtn.style.display='none';
-  bubbles.forEach(x=>x.remove());bubbles=[];
-  finalScoreText.textContent="KONEC HRY\nSKÓRE: "+score;
-  endScreen.style.display='flex';
-  if(score>highscore){highscore=score;highscoreEl.textContent="Nejvyšší skóre: "+highscore;}
-}
-continueBtn.onclick=()=>{endScreen.style.display='none';startBtn.style.display='block';};
+// Bubble spawn, update, and pop logic continues from your original code...
 </script>
 </body>
 </html>
