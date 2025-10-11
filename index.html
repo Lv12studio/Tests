@@ -32,7 +32,7 @@ html, body {
   position: fixed; top:0; left:0; width:100%; height:100%;
   display: none; flex-direction: column; justify-content: center; align-items: center;
   background:#0a0a0a; z-index:1000;
-  font-family: monospace; /* ensure correct font */
+  font-family: monospace;
 }
 .homeTitle { font-size:50px; font-weight:bold; margin-bottom:40px; }
 .btn {
@@ -231,6 +231,145 @@ document.addEventListener('click', e=>{
 });
 function openIndex(){ indexPanel.style.top='20%'; homeScreen.style.display='none'; }
 function closeIndex(){ indexPanel.style.top='100%'; if(!gameRunning) homeScreen.style.display='flex'; }
+
+// --- COUNTDOWN & GAME LOGIC ---
+function startCountdown(){
+  countdownEl.style.display='block';
+  let count=3;
+  countdownEl.textContent=count;
+  const interval=setInterval(()=>{
+    count--;
+    if(count>0) countdownEl.textContent=count;
+    else{
+      clearInterval(interval);
+      countdownEl.style.display='none';
+      startGame();
+    }
+  },1000);
+}
+
+function startGame(){
+  score=0; lives=3; bubbles=[]; gameRunning=true; pause=false;
+  scoreContainer.style.display='block'; pauseButton.style.display='block';
+  updateScoreUI();
+  startTime=Date.now();
+  spawnBubble();
+  requestAnimationFrame(updateBubbles);
+}
+
+// --- BUBBLES ---
+function spawnBubble(){
+  if(!gameRunning || pause) return;
+  const bubble=document.createElement('div');
+  bubble.classList.add('bubble');
+  bubble.textContent="12";
+  const size=Math.random()*60+60;
+  bubble.style.width=size+'px';
+  bubble.style.height=size+'px';
+  bubble.style.left=Math.random()*(window.innerWidth-size)+'px';
+  bubble.style.top=(window.innerHeight-size)+'px';
+  bubble.dataset.speed=getSpeedByDifficulty();
+  document.body.appendChild(bubble);
+
+  const pop=()=>{
+    if(!gameRunning || pause) return;
+    score++;
+    if(score>highscore){ highscore=score; homeHighscore.textContent="High Score: "+highscore; highscoreEl.textContent="High Score: "+highscore; }
+    updateScoreUI();
+    bubble.remove();
+    bubbles=bubbles.filter(b=>b!==bubble);
+  };
+  bubble.addEventListener('click',pop);
+  bubbles.push(bubble);
+  setTimeout(spawnBubble,500);
+}
+
+function spawnSingleBubble(){
+  if(!gameRunning || pause) return;
+  const bubble=document.createElement('div');
+  bubble.classList.add('bubble');
+  bubble.textContent="12";
+  const size=Math.random()*60+60;
+  bubble.style.width=size+'px';
+  bubble.style.height=size+'px';
+  bubble.style.left=Math.random()*(window.innerWidth-size)+'px';
+  bubble.style.top=(window.innerHeight-size)+'px';
+  bubble.dataset.speed=getSpeedByDifficulty();
+  document.body.appendChild(bubble);
+
+  const pop=()=>{  
+    if(!gameRunning || pause) return;
+    score++;  
+    if(score>highscore){ highscore=score; homeHighscore.textContent="High Score: "+highscore; highscoreEl.textContent="High Score: "+highscore; }
+    updateScoreUI();
+    bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble);
+  };
+  bubble.addEventListener('click',pop);
+  bubbles.push(bubble);
+}
+
+function getSpeedByDifficulty(){
+  if(difficulty==="easy") return 1;
+  if(difficulty==="normal") return 2;
+  if(difficulty==="hard") return 3;
+}
+
+// --- UPDATE LOOP ---
+function updateBubbles(){
+  if(!gameRunning) return;
+  if(!pause){
+    bubbles.forEach(b=>{
+      const top=parseFloat(b.style.top);
+      b.style.top=top-b.dataset.speed+'px';
+      if(top<=0){  
+        lives--; updateScoreUI();
+        b.remove(); bubbles=bubbles.filter(bb=>bb!==b);
+        if(lives<=0) endGame();
+      }
+    });
+  }
+  requestAnimationFrame(updateBubbles);
+}
+
+function updateScoreUI(){
+  scoreEl.textContent="Score: "+score;
+  livesEl.textContent="Lives: "+lives;
+}
+
+// --- PAUSE ---
+pauseButton.addEventListener('click',()=>{
+  if(!gameRunning) return;
+  pause=!pause;
+  if(pause){
+    pauseScreen.style.display='flex';
+    currentScorePause.textContent="Score: "+score;
+  } else {
+    pauseScreen.style.display='none';
+  }
+});
+btnContinue.addEventListener('click',()=>{
+  pause=false;
+  pauseScreen.style.display='none';
+});
+btnEndGame.addEventListener('click',()=>{
+  endGame();
+  pause=false;
+  pauseScreen.style.display='none';
+});
+
+// --- END GAME ---
+function endGame(){
+  gameRunning=false;
+  bubbles.forEach(b=>b.remove()); bubbles=[];
+  scoreContainer.style.display='none'; pauseButton.style.display='none';
+  finalScoreText.textContent=score;
+  endScreen.style.display='flex';
+}
+
+btnRestart.addEventListener('click', ()=>{
+  endScreen.style.display='none';
+  startCountdown();
+});
 </script>
 </body>
 </html>
