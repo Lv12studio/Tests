@@ -194,7 +194,11 @@ function startCountdown(){
 function startGame(){
   score=0; lives=3; bubbles=[]; gameRunning=true; gamePaused=false; startTime=Date.now();
   scoreEl.textContent="Skóre: "+score; livesEl.textContent="Životy: "+lives;
-  spawnBubble();
+  let spawnDelay = 800; // default normal
+if (window.bubbleSpeedMultiplier <= 0.8) spawnDelay = 1200;   // easy
+else if (window.bubbleSpeedMultiplier >= 1.1) spawnDelay = 500; // hard
+setTimeout(spawnBubble, spawnDelay);
+  ;
   requestAnimationFrame(updateBubbles);
 }
 
