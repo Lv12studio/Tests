@@ -22,45 +22,25 @@ html, body { margin:0; padding:0; height:100vh; overflow:hidden; font-family: mo
 
 .bubble { width:80px; height:80px; border-radius:50%; display:flex; justify-content:center; align-items:center; font-size:24px; font-weight:bold; color:#fff; background:linear-gradient(135deg,#a044ff,#6a00f4); border:2px solid #d166ff; box-shadow:0 0 10px #d166ff,0 0 20px #a044ff inset; position:absolute; cursor:pointer; animation:floatY 3s infinite alternate ease-in-out; transition: transform 0.2s; }
 .bubble:hover { transform: scale(1.1); }
-.bubble.rare2x { background: linear-gradient(135deg,#ffff00,#a044ff); color:#000; font-size:28px; animation:floatY 2.5s infinite alternate ease-in-out; }
-.bubble.rare144 { background: linear-gradient(135deg,#0f0,#0a0); color:#000; font-size:28px; animation:floatY 2s infinite alternate ease-in-out; }
-.bubble.triple { background: linear-gradient(135deg,#f0f,#a0a); color:#fff; font-size:24px; animation:floatY 3s infinite alternate ease-in-out; }
-.bubble.gravity { background: linear-gradient(135deg,#fff,#d166ff); color:#000; font-size:28px; animation:floatY 3s infinite alternate ease-in-out; }
-.bubble.invert { background: linear-gradient(135deg,#fff,#000); color:#0ff; font-size:26px; animation:floatY 2.8s infinite alternate ease-in-out; }
-.bubble.instawin { background: linear-gradient(135deg,#ff0000,#ffff00); color:#000; font-size:32px; box-shadow:0 0 30px #ff0, 0 0 60px #f00; animation:floatY 1.8s infinite alternate ease-in-out; }
 @keyframes floatY { 0% { transform: translateY(0);} 100% { transform: translateY(-15px);} }
 
 #indexPanel { position:fixed; top:100%; left:0; width:100%; max-height:70%; background:rgba(10,10,10,0.95); overflow-y:auto; transition:top 0.5s ease; padding:20px; z-index:999; box-shadow:0 -5px 30px #d166ff; }
 #indexPanel h2 { text-transform:uppercase; }
 #indexPanel .closeBtn { position:absolute; top:15px; right:15px; font-size:28px; cursor:pointer; color:#fff; font-weight:bold; z-index:1001; }
-.indexItem { display:flex; align-items:center; margin:10px 0; }
-.indexItem .bubbleImg { width:60px; height:60px; margin-right:15px; border-radius:50%; display:flex; justify-content:center; align-items:center; font-weight:bold; color:#fff; border:2px solid #d166ff; box-shadow:0 0 15px #d166ff inset; animation:float 1s infinite alternate; }
-.indexItem .desc { flex:1; }
-.indexItem .rarity { font-weight:bold; }
-@keyframes float { 0%{transform:translateY(0);} 100%{transform:translateY(-10px);} }
 
 #endScreen { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); display:none; flex-direction:column; justify-content:center; align-items:center; color:#fff; font-size:40px; z-index:1500; text-align:center; }
 #continueBtn { margin-top:30px; font-size:26px; padding:15px 40px; border:none; border-radius:10px; cursor:pointer; color:#fff; background: linear-gradient(45deg,#a044ff,#6a00f4,#d166ff); box-shadow:0 0 10px #d166ff,0 0 20px #a044ff; }
 
-#versionLabel { position:fixed; top:10px; right:10px; font-size:16px; color:rgba(255,255,255,0.3); font-weight:bold; z-index:1002; pointer-events:none; }
-
 #pauseBtn { position: fixed; top:10px; left:10px; font-size:28px; padding:10px 18px; border:none; border-radius:8px; background: linear-gradient(45deg,#a044ff,#6a00f4); color:#fff; cursor:pointer; z-index:1001; display:none; text-shadow:0 0 10px #fff; }
 
-#pauseScreen { position: fixed; top: 0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); color:#fff; display: none; flex-direction: column; justify-content: center; align-items: center; z-index:2000; text-align:center; opacity:0; backdrop-filter: blur(5px); animation-fill-mode: forwards; }
-#pauseScreen.fadeIn { animation: fadeIn 0.5s forwards; }
-#pauseScreen.fadeOut { animation: fadeOut 0.5s forwards; }
-@keyframes fadeIn { 0% { opacity:0; transform:scale(0.9);} 100%{ opacity:1; transform:scale(1);} }
-@keyframes fadeOut { 0% { opacity:1; transform:scale(1);} 100%{ opacity:0; transform:scale(0.9);} }
-#pauseText { font-size:60px; font-weight:bold; margin-bottom:30px; text-shadow:0 0 20px #fff; }
-#continueGameBtn, #endGameBtn { font-size:28px; padding:15px 40px; margin:10px; border:none; border-radius:10px; cursor:pointer; color:#fff; background:linear-gradient(45deg,#a044ff,#6a00f4,#d166ff); box-shadow:0 0 10px #d166ff,0 0 20px #a044ff; }
-
+/* === Difficulty Buttons === */
 #difficultyPanel { display:none; text-align:center; margin-top:30vh; }
-#difficultyPanel button { display:block; margin:20px auto; font-size:28px; padding:15px 35px; border:none; border-radius:12px; color:#fff; font-weight:bold; text-transform:uppercase; cursor:pointer; box-shadow:0 0 10px #000,0 0 20px #000; transition: transform 0.2s; }
+#difficultyPanel button { display:block; margin:20px auto; font-size:28px; padding:15px 35px; border:none; border-radius:12px; color:#fff; font-weight:bold; text-transform:uppercase; cursor:pointer; transition: transform 0.2s; }
 #difficultyPanel button:hover { transform: scale(1.05); }
 .easyBtn { background: linear-gradient(45deg,#28a745,#218838,#71dd8a); box-shadow:0 0 10px #28a745,0 0 20px #218838; }
 .normalBtn { background: linear-gradient(45deg,#a044ff,#6a00f4,#d166ff); box-shadow:0 0 10px #d166ff,0 0 20px #a044ff; }
-.hardBtn { background: linear-gradient(45deg,#dc3545,#b02a37,#ff6b6b); box-shadow:0 0 10px #dc3545,0 0 20px #b02a37; }
-.backBtn { background: linear-gradient(45deg,#6c757d,#5a6268,#adb5bd); box-shadow:0 0 10px #6c757d,0 0 20px #5a6268; }
+.hardBtn { background: linear-gradient(45deg,#dc3545,#c82333,#ff6b6b); box-shadow:0 0 10px #dc3545,0 0 20px #c82333; }
+.backBtn { background: linear-gradient(45deg,#6c757d,#495057,#adb5bd); box-shadow:0 0 10px #6c757d,0 0 20px #495057; }
 </style>
 </head>
 <body>
@@ -70,23 +50,18 @@ html, body { margin:0; padding:0; height:100vh; overflow:hidden; font-family: mo
 <button id="startBtn">START</button>
 <button id="indexBtn">INDEX</button>
 
+<!-- Obtížnosti -->
 <div id="difficultyPanel">
-  <button class="easyBtn" data-diff="easy">EASY</button>
-  <button class="normalBtn" data-diff="normal">NORMAL</button>
-  <button class="hardBtn" data-diff="hard">HARD</button>
-  <button class="backBtn" id="backBtn">BACK</button>
+  <button class="difficultyBtn easyBtn" data-diff="easy">EASY</button>
+  <button class="difficultyBtn normalBtn" data-diff="normal">NORMAL</button>
+  <button class="difficultyBtn hardBtn" data-diff="hard">HARD</button>
+  <button id="backBtn" class="backBtn">BACK</button>
 </div>
 
 <div id="indexPanel">
   <div class="closeBtn">✖</div>
   <h2>BUBBLES INDEX</h2>
-  <div class="indexItem"><div class="bubbleImg">12</div><div class="desc"><span class="rarity">Běžná:</span> +1 skóre</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ffff00,#a044ff); color:#000;">12×2</div><div class="desc"><span class="rarity">Vzácná 0,25%:</span> Zdvojnásobí skóre</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#0f0,#0a0); color:#000;">12²</div><div class="desc"><span class="rarity">Vzácná 1%:</span> +144 skóre</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#f0f,#a0a);">3×12</div><div class="desc"><span class="rarity">Vzácná 2%:</span> Spawnuje 3 bubliny</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#fff,#d166ff); color:#000;">&lt;12&gt;</div><div class="desc"><span class="rarity">Vzácná 3%:</span> Gravitační bublina teleportuje všechny bubliny k ní</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#fff,#000); color:#0ff;">!12!</div><div class="desc"><span class="rarity">Vzácná 1,5%:</span> Obrátí barvy obrazovky na 5 sekund a dá +10 skóre</div></div>
-  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ff0000,#ffff00); color:#000; box-shadow:0 0 30px #ff0,0 0 60px #f00;">?12?</div><div class="desc"><span class="rarity">Vzácná 0,1%:</span> Okamžité vítězství (+999 999 999 skóre)</div></div>
+  <p>Ukázkový text...</p>
 </div>
 
 <div id="countdown"></div>
@@ -96,13 +71,7 @@ html, body { margin:0; padding:0; height:100vh; overflow:hidden; font-family: mo
   <div id="lives">Životy: 3</div>
 </div>
 
-<div id="pauseBtn">|  |</div>
-<div id="pauseScreen">
-  <div id="pauseText">PAUZA</div>
-  <button id="continueGameBtn">Pokračovat</button>
-  <button id="endGameBtn">Konec</button>
-</div>
-
+<div id="pauseBtn">| |</div>
 <div id="endScreen">
   <div id="finalScoreText"></div>
   <button id="continueBtn">POKRAČOVAT</button>
@@ -114,6 +83,7 @@ html, body { margin:0; padding:0; height:100vh; overflow:hidden; font-family: mo
 const startBtn=document.getElementById('startBtn');
 const indexBtn=document.getElementById('indexBtn');
 const indexPanel=document.getElementById('indexPanel');
+const closeBtn=document.querySelector('#indexPanel .closeBtn');
 const countdownEl=document.getElementById('countdown');
 const scoreContainer=document.getElementById('scoreContainer');
 const scoreEl=document.getElementById('score');
@@ -123,21 +93,15 @@ const popSound=document.getElementById('popSound');
 const endScreen=document.getElementById('endScreen');
 const finalScoreText=document.getElementById('finalScoreText');
 const versionLabel=document.getElementById('versionLabel');
-const closeBtn=document.querySelector('#indexPanel .closeBtn');
-
 const pauseBtn=document.getElementById('pauseBtn');
-const pauseScreen=document.getElementById('pauseScreen');
-const continueGameBtn=document.getElementById('continueGameBtn');
-const endGameBtn=document.getElementById('endGameBtn');
 const continueBtn=document.getElementById('continueBtn');
 
 const difficultyPanel=document.getElementById('difficultyPanel');
-const difficultyBtns=document.querySelectorAll('#difficultyPanel button[data-diff]');
+const difficultyBtns=document.querySelectorAll('.difficultyBtn');
 const backBtn=document.getElementById('backBtn');
 
 let score=0, highscore=0, lives=3, bubbles=[], gameRunning=false, gamePaused=false, startTime;
 
-// LOADING
 window.addEventListener('load',()=>{
   setTimeout(()=>{
     loadingScreen.style.display='none';
@@ -147,31 +111,70 @@ window.addEventListener('load',()=>{
   },2000);
 });
 
-// BUTTON LOGIC
 function attachButtonEvents(){
-  startBtn.addEventListener('click',()=>{ startBtn.style.display='none'; indexBtn.style.display='none'; difficultyPanel.style.display='block'; });
-  backBtn.addEventListener('click',()=>{ difficultyPanel.style.display='none'; startBtn.style.display='block'; indexBtn.style.display='block'; });
+  startBtn.addEventListener('click',()=>{
+    startBtn.style.display='none';
+    indexBtn.style.display='none';
+    difficultyPanel.style.display='block';
+  });
+
+  backBtn.addEventListener('click',()=>{
+    difficultyPanel.style.display='none';
+    startBtn.style.display='block';
+    indexBtn.style.display='block';
+  });
 
   difficultyBtns.forEach(btn=>{
     btn.addEventListener('click',()=>{
       const diff=btn.dataset.diff;
-      difficultyPanel.style.display='none';
       if(diff==='easy') window.bubbleSpeedMultiplier=0.7;
-      else if(diff==='normal') window.bubbleSpeedMultiplier=1.0;
-      else if(diff==='hard') window.bubbleSpeedMultiplier=1.3;
+      else if(diff==='normal') window.bubbleSpeedMultiplier=1;
+      else if(diff==='hard') window.bubbleSpeedMultiplier=1.2;
+      difficultyPanel.style.display='none';
       startCountdown();
     });
   });
 
-  indexBtn.addEventListener('click',(e)=>{ e.stopPropagation(); indexPanel.style.top=(indexPanel.style.top==='30%'?'100%':'30%'); startBtn.style.display='none'; indexBtn.style.display='none'; });
-  closeBtn.addEventListener('click',()=>{ indexPanel.style.top='100%'; startBtn.style.display='block'; indexBtn.style.display='block'; });
-  continueBtn.addEventListener('click',()=>{ endScreen.style.display='none'; startBtn.style.display='block'; indexBtn.style.display='block'; versionLabel.style.display='block'; });
-  pauseBtn.addEventListener('click', togglePause);
-  continueGameBtn.addEventListener('click', togglePause);
-  endGameBtn.addEventListener('click', endGame);
+  indexBtn.addEventListener('click',(e)=>{
+    e.stopPropagation();
+    if(indexPanel.style.top==='30%'){
+      indexPanel.style.top='100%';
+      startBtn.style.display='block';
+      indexBtn.style.display='block';
+    } else {
+      indexPanel.style.top='30%';
+      startBtn.style.display='none';
+      indexBtn.style.display='none';
+    }
+  });
+
+  closeBtn.addEventListener('click',(e)=>{
+    e.stopPropagation();
+    indexPanel.style.top='100%';
+    startBtn.style.display='block';
+    indexBtn.style.display='block';
+  });
+
+  // 🟣 OPRAVA: kliknutí uvnitř index panelu neuzavírá panel
+  indexPanel.addEventListener('click', e => e.stopPropagation());
+
+  // kliknutí mimo panel ho zavře
+  document.body.addEventListener('click',()=>{
+    if(indexPanel.style.top==='30%'){
+      indexPanel.style.top='100%';
+      startBtn.style.display='block';
+      indexBtn.style.display='block';
+    }
+  });
+
+  continueBtn.addEventListener('click',()=>{
+    endScreen.style.display='none';
+    startBtn.style.display='block';
+    indexBtn.style.display='block';
+    versionLabel.style.display='block';
+  });
 }
 
-// COUNTDOWN
 function startCountdown(){
   versionLabel.style.display='none';
   countdownEl.style.display='block';
@@ -190,26 +193,11 @@ function startCountdown(){
   },1000);
 }
 
-// GAME
 function startGame(){
   score=0; lives=3; bubbles=[]; gameRunning=true; gamePaused=false; startTime=Date.now();
   scoreEl.textContent="Skóre: "+score; livesEl.textContent="Životy: "+lives;
-  let spawnDelay = 800; // default normal
-if (window.bubbleSpeedMultiplier <= 0.8) spawnDelay = 1200;   // easy
-else if (window.bubbleSpeedMultiplier >= 1.1) spawnDelay = 500; // hard
-setTimeout(spawnBubble, spawnDelay);
-  ;
+  spawnBubble();
   requestAnimationFrame(updateBubbles);
-}
-
-function togglePause(){
-  if(!gameRunning) return;
-  gamePaused = !gamePaused;
-  if(gamePaused){
-    pauseScreen.classList.remove('fadeOut'); pauseScreen.classList.add('fadeIn'); pauseScreen.style.display='flex';
-  } else{
-    pauseScreen.classList.remove('fadeIn'); pauseScreen.classList.add('fadeOut'); setTimeout(()=> pauseScreen.style.display='none',500);
-  }
 }
 
 function updateBubbles(){
@@ -218,9 +206,9 @@ function updateBubbles(){
     bubbles.forEach(bubble=>{
       const top=parseFloat(bubble.style.top);
       bubble.style.top=top-parseFloat(bubble.dataset.speed)+'px';
-      if(top<=0){  
-        lives--; livesEl.textContent="Životy: "+lives;  
-        bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble);  
+      if(top<=0){
+        lives--; livesEl.textContent="Životy: "+lives;
+        bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble);
         if(lives<=0) endGame();
       }
     });
@@ -228,77 +216,37 @@ function updateBubbles(){
   requestAnimationFrame(updateBubbles);
 }
 
-function spawnBubble(){ 
-  if(!gameRunning || gamePaused) { setTimeout(spawnBubble,1000); return; }
-  const elapsed=(Date.now()-startTime)/1000; 
-  const speedMultiplier=(window.bubbleSpeedMultiplier || 1)*(1+elapsed/120); 
-  const chance=Math.random();
-  const bubble=document.createElement('div'); bubble.classList.add('bubble');
-  if(chance<=0.001){ bubble.classList.add('instawin'); bubble.textContent="?12?"; bubble.dataset.type="instawin"; }
-  else if(chance<=0.016){ bubble.classList.add('invert'); bubble.textContent="!12!"; bubble.dataset.type="invert"; }
-  else if(chance<=0.0185){ bubble.classList.add('rare2x'); bubble.textContent="12×2"; bubble.dataset.type="2x"; }
-  else if(chance<=0.0285){ bubble.classList.add('rare144'); bubble.textContent="12²"; bubble.dataset.type="144"; }
-  else if(chance<=0.0485){ bubble.classList.add('triple'); bubble.textContent="3×12"; bubble.dataset.type="triple"; }
-  else if(chance<=0.0785){ bubble.classList.add('gravity'); bubble.textContent="<12>"; bubble.dataset.type="gravity"; }
-  else { bubble.textContent="12"; bubble.dataset.type="normal"; }
-
-  const size=Math.random()*60+60; bubble.style.width=size+'px'; bubble.style.height=size+'px';
-  bubble.style.fontSize=(bubble.dataset.type==="144"?size/2.5:size/3)+'px';
-  bubble.style.left=Math.random()*(window.innerWidth-size)+'px';
-  bubble.style.top=(window.innerHeight-size)+'px';
+function spawnBubble(){
+  if(!gameRunning || gamePaused){ setTimeout(spawnBubble,500); return; }
+  const elapsed=(Date.now()-startTime)/1000;
+  const speedMultiplier=(window.bubbleSpeedMultiplier||1)*(1+elapsed/120);
+  const bubble=document.createElement('div');
+  bubble.classList.add('bubble');
+  bubble.textContent="12";
+  bubble.style.left=Math.random()*(window.innerWidth-80)+'px';
+  bubble.style.top=(window.innerHeight-80)+'px';
   bubble.dataset.speed=(Math.random()*1.5+1)*speedMultiplier;
   document.body.appendChild(bubble);
 
-  const pop=()=>{
-    if(!gameRunning) return;
-    if(['2x','144','triple','gravity','invert','instawin'].includes(bubble.dataset.type)) popSound.currentTime=0, popSound.play();
-    bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble);
-    if(bubble.dataset.type==="2x") score*=2;
-    else if(bubble.dataset.type==="144") score+=144;
-    else if(bubble.dataset.type==="triple") for(let i=0;i<3;i++) spawnSingleBubble();
-    else if(bubble.dataset.type==="gravity"){
-      const bx=parseFloat(bubble.style.left)+parseFloat(bubble.style.width)/2;
-      const by=parseFloat(bubble.style.top)+parseFloat(bubble.style.height)/2;
-      bubbles.forEach(b=>{ b.style.left=(bx-parseFloat(b.style.width)/2)+'px'; b.style.top=(by-parseFloat(b.style.height)/2)+'px'; });
-    }
-    else if(bubble.dataset.type==="invert"){ document.body.style.filter='invert(1)'; score+=10; setTimeout(()=>document.body.style.filter='',5000); }
-    else if(bubble.dataset.type==="instawin"){ score+=999999999; }
-    else score++;
-    if(score>999999999) score=999999999;
-    scoreEl.textContent="Skóre: "+score;
-    if(score>highscore){ highscore=score; highscoreEl.textContent="Nejvyšší skóre: "+highscore; }
-  };
-
-  bubble.addEventListener('click',pop); bubble.addEventListener('touchstart',pop);
+  const pop=()=>{ if(!gameRunning)return; score++; scoreEl.textContent="Skóre: "+score; if(score>highscore){ highscore=score; highscoreEl.textContent="Nejvyšší skóre: "+highscore; } bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble); };
+  bubble.addEventListener('click',pop);
+  bubble.addEventListener('touchstart',pop);
   bubbles.push(bubble);
-  setTimeout(spawnBubble,500);
-}
 
-function spawnSingleBubble(){ 
-  if(!gameRunning || gamePaused) return;
-  const elapsed=(Date.now()-startTime)/1000; 
-  const speedMultiplier=(window.bubbleSpeedMultiplier || 1)*(1+elapsed/120);
-  const bubble=document.createElement('div'); bubble.classList.add('bubble');
-  bubble.textContent="12"; bubble.dataset.type="normal";
-  const size=Math.random()*60+60; bubble.style.width=size+'px'; bubble.style.height=size+'px';
-  bubble.style.fontSize=size/3+'px';
-  bubble.style.left=Math.random()*(window.innerWidth-size)+'px';
-  bubble.style.top=(window.innerHeight-size)+'px';
-  bubble.dataset.speed=(Math.random()*1.5+1)*speedMultiplier;
-  document.body.appendChild(bubble);
-
-  const pop=()=>{ if(!gameRunning) return; score++; if(score>999999999) score=999999999; scoreEl.textContent="Skóre: "+score; if(score>highscore){ highscore=score; highscoreEl.textContent="Nejvyšší skóre: "+highscore; } bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble);}
-  bubble.addEventListener('click',pop); bubble.addEventListener('touchstart',pop);
-  bubbles.push(bubble);
+  // 🕒 Spawn delay podle obtížnosti
+  let spawnDelay = 800; // normal
+  if (window.bubbleSpeedMultiplier <= 0.8) spawnDelay = 1200;   // easy
+  else if (window.bubbleSpeedMultiplier >= 1.1) spawnDelay = 500; // hard
+  setTimeout(spawnBubble, spawnDelay);
 }
 
 function endGame(){
   gameRunning=false; bubbles.forEach(b=>b.remove()); bubbles=[];
-  scoreContainer.style.display='none'; pauseBtn.style.display='none'; pauseScreen.style.display='none';
-  showEndScreen();
+  scoreContainer.style.display='none';
+  pauseBtn.style.display='none';
+  finalScoreText.textContent="Tvé skóre: "+score;
+  endScreen.style.display='flex';
 }
-
-function showEndScreen(){ finalScoreText.textContent="Tvé skóre: "+score; endScreen.style.display='flex'; }
 </script>
 </body>
 </html>
