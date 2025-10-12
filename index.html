@@ -6,23 +6,130 @@
 <title>12 Bubbles Ultimate</title>
 <style>
 /* ================== Reset & Basic ================== */
-html, body { margin:0; padding:0; height:100vh; overflow:hidden; font-family: monospace; background-color:#0a0a0a; color:#fff; }
+html, body {
+  margin:0;
+  padding:0;
+  height:100vh;
+  overflow:hidden;
+  font-family: monospace;
+  background-color:#0a0a0a;
+  color:#fff;
+}
+
 /* ================== LOADING SCREEN ================== */
-#loadingScreen { position: fixed; top:0; left:0; width:100%; height:100%; background:#000; display:flex; justify-content:center; align-items:center; color:#fff; font-size:50px; font-weight:bold; z-index:3000; text-align:center; animation:eyeGlow 2s ease-in-out forwards;}
-@keyframes eyeGlow { 0% { opacity:0.2; text-shadow:none; } 50% { opacity:1; text-shadow:0 0 25px #fff,0 0 50px #fff,0 0 75px #fff; } 100% { opacity:0.2; text-shadow:none; } }
+#loadingScreen {
+  position: fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:#000;
+  display:flex; justify-content:center; align-items:center;
+  color:#fff; font-size:50px; font-weight:bold;
+  z-index:3000;
+  text-align:center;
+  animation:eyeGlow 2s ease-in-out forwards;
+}
+@keyframes eyeGlow {
+  0% { opacity:0.2; text-shadow:none; }
+  50% { opacity:1; text-shadow:0 0 25px #fff,0 0 50px #fff,0 0 75px #fff; }
+  100% { opacity:0.2; text-shadow:none; }
+}
+
 /* ================== BUTTONS ================== */
-#startBtn, #indexBtn { display:none; margin:0 auto; font-size:28px; padding:15px 35px; background: linear-gradient(45deg,#a044ff,#6a00f4,#d166ff); border:none; border-radius:12px; color:#fff; font-weight:bold; text-transform:uppercase; cursor:pointer; box-shadow:0 0 10px #d166ff,0 0 20px #a044ff; z-index:1000; transition: transform 0.2s; }
-#startBtn:hover, #indexBtn:hover { transform: scale(1.05); }
+#startBtn, #indexBtn {
+  display:none;
+  margin:0 auto;
+  font-size:28px;
+  padding:15px 35px;
+  background: linear-gradient(45deg,#a044ff,#6a00f4,#d166ff);
+  border:none;
+  border-radius:12px;
+  color:#fff;
+  font-weight:bold;
+  text-transform:uppercase;
+  cursor:pointer;
+  box-shadow:0 0 10px #d166ff,0 0 20px #a044ff;
+  z-index:1000;
+  transition: transform 0.2s;
+}
+#startBtn:hover, #indexBtn:hover {
+  transform: scale(1.05);
+}
 #startBtn { margin-top:30vh; }
 #indexBtn { margin-top:20px; }
+
+/* ================== DIFFICULTY PANEL ================== */
+#difficultyPanel {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.9);
+  padding: 30px 40px;
+  border-radius: 20px;
+  box-shadow: 0 0 30px #d166ff;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2000;
+  text-align: center;
+}
+#difficultyPanel h2 {
+  font-size: 36px;
+  margin-bottom: 25px;
+  text-transform: uppercase;
+  color: #d166ff;
+  text-shadow: 0 0 20px #a044ff;
+}
+.diffBtn {
+  font-size: 24px;
+  padding: 15px 40px;
+  margin: 10px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #fff;
+  background: linear-gradient(45deg,#a044ff,#6a00f4,#d166ff);
+  box-shadow: 0 0 10px #d166ff, 0 0 20px #a044ff;
+  transition: transform 0.2s;
+}
+.diffBtn:hover { transform: scale(1.1); }
+
 /* ================== COUNTDOWN & SCORE ================== */
-#countdown { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); font-size:80px; color:#d166ff; text-shadow:0 0 20px #d166ff,0 0 40px #a044ff; z-index:1001; display:none; }
-#scoreContainer { position:fixed; top:20px; left:50%; transform:translateX(-50%); z-index:1001; text-align:center; display:none; }
+#countdown {
+  position:fixed;
+  top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  font-size:80px;
+  color:#d166ff;
+  text-shadow:0 0 20px #d166ff,0 0 40px #a044ff;
+  z-index:1001;
+  display:none;
+}
+#scoreContainer {
+  position:fixed;
+  top:20px; left:50%;
+  transform:translateX(-50%);
+  z-index:1001;
+  text-align:center;
+  display:none;
+}
 #highscore { font-size:20px; color:#ff0; margin-bottom:5px; }
 #score { font-size:28px; color:#d166ff; }
 #lives { font-size:20px; color:#f00; margin-top:5px; }
+
 /* ================== BUBBLES ================== */
-.bubble { width:80px; height:80px; border-radius:50%; display:flex; justify-content:center; align-items:center; font-size:24px; font-weight:bold; color:#fff; background:linear-gradient(135deg,#a044ff,#6a00f4); border:2px solid #d166ff; box-shadow:0 0 10px #d166ff,0 0 20px #a044ff inset; position:absolute; cursor:pointer; animation:floatY 3s infinite alternate ease-in-out; transition: transform 0.2s; }
+.bubble {
+  width:80px; height:80px;
+  border-radius:50%;
+  display:flex; justify-content:center; align-items:center;
+  font-size:24px; font-weight:bold; color:#fff;
+  background:linear-gradient(135deg,#a044ff,#6a00f4);
+  border:2px solid #d166ff;
+  box-shadow:0 0 10px #d166ff,0 0 20px #a044ff inset;
+  position:absolute;
+  cursor:pointer;
+  animation:floatY 3s infinite alternate ease-in-out;
+  transition: transform 0.2s;
+}
 .bubble:hover { transform: scale(1.1); }
 .bubble.rare2x { background: linear-gradient(135deg,#ffff00,#a044ff); color:#000; font-size:28px; animation:floatY 2.5s infinite alternate ease-in-out; }
 .bubble.rare144 { background: linear-gradient(135deg,#0f0,#0a0); color:#000; font-size:28px; animation:floatY 2s infinite alternate ease-in-out; }
@@ -31,43 +138,140 @@ html, body { margin:0; padding:0; height:100vh; overflow:hidden; font-family: mo
 .bubble.invert { background: linear-gradient(135deg,#fff,#000); color:#0ff; font-size:26px; animation:floatY 2.8s infinite alternate ease-in-out; }
 .bubble.instawin { background: linear-gradient(135deg,#ff0000,#ffff00); color:#000; font-size:32px; box-shadow:0 0 30px #ff0, 0 0 60px #f00; animation:floatY 1.8s infinite alternate ease-in-out; }
 @keyframes floatY { 0% { transform: translateY(0);} 100% { transform: translateY(-15px);} }
+
 /* ================== INDEX PANEL ================== */
-#indexPanel { position:fixed; top:100%; left:0; width:100%; max-height:70%; background:rgba(10,10,10,0.95); overflow-y:auto; transition:top 0.5s ease; padding:20px; z-index:999; box-shadow:0 -5px 30px #d166ff; }
+#indexPanel {
+  position:fixed; top:100%; left:0;
+  width:100%; max-height:70%;
+  background:rgba(10,10,10,0.95);
+  overflow-y:auto;
+  transition:top 0.5s ease;
+  padding:20px;
+  z-index:999;
+  box-shadow:0 -5px 30px #d166ff;
+}
 #indexPanel h2 { text-transform:uppercase; }
-#indexPanel .closeBtn { position:absolute; top:15px; right:15px; font-size:28px; cursor:pointer; color:#fff; font-weight:bold; z-index:1001; }
+#indexPanel .closeBtn {
+  position:absolute; top:15px; right:15px;
+  font-size:28px; cursor:pointer;
+  color:#fff; font-weight:bold; z-index:1001;
+}
 .indexItem { display:flex; align-items:center; margin:10px 0; }
-.indexItem .bubbleImg { width:60px; height:60px; margin-right:15px; border-radius:50%; display:flex; justify-content:center; align-items:center; font-weight:bold; color:#fff; border:2px solid #d166ff; box-shadow:0 0 15px #d166ff inset; animation:float 1s infinite alternate; }
+.indexItem .bubbleImg {
+  width:60px; height:60px;
+  margin-right:15px; border-radius:50%;
+  display:flex; justify-content:center; align-items:center;
+  font-weight:bold; color:#fff;
+  border:2px solid #d166ff;
+  box-shadow:0 0 15px #d166ff inset;
+  animation:float 1s infinite alternate;
+}
 .indexItem .desc { flex:1; }
 .indexItem .rarity { font-weight:bold; }
 @keyframes float { 0%{transform:translateY(0);} 100%{transform:translateY(-10px);} }
+
 /* ================== END SCREEN ================== */
-#endScreen { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); display:none; flex-direction:column; justify-content:center; align-items:center; color:#fff; font-size:40px; z-index:1500; text-align:center; }
-#continueBtn { margin-top:30px; font-size:26px; padding:15px 40px; border:none; border-radius:10px; cursor:pointer; color:#fff; background: linear-gradient(45deg,#a044ff,#6a00f4,#d166ff); box-shadow:0 0 10px #d166ff,0 0 20px #a044ff; }
+#endScreen {
+  position:fixed; top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.95);
+  display:none; flex-direction:column; justify-content:center; align-items:center;
+  color:#fff; font-size:40px; z-index:1500; text-align:center;
+}
+#continueBtn {
+  margin-top:30px;
+  font-size:26px;
+  padding:15px 40px;
+  border:none; border-radius:10px;
+  cursor:pointer; color:#fff;
+  background: linear-gradient(45deg,#a044ff,#6a00f4,#d166ff);
+  box-shadow:0 0 10px #d166ff,0 0 20px #a044ff;
+}
+
 /* ================== VERSION LABEL ================== */
-#versionLabel { position:fixed; top:10px; right:10px; font-size:16px; color:rgba(255,255,255,0.3); font-weight:bold; z-index:1002; pointer-events:none; }
+#versionLabel {
+  position:fixed; top:10px; right:10px;
+  font-size:16px; color:rgba(255,255,255,0.3);
+  font-weight:bold; z-index:1002; pointer-events:none;
+}
+
 /* ================== EASTER EGG ================== */
-#easterEgg { position: fixed; top: 0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); color:red; font-size:150px; font-weight:bold; display:flex; justify-content:center; align-items:center; z-index:2000; display:none; text-transform:uppercase; opacity:0; animation:fadeShake 5s forwards; }
-@keyframes fadeShake { 0%{opacity:0; transform:translateX(0);} 10%{opacity:1; transform:translateX(-5px);} 20%{transform:translateX(5px);} 30%{transform:translateX(-5px);} 40%{transform:translateX(5px);} 50%{transform:translateX(-5px);} 60%{transform:translateX(5px);} 70%{transform:translateX(-5px);} 80%{transform:translateX(5px);} 90%{transform:translateX(-5px);} 100%{opacity:0; transform:translateX(0);} }
+#easterEgg {
+  position: fixed; top: 0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.9);
+  color:red; font-size:150px; font-weight:bold;
+  display:flex; justify-content:center; align-items:center;
+  z-index:2000; display:none; text-transform:uppercase;
+  opacity:0; animation:fadeShake 5s forwards;
+}
+@keyframes fadeShake {
+  0%{opacity:0; transform:translateX(0);}
+  10%{opacity:1; transform:translateX(-5px);}
+  20%{transform:translateX(5px);}
+  30%{transform:translateX(-5px);}
+  40%{transform:translateX(5px);}
+  50%{transform:translateX(-5px);}
+  60%{transform:translateX(5px);}
+  70%{transform:translateX(-5px);}
+  80%{transform:translateX(5px);}
+  90%{transform:translateX(-5px);}
+  100%{opacity:0; transform:translateX(0);}
+}
+
 /* ================== PAUSE SCREEN ================== */
-#pauseScreen { position: fixed; top: 0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); color:#fff; display: none; flex-direction: column; justify-content: center; align-items: center; z-index:2000; text-align:center; opacity:0; backdrop-filter: blur(5px); animation-fill-mode: forwards; }
+#pauseScreen {
+  position: fixed; top: 0; left:0;
+  width:100%; height:100%;
+  background: rgba(0,0,0,0.85);
+  color:#fff;
+  display: none; flex-direction: column; justify-content: center; align-items: center;
+  z-index:2000; text-align:center; opacity:0;
+  backdrop-filter: blur(5px);
+  animation-fill-mode: forwards;
+}
 #pauseScreen.fadeIn { animation: fadeIn 0.5s forwards; }
 #pauseScreen.fadeOut { animation: fadeOut 0.5s forwards; }
 @keyframes fadeIn { 0% { opacity:0; transform:scale(0.9);} 100%{ opacity:1; transform:scale(1);} }
 @keyframes fadeOut { 0% { opacity:1; transform:scale(1);} 100%{ opacity:0; transform:scale(0.9);} }
 #pauseText { font-size:60px; font-weight:bold; margin-bottom:30px; text-shadow:0 0 20px #fff; }
-#continueGameBtn, #endGameBtn { font-size:28px; padding:15px 40px; margin:10px; border:none; border-radius:10px; cursor:pointer; color:#fff; background:linear-gradient(45deg,#a044ff,#6a00f4,#d166ff); box-shadow:0 0 10px #d166ff,0 0 20px #a044ff; }
-/* ================== PAUSE BUTTON ================== */
-#pauseBtn { position: fixed; top:10px; left:10px; font-size:28px; padding:10px 8px; border:none; border-radius:8px; background: linear-gradient(45deg,#a044ff,#6a00f4); color:#fff; cursor:pointer; z-index:1001; display:none; text-shadow:0 0 10px #fff; }
+#continueGameBtn, #endGameBtn {
+  font-size:28px; padding:15px 40px; margin:10px;
+  border:none; border-radius:10px;
+  cursor:pointer; color:#fff;
+  background:linear-gradient(45deg,#a044ff,#6a00f4,#d166ff);
+  box-shadow:0 0 10px #d166ff,0 0 20px #a044ff;
+}
 
+/* ================== PAUSE BUTTON ================== */
+#pauseBtn {
+  position: fixed; top:10px; left:10px;
+  font-size:28px; padding:10px 8px;
+  border:none; border-radius:8px;
+  background: linear-gradient(45deg,#a044ff,#6a00f4);
+  color:#fff; cursor:pointer;
+  z-index:1001; display:none;
+  text-shadow:0 0 10px #fff;
+}
 </style>
 </head>
 <body>
 
 <div id="loadingScreen">Level 12 studio</div>
-<div id="versionLabel">Released 1.2.3</div>
+<div id="versionLabel">Released 1.2.4</div>
+
 <button id="startBtn">START</button>
 <button id="indexBtn">INDEX</button>
 
+<!-- Difficulty Selection -->
+<div id="difficultyPanel">
+  <h2>Vyber obtížnost</h2>
+  <button class="diffBtn" data-diff="easy">EASY</button>
+  <button class="diffBtn" data-diff="normal">NORMAL</button>
+  <button class="diffBtn" data-diff="hard">HARD</button>
+</div>
+
+<!-- rest of UI -->
 <div id="indexPanel">
   <div class="closeBtn">✖</div>
   <h2>BUBBLES INDEX</h2>
@@ -101,11 +305,9 @@ html, body { margin:0; padding:0; height:100vh; overflow:hidden; font-family: mo
 </div>
 
 <div id="easterEgg"></div>
-
 <audio id="popSound" src="https://www.soundjay.com/button/sounds/button-16.mp3"></audio>
 
 <script>
-// ================== ELEMENTS ==================
 const startBtn=document.getElementById('startBtn');
 const indexBtn=document.getElementById('indexBtn');
 const indexPanel=document.getElementById('indexPanel');
@@ -120,14 +322,15 @@ const finalScoreText=document.getElementById('finalScoreText');
 const versionLabel=document.getElementById('versionLabel');
 const easterEl=document.getElementById('easterEgg');
 const closeBtn=document.querySelector('#indexPanel .closeBtn');
-
 const pauseBtn=document.getElementById('pauseBtn');
 const pauseScreen=document.getElementById('pauseScreen');
 const continueGameBtn=document.getElementById('continueGameBtn');
 const endGameBtn=document.getElementById('endGameBtn');
 const continueBtn=document.getElementById('continueBtn');
+const difficultyPanel=document.getElementById('difficultyPanel');
 
 let score=0, highscore=0, lives=3, bubbles=[], gameRunning=false, gamePaused=false, startTime;
+let difficulty="normal", spawnRate=500, speedBoost=1;
 
 // ================== LOADING SCREEN ==================
 window.addEventListener('load',()=>{
@@ -141,150 +344,189 @@ window.addEventListener('load',()=>{
 
 // ================== BUTTON LOGIC ==================
 function attachButtonEvents(){
-  startBtn.addEventListener('click',startCountdown);
+  startBtn.addEventListener('click',()=>{
+    startBtn.style.display='none';
+    indexBtn.style.display='none';
+    difficultyPanel.style.display='flex';
+  });
+  document.querySelectorAll('.diffBtn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      difficulty=btn.dataset.diff;
+      difficultyPanel.style.display='none';
+      applyDifficulty();
+      startCountdown();
+    });
+  });
   indexBtn.addEventListener('click',(e)=>{
     e.stopPropagation();
-    if(indexPanel.style.top==='30%'){ indexPanel.style.top='100%'; startBtn.style.display='block'; indexBtn.style.display='block'; }
-    else { indexPanel.style.top='30%'; startBtn.style.display='none'; indexBtn.style.display='none'; }
+    if(indexPanel.style.top==='30%'){
+      indexPanel.style.top='100%';
+      startBtn.style.display='block';
+      indexBtn.style.display='block';
+    }else{
+      indexPanel.style.top='30%';
+      startBtn.style.display='none';
+      indexBtn.style.display='none';
+    }
   });
-  closeBtn.addEventListener('click',(e)=>{ e.stopPropagation(); indexPanel.style.top='100%'; startBtn.style.display='block'; indexBtn.style.display='block'; });
-  document.body.addEventListener('click',()=>{
-    if(indexPanel.style.top==='30%'){ indexPanel.style.top='100%'; startBtn.style.display='block'; indexBtn.style.display='block'; }
+  closeBtn.addEventListener('click',(e)=>{
+    e.stopPropagation();
+    indexPanel.style.top='100%';
+    startBtn.style.display='block';
+    indexBtn.style.display='block';
   });
   continueBtn.addEventListener('click',()=>{
-    endScreen.style.display='none'; startBtn.style.display='block'; indexBtn.style.display='block'; versionLabel.style.display='block';
+    endScreen.style.display='none';
+    startBtn.style.display='block';
+    indexBtn.style.display='block';
+    versionLabel.style.display='block';
+    document.body.style.backgroundColor="#0a0a0a";
   });
-  pauseBtn.addEventListener('click', togglePause);
-  continueGameBtn.addEventListener('click', togglePause);
-  endGameBtn.addEventListener('click', endGame);
+  pauseBtn.addEventListener('click',togglePause);
+  continueGameBtn.addEventListener('click',togglePause);
+  endGameBtn.addEventListener('click',endGame);
+}
+
+// ================== DIFFICULTY LOGIC ==================
+function applyDifficulty(){
+  switch(difficulty){
+    case "easy":
+      spawnRate=800; speedBoost=0.8; document.body.style.backgroundColor="#0a3a0a"; break;
+    case "normal":
+      spawnRate=500; speedBoost=1; document.body.style.backgroundColor="#0a0a3a"; break;
+    case "hard":
+      spawnRate=300; speedBoost=1.5; document.body.style.backgroundColor="#3a0a0a"; break;
+  }
 }
 
 // ================== COUNTDOWN ==================
 function startCountdown(){
-  versionLabel.style.display='none';
-  startBtn.style.display='none';
-  indexBtn.style.display='none';
-  countdownEl.style.display='block';
   let count=3;
+  countdownEl.style.display='block';
   countdownEl.textContent=count;
   const interval=setInterval(()=>{
     count--;
-    if(count>0) countdownEl.textContent=count;
+    if(count>0){ countdownEl.textContent=count; }
     else{
       clearInterval(interval);
       countdownEl.style.display='none';
-      scoreContainer.style.display='block';
-      pauseBtn.style.display='block';
       startGame();
     }
   },1000);
 }
 
-// ================== GAME LOGIC ==================
+// ================== GAME START ==================
 function startGame(){
-  score=0; lives=3; bubbles=[]; gameRunning=true; gamePaused=false; startTime=Date.now();
-  scoreEl.textContent="Skóre: "+score; livesEl.textContent="Životy: "+lives;
+  score=0; lives=3; scoreContainer.style.display='block';
+  pauseBtn.style.display='block'; gameRunning=true; gamePaused=false;
+  updateScore(); updateLives(); startTime=Date.now();
   spawnBubble();
-  requestAnimationFrame(updateBubbles);
-}
-
-function togglePause(){
-  if(!gameRunning) return;
-  gamePaused = !gamePaused;
-  if(gamePaused){
-    pauseScreen.classList.remove('fadeOut'); pauseScreen.classList.add('fadeIn'); pauseScreen.style.display='flex';
-  } else{
-    pauseScreen.classList.remove('fadeIn'); pauseScreen.classList.add('fadeOut'); setTimeout(()=> pauseScreen.style.display='none',500);
-  }
-}
-
-// ================== UPDATE BUBBLES ==================
-function updateBubbles(){
-  if(!gameRunning) return;
-  if(!gamePaused){
-    bubbles.forEach(bubble=>{
-      const top=parseFloat(bubble.style.top);
-      bubble.style.top=top-parseFloat(bubble.dataset.speed)+'px';
-      if(top<=0){  
-        lives--; livesEl.textContent="Životy: "+lives;  
-        bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble);  
-        if(lives<=0) endGame();
-      }
-    });
-  }
-  requestAnimationFrame(updateBubbles);
 }
 
 // ================== SPAWN BUBBLES ==================
-function spawnBubble(){ 
-  if(!gameRunning || gamePaused) { setTimeout(spawnBubble,500); return; }
-  const elapsed=(Date.now()-startTime)/1000; const speedMultiplier=1+elapsed/120; const chance=Math.random();
-  const bubble=document.createElement('div'); bubble.classList.add('bubble');
-  if(chance<=0.001){ bubble.classList.add('instawin'); bubble.textContent="?12?"; bubble.dataset.type="instawin"; }
-  else if(chance<=0.016){ bubble.classList.add('invert'); bubble.textContent="!12!"; bubble.dataset.type="invert"; }
-  else if(chance<=0.0185){ bubble.classList.add('rare2x'); bubble.textContent="12×2"; bubble.dataset.type="2x"; }
-  else if(chance<=0.0285){ bubble.classList.add('rare144'); bubble.textContent="12²"; bubble.dataset.type="144"; }
-  else if(chance<=0.0485){ bubble.classList.add('triple'); bubble.textContent="3×12"; bubble.dataset.type="triple"; }
-  else if(chance<=0.0785){ bubble.classList.add('gravity'); bubble.textContent="<12>"; bubble.dataset.type="gravity"; }
-  else { bubble.textContent="12"; bubble.dataset.type="normal"; }
+function spawnBubble(){
+  if(!gameRunning || gamePaused) return;
+  const bubble=document.createElement('div');
+  bubble.classList.add('bubble');
+  bubble.textContent='12';
+  const random=Math.random();
+  if(random<0.0025) bubble.classList.add('rare2x');
+  else if(random<0.01) bubble.classList.add('rare144');
+  else if(random<0.02) bubble.classList.add('triple');
+  else if(random<0.03) bubble.classList.add('gravity');
+  else if(random<0.045) bubble.classList.add('invert');
+  else if(random<0.046) bubble.classList.add('instawin');
 
-  const size=Math.random()*60+60; bubble.style.width=size+'px'; bubble.style.height=size+'px';
-  bubble.style.fontSize=(bubble.dataset.type==="144"?size/2.5:size/3)+'px';
-  bubble.style.left=Math.random()*(window.innerWidth-size)+'px';
-  bubble.style.top=(window.innerHeight-size)+'px';
-  bubble.dataset.speed=(Math.random()*1.5+1)*speedMultiplier;
+  const x=Math.random()*(window.innerWidth-100);
+  const y=Math.random()*(window.innerHeight-150)+50;
+  bubble.style.left=x+'px';
+  bubble.style.top=y+'px';
+  bubble.dataset.speed=(Math.random()*1.5+1)*speedBoost;
   document.body.appendChild(bubble);
-
-  const pop=()=>{
-    if(!gameRunning) return;
-    if(['2x','144','triple','gravity','invert','instawin'].includes(bubble.dataset.type)) popSound.currentTime=0, popSound.play();
-    bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble);
-    if(bubble.dataset.type==="2x") score*=2;
-    else if(bubble.dataset.type==="144") score+=144;
-    else if(bubble.dataset.type==="triple") for(let i=0;i<3;i++) spawnSingleBubble();
-    else if(bubble.dataset.type==="gravity"){
-      const bx=parseFloat(bubble.style.left)+parseFloat(bubble.style.width)/2;
-      const by=parseFloat(bubble.style.top)+parseFloat(bubble.style.height)/2;
-      bubbles.forEach(b=>{ b.style.left=(bx-parseFloat(b.style.width)/2)+'px'; b.style.top=(by-parseFloat(b.style.height)/2)+'px'; });
-    }
-    else if(bubble.dataset.type==="invert"){ document.body.style.filter='invert(1)'; score+=10; setTimeout(()=>document.body.style.filter='',5000); }
-    else if(bubble.dataset.type==="instawin"){ score+=999999999; }
-    else score++;
-    if(score>999999999) score=999999999;
-    scoreEl.textContent="Skóre: "+score;
-    if(score>highscore){ highscore=score; highscoreEl.textContent="Nejvyšší skóre: "+highscore; }
-  };
-
-  bubble.addEventListener('click',pop); bubble.addEventListener('touchstart',pop);
   bubbles.push(bubble);
-  setTimeout(spawnBubble,500);
+
+  bubble.addEventListener('click',()=>handleBubbleClick(bubble));
+
+  setTimeout(()=>{
+    if(bubbles.includes(bubble)){
+      document.body.removeChild(bubble);
+      bubbles=bubbles.filter(b=>b!==bubble);
+      loseLife();
+    }
+  },3000);
+
+  setTimeout(spawnBubble,spawnRate);
 }
 
-function spawnSingleBubble(){ if(!gameRunning || gamePaused) return;
-  const elapsed=(Date.now()-startTime)/1000; const speedMultiplier=1+elapsed/120;
-  const bubble=document.createElement('div'); bubble.classList.add('bubble');
-  bubble.textContent="12"; bubble.dataset.type="normal";
-  const size=Math.random()*60+60; bubble.style.width=size+'px'; bubble.style.height=size+'px';
-  bubble.style.fontSize=size/3+'px';
-  bubble.style.left=Math.random()*(window.innerWidth-size)+'px';
-  bubble.style.top=(window.innerHeight-size)+'px';
-  bubble.dataset.speed=(Math.random()*1.5+1)*speedMultiplier;
-  document.body.appendChild(bubble);
+// ================== BUBBLE CLICK ==================
+function handleBubbleClick(b){
+  if(!gameRunning || gamePaused) return;
+  popSound.currentTime=0; popSound.play();
+  if(b.classList.contains('rare2x')) score*=2;
+  else if(b.classList.contains('rare144')) score+=144;
+  else if(b.classList.contains('triple')){ for(let i=0;i<3;i++) spawnBubble(); score+=3; }
+  else if(b.classList.contains('gravity')){
+    bubbles.forEach(bb=>{
+      bb.style.left=b.style.left;
+      bb.style.top=b.style.top;
+    }); score+=5;
+  }
+  else if(b.classList.contains('invert')){
+    document.body.style.filter='invert(1)';
+    setTimeout(()=>document.body.style.filter='invert(0)',5000);
+    score+=10;
+  }
+  else if(b.classList.contains('instawin')){
+    score+=999999999;
+    endGame();
+    return;
+  }
+  else score++;
+  updateScore();
+  document.body.removeChild(b);
+  bubbles=bubbles.filter(bb=>bb!==b);
+}
 
-  const pop=()=>{ if(!gameRunning) return; score++; if(score>999999999) score=999999999; scoreEl.textContent="Skóre: "+score; if(score>highscore){ highscore=score; highscoreEl.textContent="Nejvyšší skóre: "+highscore; } bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble);}
-  bubble.addEventListener('click',pop); bubble.addEventListener('touchstart',pop);
-  bubbles.push(bubble);
+// ================== SCORE & LIVES ==================
+function updateScore(){
+  scoreEl.textContent=`Skóre: ${score}`;
+  if(score>highscore){ highscore=score; highscoreEl.textContent=`Nejvyšší skóre: ${highscore}`; }
+}
+function updateLives(){ livesEl.textContent=`Životy: ${lives}`; }
+function loseLife(){
+  lives--;
+  updateLives();
+  if(lives<=0) endGame();
+}
+
+// ================== PAUSE ==================
+function togglePause(){
+  if(!gameRunning) return;
+  if(!gamePaused){
+    gamePaused=true;
+    pauseScreen.style.display='flex';
+    pauseScreen.classList.remove('fadeOut');
+    pauseScreen.classList.add('fadeIn');
+  }else{
+    pauseScreen.classList.remove('fadeIn');
+    pauseScreen.classList.add('fadeOut');
+    setTimeout(()=>{ pauseScreen.style.display='none'; },500);
+    gamePaused=false;
+    spawnBubble();
+  }
 }
 
 // ================== END GAME ==================
 function endGame(){
-  gameRunning=false; bubbles.forEach(b=>b.remove()); bubbles=[];
-  scoreContainer.style.display='none'; pauseBtn.style.display='none'; pauseScreen.style.display='none';
-  if(score===12 || score<=3){ easterEl.textContent=(score===12?'12':'BRUH'); easterEl.style.display='flex'; easterEl.style.animation='fadeShake 5s forwards'; setTimeout(()=>{ easterEl.style.display='none'; showEndScreen(); },5000);}
-  else showEndScreen();
+  gameRunning=false;
+  pauseBtn.style.display='none';
+  document.querySelectorAll('.bubble').forEach(b=>b.remove());
+  bubbles=[];
+  scoreContainer.style.display='none';
+  endScreen.style.display='flex';
+  finalScoreText.textContent=`Konec hry! Skóre: ${score}`;
+  document.body.style.backgroundColor="#000";
 }
-
-function showEndScreen(){ finalScoreText.textContent="Tvé skóre: "+score; endScreen.style.display='flex'; }
 </script>
 </body>
 </html>
