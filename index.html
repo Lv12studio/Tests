@@ -9,7 +9,7 @@ html, body { margin:0; padding:0; height:100vh; overflow:hidden; font-family: mo
 #loadingScreen { position: fixed; top:0; left:0; width:100%; height:100%; background:#000; display:flex; justify-content:center; align-items:center; color:#fff; font-size:50px; font-weight:bold; z-index:3000; text-align:center; animation:eyeGlow 2s ease-in-out forwards;}
 @keyframes eyeGlow { 0% { opacity:0.2; text-shadow:none; } 50% { opacity:1; text-shadow:0 0 25px #fff,0 0 50px #fff,0 0 75px #fff; } 100% { opacity:0.2; text-shadow:none; } }
 
-#startBtn, #indexBtn { display:none; margin:0 auto; font-size:28px; padding:15px 35px; border:none; border-radius:12px; color:#fff; font-weight:bold; text-transform:uppercase; cursor:pointer; box-shadow:0 0 10px #d166ff,0 0 20px #a044ff; z-index:1000; transition: transform 0.2s; }
+#startBtn, #indexBtn { display:none; margin:0 auto; font-size:28px; padding:15px 35px; background: linear-gradient(45deg,#a044ff,#6a00f4,#d166ff); border:none; border-radius:12px; color:#fff; font-weight:bold; text-transform:uppercase; cursor:pointer; box-shadow:0 0 10px #d166ff,0 0 20px #a044ff; z-index:1000; transition: transform 0.2s; }
 #startBtn:hover, #indexBtn:hover { transform: scale(1.05); }
 #startBtn { margin-top:30vh; }
 #indexBtn { margin-top:20px; }
@@ -33,6 +33,11 @@ html, body { margin:0; padding:0; height:100vh; overflow:hidden; font-family: mo
 #indexPanel { position:fixed; top:100%; left:0; width:100%; max-height:70%; background:rgba(10,10,10,0.95); overflow-y:auto; transition:top 0.5s ease; padding:20px; z-index:999; box-shadow:0 -5px 30px #d166ff; }
 #indexPanel h2 { text-transform:uppercase; }
 #indexPanel .closeBtn { position:absolute; top:15px; right:15px; font-size:28px; cursor:pointer; color:#fff; font-weight:bold; z-index:1001; }
+.indexItem { display:flex; align-items:center; margin:10px 0; }
+.indexItem .bubbleImg { width:60px; height:60px; margin-right:15px; border-radius:50%; display:flex; justify-content:center; align-items:center; font-weight:bold; color:#fff; border:2px solid #d166ff; box-shadow:0 0 15px #d166ff inset; animation:float 1s infinite alternate; }
+.indexItem .desc { flex:1; }
+.indexItem .rarity { font-weight:bold; }
+@keyframes float { 0%{transform:translateY(0);} 100%{transform:translateY(-10px);} }
 
 #endScreen { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); display:none; flex-direction:column; justify-content:center; align-items:center; color:#fff; font-size:40px; z-index:1500; text-align:center; }
 #continueBtn { margin-top:30px; font-size:26px; padding:15px 40px; border:none; border-radius:10px; cursor:pointer; color:#fff; background: linear-gradient(45deg,#a044ff,#6a00f4,#d166ff); box-shadow:0 0 10px #d166ff,0 0 20px #a044ff; }
@@ -106,7 +111,6 @@ html, body { margin:0; padding:0; height:100vh; overflow:hidden; font-family: mo
 <audio id="popSound" src="https://www.soundjay.com/button/sounds/button-16.mp3"></audio>
 
 <script>
-// ELEMENTS
 const startBtn=document.getElementById('startBtn');
 const indexBtn=document.getElementById('indexBtn');
 const indexPanel=document.getElementById('indexPanel');
@@ -220,9 +224,8 @@ function updateBubbles(){
   requestAnimationFrame(updateBubbles);
 }
 
-// SPAWN
 function spawnBubble(){ 
-  if(!gameRunning || gamePaused) { setTimeout(spawnBubble,600); return; } // pomaleji spawn
+  if(!gameRunning || gamePaused) { setTimeout(spawnBubble,500); return; }
   const elapsed=(Date.now()-startTime)/1000; 
   const speedMultiplier=(window.bubbleSpeedMultiplier || 1)*(1+elapsed/120); 
   const chance=Math.random();
@@ -264,7 +267,7 @@ function spawnBubble(){
 
   bubble.addEventListener('click',pop); bubble.addEventListener('touchstart',pop);
   bubbles.push(bubble);
-  setTimeout(spawnBubble,600); // prodloužen interval
+  setTimeout(spawnBubble,500);
 }
 
 function spawnSingleBubble(){ 
