@@ -156,9 +156,9 @@ function attachButtonEvents(){
     btn.addEventListener('click',()=>{
       const diff=btn.dataset.diff;
       difficultyPanel.style.display='none';
-      if(diff==='easy') window.bubbleSpeedMultiplier=1.7;
-      else if(diff==='normal') window.bubbleSpeedMultiplier=1.3;
-      else if(diff==='hard') window.bubbleSpeedMultiplier=1.0;
+      if(diff==='easy') window.bubbleSpeedMultiplier=2.0;
+      else if(diff==='normal') window.bubbleSpeedMultiplier=1.5;
+      else if(diff==='hard') window.bubbleSpeedMultiplier=1.2;
       startCountdown();
     });
   });
