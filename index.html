@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>12 Bubbles Ultimate</title>
+<title>12 Bubbles</title>
 <style>
 /* ================== Reset & Basic ================== */
 html, body { margin:0; padding:0; height:100vh; overflow:hidden; font-family: monospace; background-color:#0a0a0a; color:#fff; }
@@ -80,9 +80,9 @@ html, body { margin:0; padding:0; height:100vh; overflow:hidden; font-family: mo
 <!-- Difficulty Selection Panel -->
 <div id="difficultyPanel">
   <h2>Výběr Obtížnosti</h2>
-  <div class="difficultyOption" data-difficulty="easy">EASY - Nejlehčí</div>
-  <div class="difficultyOption" data-difficulty="normal">NORMAL - Vyvážená</div>
-  <div class="difficultyOption" data-difficulty="hard">HARD - Těžší než současná</div>
+  <div class="difficultyOption" data-difficulty="easy">EASY</div>
+  <div class="difficultyOption" data-difficulty="normal">NORMAL</div>
+  <div class="difficultyOption" data-difficulty="hard">HARD</div>
   <button id="backBtn">ZPĚT</button>
 </div>
 
@@ -124,6 +124,7 @@ html, body { margin:0; padding:0; height:100vh; overflow:hidden; font-family: mo
 
 <script>
 // ================== ELEMENTS ==================
+const loadingScreen = document.getElementById('loadingScreen');
 const startBtn=document.getElementById('startBtn');
 const indexBtn=document.getElementById('indexBtn');
 const indexPanel=document.getElementById('indexPanel');
@@ -152,22 +153,23 @@ const backBtn = document.getElementById('backBtn');
 
 let score=0, highscore=0, lives=3, bubbles=[], gameRunning=false, gamePaused=false, startTime;
 let selectedDifficulty = 'normal'; // Default difficulty
+let canSpawnBubble = true; // Kontrola pro spawnování pouze jedné bubliny
 
 // Difficulty settings
 const difficultySettings = {
   easy: {
-    bubbleSpeed: 0.8,      // Pomalejší bubliny
-    spawnRate: 700,        // Méně časté spawnování
+    bubbleSpeed: 0.7,      // Pomalejší bubliny
+    spawnRate: 600,        // Méně časté spawnování
     lives: 5               // Více životů
   },
   normal: {
-    bubbleSpeed: 1.2,      // Mírně pomalejší než současná
+    bubbleSpeed: 1.0,      // Současná rychlost
     spawnRate: 500,        // Současná rychlost
     lives: 3               // Současný počet životů
   },
   hard: {
-    bubbleSpeed: 1.8,      // Rychlejší než současná
-    spawnRate: 400,        // Častější spawnování
+    bubbleSpeed: 1.3,      // Jen o trochu rychlejší
+    spawnRate: 450,        // Jen o trochu častější
     lives: 2               // Méně životů
   }
 };
@@ -254,6 +256,7 @@ function startCountdown(){
 // ================== GAME LOGIC ==================
 function startGame(){
   score=0; 
+  canSpawnBubble = true;
   
   // Set game parameters based on selected difficulty
   const settings = difficultySettings[selectedDifficulty];
@@ -303,11 +306,13 @@ function updateBubbles(){
 
 // ================== SPAWN BUBBLES ==================
 function spawnBubble(){ 
-  if(!gameRunning || gamePaused) { 
+  if(!gameRunning || gamePaused || !canSpawnBubble) { 
     const settings = difficultySettings[selectedDifficulty];
     setTimeout(spawnBubble, settings.spawnRate); 
     return; 
   }
+  
+  canSpawnBubble = false; // Zabrání spawnování další bubliny
   
   const elapsed=(Date.now()-startTime)/1000; 
   const settings = difficultySettings[selectedDifficulty];
@@ -338,8 +343,6 @@ function spawnBubble(){
     if(!gameRunning) return;
     if(['2x','144','triple','gravity','invert','instawin'].includes(bubble.dataset.type)) popSound.currentTime=0, popSound.play();
     bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble);
+    
     if(bubble.dataset.type==="2x") score*=2;
-    else if(bubble.dataset.type==="144") score+=144;
-    else if(bubble.dataset.type==="triple") for(let i=0;i<3;i++) spawnSingleBubble();
-    else if(bubble.dataset.type==="gravity"){
-      const bx=parseFloat(bubble.style.left)+parseFloat(b
+    else if(bubble.dataset.type==="144") score+=144
