@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>12 Bubbles Ultimate</title>
+<title>12 Bubbles</title>
 <style>
 html, body { margin:0; padding:0; height:100vh; overflow:hidden; font-family: monospace; background-color:#0a0a0a; color:#fff; }
-#loadingScreen { position: fixed; top:0; left:0; width:100%; height:100%; background:#000; display:flex; justify-content:center; align-items:center; color:#fff; font-size:50px; font-weight:bold; z-index:3000; text-align:center; animation:eyeGlow 2s ease-in-out forwards;}
+#loadingScreen { position:fixed; top:0; left:0; width:100%; height:100%; background:#000; display:flex; justify-content:center; align-items:center; color:#fff; font-size:50px; font-weight:bold; z-index:3000; text-align:center; animation:eyeGlow 2s ease-in-out forwards; }
 @keyframes eyeGlow { 0% { opacity:0.2; text-shadow:none; } 50% { opacity:1; text-shadow:0 0 25px #fff,0 0 50px #fff,0 0 75px #fff; } 100% { opacity:0.2; text-shadow:none; } }
 
-#startBtn, #indexBtn { display:none; margin:0 auto; font-size:28px; padding:15px 35px; background: linear-gradient(45deg,#a044ff,#6a00f4,#d166ff); border:none; border-radius:12px; color:#fff; font-weight:bold; text-transform:uppercase; cursor:pointer; box-shadow:0 0 10px #d166ff,0 0 20px #a044ff; z-index:1000; transition: transform 0.2s; }
+#startBtn, #indexBtn { display:none; margin:0 auto; font-size:28px; padding:15px 35px; border:none; border-radius:12px; color:#fff; font-weight:bold; text-transform:uppercase; cursor:pointer; box-shadow:0 0 10px #d166ff,0 0 20px #a044ff; transition: transform 0.2s; }
+#startBtn { margin-top:30vh; background: linear-gradient(45deg,#a044ff,#6a00f4,#d166ff); }
+#indexBtn { margin-top:20px; background: linear-gradient(45deg,#6a00f4,#a044ff,#d166ff); }
 #startBtn:hover, #indexBtn:hover { transform: scale(1.05); }
-#startBtn { margin-top:30vh; }
-#indexBtn { margin-top:20px; }
 
 #countdown { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); font-size:80px; color:#d166ff; text-shadow:0 0 20px #d166ff,0 0 40px #a044ff; z-index:1001; display:none; }
 #scoreContainer { position:fixed; top:20px; left:50%; transform:translateX(-50%); z-index:1001; text-align:center; display:none; }
@@ -33,7 +33,6 @@ html, body { margin:0; padding:0; height:100vh; overflow:hidden; font-family: mo
 
 #pauseBtn { position: fixed; top:10px; left:10px; font-size:28px; padding:10px 18px; border:none; border-radius:8px; background: linear-gradient(45deg,#a044ff,#6a00f4); color:#fff; cursor:pointer; z-index:1001; display:none; text-shadow:0 0 10px #fff; }
 
-/* === Difficulty Buttons === */
 #difficultyPanel { display:none; text-align:center; margin-top:30vh; }
 #difficultyPanel button { display:block; margin:20px auto; font-size:28px; padding:15px 35px; border:none; border-radius:12px; color:#fff; font-weight:bold; text-transform:uppercase; cursor:pointer; transition: transform 0.2s; }
 #difficultyPanel button:hover { transform: scale(1.05); }
@@ -45,23 +44,21 @@ html, body { margin:0; padding:0; height:100vh; overflow:hidden; font-family: mo
 </head>
 <body>
 
-<div id="loadingScreen">Level 12 studio</div>
-<div id="versionLabel">Released 1.2.3</div>
-<button id="startBtn">START</button>
-<button id="indexBtn">INDEX</button>
+<div id="loadingScreen">12 Bubbles</div>
+<div id="startBtn">START</div>
+<div id="indexBtn">INDEX</div>
 
-<!-- Obtížnosti -->
 <div id="difficultyPanel">
-  <button class="difficultyBtn easyBtn" data-diff="easy">EASY</button>
-  <button class="difficultyBtn normalBtn" data-diff="normal">NORMAL</button>
-  <button class="difficultyBtn hardBtn" data-diff="hard">HARD</button>
-  <button id="backBtn" class="backBtn">BACK</button>
+  <button class="easyBtn" data-diff="easy">EASY</button>
+  <button class="normalBtn" data-diff="normal">NORMAL</button>
+  <button class="hardBtn" data-diff="hard">HARD</button>
+  <button class="backBtn" id="backBtn">BACK</button>
 </div>
 
 <div id="indexPanel">
   <div class="closeBtn">✖</div>
   <h2>BUBBLES INDEX</h2>
-  <p>Ukázkový text...</p>
+  <p>Ukázkový obsah indexu bublin...</p>
 </div>
 
 <div id="countdown"></div>
@@ -92,19 +89,17 @@ const livesEl=document.getElementById('lives');
 const popSound=document.getElementById('popSound');
 const endScreen=document.getElementById('endScreen');
 const finalScoreText=document.getElementById('finalScoreText');
-const versionLabel=document.getElementById('versionLabel');
 const pauseBtn=document.getElementById('pauseBtn');
 const continueBtn=document.getElementById('continueBtn');
-
 const difficultyPanel=document.getElementById('difficultyPanel');
-const difficultyBtns=document.querySelectorAll('.difficultyBtn');
+const difficultyBtns=document.querySelectorAll('#difficultyPanel button[data-diff]');
 const backBtn=document.getElementById('backBtn');
 
-let score=0, highscore=0, lives=3, bubbles=[], gameRunning=false, gamePaused=false, startTime;
+let score=0, highscore=0, lives=3, bubbles=[], gameRunning=false, gamePaused=false, startTime, spawnDelay=800;
 
 window.addEventListener('load',()=>{
   setTimeout(()=>{
-    loadingScreen.style.display='none';
+    document.getElementById('loadingScreen').style.display='none';
     startBtn.style.display='block';
     indexBtn.style.display='block';
     attachButtonEvents();
@@ -127,9 +122,9 @@ function attachButtonEvents(){
   difficultyBtns.forEach(btn=>{
     btn.addEventListener('click',()=>{
       const diff=btn.dataset.diff;
-      if(diff==='easy') window.bubbleSpeedMultiplier=0.7;
-      else if(diff==='normal') window.bubbleSpeedMultiplier=1;
-      else if(diff==='hard') window.bubbleSpeedMultiplier=1.2;
+      if(diff==='easy') spawnDelay=1200;
+      else if(diff==='normal') spawnDelay=800;
+      else if(diff==='hard') spawnDelay=500;
       difficultyPanel.style.display='none';
       startCountdown();
     });
@@ -155,10 +150,8 @@ function attachButtonEvents(){
     indexBtn.style.display='block';
   });
 
-  // 🟣 OPRAVA: kliknutí uvnitř index panelu neuzavírá panel
-  indexPanel.addEventListener('click', e => e.stopPropagation());
+  indexPanel.addEventListener('click', e=> e.stopPropagation());
 
-  // kliknutí mimo panel ho zavře
   document.body.addEventListener('click',()=>{
     if(indexPanel.style.top==='30%'){
       indexPanel.style.top='100%';
@@ -171,12 +164,12 @@ function attachButtonEvents(){
     endScreen.style.display='none';
     startBtn.style.display='block';
     indexBtn.style.display='block';
-    versionLabel.style.display='block';
   });
+
+  pauseBtn.addEventListener('click', togglePause);
 }
 
 function startCountdown(){
-  versionLabel.style.display='none';
   countdownEl.style.display='block';
   let count=3;
   countdownEl.textContent=count;
@@ -200,15 +193,21 @@ function startGame(){
   requestAnimationFrame(updateBubbles);
 }
 
+function togglePause(){
+  if(!gameRunning) return;
+  gamePaused=!gamePaused;
+  pauseBtn.textContent=gamePaused?'▶':'| |';
+}
+
 function updateBubbles(){
   if(!gameRunning) return;
   if(!gamePaused){
     bubbles.forEach(bubble=>{
       const top=parseFloat(bubble.style.top);
       bubble.style.top=top-parseFloat(bubble.dataset.speed)+'px';
-      if(top<=0){
-        lives--; livesEl.textContent="Životy: "+lives;
-        bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble);
+      if(top<=0){  
+        lives--; livesEl.textContent="Životy: "+lives;  
+        bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble);  
         if(lives<=0) endGame();
       }
     });
@@ -216,36 +215,42 @@ function updateBubbles(){
   requestAnimationFrame(updateBubbles);
 }
 
-function spawnBubble(){
-  if(!gameRunning || gamePaused){ setTimeout(spawnBubble,500); return; }
+function spawnBubble(){ 
+  if(!gameRunning || gamePaused) { setTimeout(spawnBubble,spawnDelay); return; }
   const elapsed=(Date.now()-startTime)/1000;
-  const speedMultiplier=(window.bubbleSpeedMultiplier||1)*(1+elapsed/120);
-  const bubble=document.createElement('div');
-  bubble.classList.add('bubble');
-  bubble.textContent="12";
-  bubble.style.left=Math.random()*(window.innerWidth-80)+'px';
-  bubble.style.top=(window.innerHeight-80)+'px';
+  const speedMultiplier=1+elapsed/120;
+  const bubble=document.createElement('div'); bubble.classList.add('bubble'); bubble.textContent="12"; bubble.dataset.type="normal";
+
+  const size=Math.random()*60+60; bubble.style.width=size+'px'; bubble.style.height=size+'px';
+  bubble.style.fontSize=size/3+'px';
+  bubble.style.left=Math.random()*(window.innerWidth-size)+'px';
+  bubble.style.top=(window.innerHeight-size)+'px';
   bubble.dataset.speed=(Math.random()*1.5+1)*speedMultiplier;
+
   document.body.appendChild(bubble);
 
-  const pop=()=>{ if(!gameRunning)return; score++; scoreEl.textContent="Skóre: "+score; if(score>highscore){ highscore=score; highscoreEl.textContent="Nejvyšší skóre: "+highscore; } bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble); };
-  bubble.addEventListener('click',pop);
-  bubble.addEventListener('touchstart',pop);
-  bubbles.push(bubble);
+  const pop=()=>{
+    if(!gameRunning) return;
+    score++;
+    if(score>999999999) score=999999999;
+    scoreEl.textContent="Skóre: "+score;
+    if(score>highscore){ highscore=score; highscoreEl.textContent="Nejvyšší skóre: "+highscore; }
+    bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble);
+  };
 
-  // 🕒 Spawn delay podle obtížnosti
-  let spawnDelay = 800; // normal
-  if (window.bubbleSpeedMultiplier <= 0.8) spawnDelay = 1200;   // easy
-  else if (window.bubbleSpeedMultiplier >= 1.1) spawnDelay = 500; // hard
+  bubble.addEventListener('click',pop); bubble.addEventListener('touchstart',pop);
+  bubbles.push(bubble);
   setTimeout(spawnBubble, spawnDelay);
 }
 
 function endGame(){
-  gameRunning=false; bubbles.forEach(b=>b.remove()); bubbles=[];
+  gameRunning=false;
+  bubbles.forEach(b=>b.remove());
+  bubbles=[];
   scoreContainer.style.display='none';
   pauseBtn.style.display='none';
-  finalScoreText.textContent="Tvé skóre: "+score;
   endScreen.style.display='flex';
+  finalScoreText.textContent="Tvé skóre: "+score;
 }
 </script>
 </body>
