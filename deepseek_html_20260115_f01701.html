@@ -1,0 +1,2001 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oskarka online - Školní síť</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* RESET A ZÁKLADNÍ STYLY */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        html, body {
+            height: auto;
+            overflow-x: hidden;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 15px;
+            color: #333;
+            line-height: 1.5;
+            transition: background 0.3s;
+            position: relative;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        body.view-mode {
+            background: linear-gradient(135deg, #4a6491 0%, #2c3e50 100%);
+        }
+        
+        /* KONTEJNER */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            overflow: visible;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            min-height: auto;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.5s ease;
+            position: relative;
+        }
+        
+        body.view-mode .container {
+            transform: scale(0.98);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* HEADER */
+        header {
+            background: linear-gradient(135deg, #2c3e50 0%, #4a6491 100%);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom: 5px solid #ff6b6b;
+            position: relative;
+            flex-shrink: 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .logo i {
+            font-size: 2.8rem;
+            background: white;
+            color: #2c3e50;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            line-height: 1.2;
+        }
+        
+        .tagline {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-top: 8px;
+            font-weight: 300;
+        }
+        
+        /* HLAVNÍ OBSAH */
+        .main-content {
+            display: flex;
+            flex: 1;
+            min-height: 0;
+            overflow: visible;
+        }
+        
+        /* REŽIM VYTVÁŘENÍ */
+        .create-mode {
+            width: 100%;
+            display: flex;
+            overflow: visible;
+        }
+        
+        /* REŽIM ZOBRAZENÍ */
+        .view-mode-content {
+            width: 100%;
+            padding: 30px;
+            display: none;
+            animation: fadeIn 0.5s;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        body.view-mode .create-mode {
+            display: none;
+        }
+        
+        body.view-mode .view-mode-content {
+            display: block;
+        }
+        
+        /* LEVÝ A PRAVÝ PANEL */
+        .left-panel {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            border-right: 1px solid #eee;
+            background: #f8f9fa;
+        }
+        
+        .right-panel {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            background: white;
+        }
+        
+        /* RESPONZIVITA */
+        @media (max-width: 768px) {
+            .main-content, .create-mode {
+                flex-direction: column;
+                overflow: visible;
+            }
+            
+            .left-panel, .right-panel {
+                padding: 20px 15px;
+                border-right: none;
+                border-bottom: 1px solid #eee;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .logo {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .logo i {
+                width: 60px;
+                height: 60px;
+                font-size: 2.2rem;
+            }
+            
+            body {
+                padding: 10px;
+                overflow-y: auto;
+            }
+            
+            .container {
+                border-radius: 15px;
+                min-height: auto;
+                overflow: visible;
+            }
+            
+            .view-mode-content {
+                padding: 20px 15px;
+                overflow-y: auto;
+            }
+        }
+        
+        /* TITULKY */
+        h2 {
+            color: #2c3e50;
+            font-size: 1.6rem;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #ff6b6b;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        h2 i {
+            color: #ff6b6b;
+        }
+        
+        /* FORMULÁŘ */
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.05rem;
+        }
+        
+        .form-hint {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .required::after {
+            content: " *";
+            color: #e74c3c;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            background: white;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+            font-size: 16px !important;
+        }
+        
+        textarea {
+            min-height: 140px;
+            resize: vertical;
+            font-family: inherit;
+            line-height: 1.5;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* AVATAR SEKCE */
+        .avatar-section {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .avatar-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 30px;
+        }
+        
+        .avatar-preview {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid white;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            transition: all 0.3s;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .avatar-preview:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .avatar-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            opacity: 0;
+            transition: opacity 0.3s;
+            cursor: pointer;
+            font-size: 3rem;
+        }
+        
+        .avatar-container:hover .avatar-overlay {
+            opacity: 1;
+        }
+        
+        @media (hover: none) {
+            .avatar-overlay {
+                opacity: 0.7;
+                background: rgba(0, 0, 0, 0.3);
+            }
+        }
+        
+        /* 3 TLAČÍTKA PRO FOTKY */
+        .avatar-options-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        @media (max-width: 600px) {
+            .avatar-options-buttons {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+        }
+        
+        .avatar-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 20px 15px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            touch-action: manipulation;
+        }
+        
+        .avatar-btn:hover {
+            border-color: #4a90e2;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .avatar-btn i {
+            font-size: 2.2rem;
+            color: #4a90e2;
+        }
+        
+        .avatar-btn span {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1rem;
+        }
+        
+        /* PŘEDNASTAVENÉ AVATARY */
+        .avatar-presets {
+            margin-top: 25px;
+        }
+        
+        .avatar-presets h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+        
+        .avatar-preset-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        
+        .avatar-preset {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s;
+            background: #f0f0f0;
+            touch-action: manipulation;
+        }
+        
+        .avatar-preset:hover, .avatar-preset.selected {
+            border-color: #4a90e2;
+            transform: scale(1.1);
+        }
+        
+        /* SKRYTÉ INPUTY PRO FOTKY */
+        #cameraInput, #galleryInput {
+            display: none;
+        }
+        
+        /* VÝBĚR TŘÍDY */
+        .class-selector {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 15px;
+        }
+        
+        @media (max-width: 480px) {
+            .class-selector {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .class-option {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 18px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 700;
+            font-size: 1.1rem;
+            user-select: none;
+            touch-action: manipulation;
+        }
+        
+        .class-option:hover {
+            border-color: #4a90e2;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .class-option.selected {
+            background: linear-gradient(135deg, #4a90e2 0%, #63b3ed 100%);
+            color: white;
+            border-color: #4a90e2;
+            box-shadow: 0 5px 20px rgba(74, 144, 226, 0.3);
+        }
+        
+        /* SOCIÁLNÍ SÍTĚ */
+        .social-links {
+            display: grid;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .social-input-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .social-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .instagram-bg { background: linear-gradient(45deg, #405DE6, #833AB4, #C13584, #E1306C, #FD1D1D); }
+        .youtube-bg { background: #FF0000; }
+        .tiktok-bg { background: #000000; }
+        
+        /* DATUM NAROZENÍ */
+        .birthday-input {
+            max-width: 300px;
+        }
+        
+        /* TLAČÍTKA */
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        @media (max-width: 480px) {
+            .buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        button {
+            padding: 18px 25px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            min-height: 60px;
+            touch-action: manipulation;
+        }
+        
+        button:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-save {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(46, 204, 113, 0.3);
+        }
+        
+        .btn-save:hover {
+            box-shadow: 0 8px 25px rgba(46, 204, 113, 0.4);
+            transform: translateY(-3px);
+        }
+        
+        .btn-load {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn-load:hover {
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+            transform: translateY(-3px);
+        }
+        
+        .btn-reset {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(231, 76, 60, 0.3);
+        }
+        
+        .btn-reset:hover {
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+            transform: translateY(-3px);
+        }
+        
+        /* 3 TEČKY MENU */
+        .dots-menu {
+            position: absolute;
+            top: 25px;
+            right: 20px;
+            z-index: 100;
+        }
+        
+        .dots-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 10px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            touch-action: manipulation;
+        }
+        
+        .dots-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            min-width: 200px;
+            display: none;
+            overflow: hidden;
+            z-index: 1000;
+        }
+        
+        .dropdown-menu.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .dropdown-item {
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+        
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+        
+        .dropdown-item:hover {
+            background: #f8f9fa;
+            color: #4a90e2;
+        }
+        
+        .dropdown-item i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        .dropdown-item.delete {
+            color: #e74c3c;
+        }
+        
+        .dropdown-item.delete:hover {
+            background: #fdf2f2;
+        }
+        
+        /* ZPRÁVY */
+        .message {
+            padding: 18px 20px;
+            border-radius: 12px;
+            margin-top: 25px;
+            display: none;
+            animation: fadeIn 0.3s;
+            font-weight: 500;
+        }
+        
+        .message.show {
+            display: block;
+        }
+        
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+        
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+        
+        .message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 2px solid #bee5eb;
+        }
+        
+        /* NÁHLED PROFILU */
+        .profile-preview-create {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            overflow: visible;
+        }
+        
+        /* PROFIL V REŽIMU ZOBRAZENÍ */
+        .profile-view {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
+            animation: slideUp 0.5s ease;
+            position: relative;
+            overflow: visible;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .profile-header-view {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            margin-bottom: 40px;
+            padding-bottom: 40px;
+            border-bottom: 3px solid #eee;
+        }
+        
+        @media (max-width: 600px) {
+            .profile-header-view {
+                flex-direction: column;
+                text-align: center;
+                gap: 30px;
+            }
+            
+            .profile-view {
+                padding: 30px 20px;
+            }
+        }
+        
+        .profile-avatar-view {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 8px solid #ff6b6b;
+            box-shadow: 0 15px 40px rgba(255, 107, 107, 0.3);
+        }
+        
+        .profile-info-view {
+            flex: 1;
+        }
+        
+        .profile-info-view h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: none;
+        }
+        
+        /* NAROZENINY POD JMÉNEM */
+        .birthday-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #666;
+            font-size: 1.1rem;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            padding: 6px 12px;
+            background: #f8f9fa;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        
+        .birthday-badge i {
+            color: #ff6b6b;
+        }
+        
+        .profile-class-view {
+            display: inline-block;
+            background: linear-gradient(135deg, #4a90e2 0%, #63b3ed 100%);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 700;
+            margin-top: 10px;
+            font-size: 1.3rem;
+            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.3);
+        }
+        
+        .profile-nickname-view {
+            color: #ff6b6b;
+            font-weight: 600;
+            font-size: 1.5rem;
+            margin: 10px 0 15px 0;
+            opacity: 0.9;
+        }
+        
+        .no-nickname-view {
+            color: #888;
+            font-style: italic;
+            font-size: 1.2rem;
+            margin: 10px 0 15px 0;
+        }
+        
+        .profile-bio-view {
+            line-height: 1.8;
+            margin: 30px 0;
+            color: #555;
+            font-size: 1.2rem;
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            border-left: 6px solid #4a90e2;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+        }
+        
+        /* SOCIÁLNÍ SÍTĚ V REŽIMU ZOBRAZENÍ */
+        .social-links-view {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 30px 0 40px 0;
+            justify-content: center;
+        }
+        
+        .social-link-view {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px 30px;
+            background: white;
+            border-radius: 15px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s;
+            border: 2px solid #e0e0e0;
+            min-width: 200px;
+            justify-content: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            touch-action: manipulation;
+        }
+        
+        .social-link-view:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+            border-color: transparent;
+        }
+        
+        .social-link-view.instagram:hover { 
+            background: linear-gradient(45deg, #405DE6, #833AB4, #C13584, #E1306C, #FD1D1D);
+            color: white;
+        }
+        
+        .social-link-view.youtube:hover { 
+            background: #FF0000;
+            color: white;
+        }
+        
+        .social-link-view.tiktok:hover { 
+            background: #000000;
+            color: white;
+        }
+        
+        /* BACK TO CREATE BUTTON */
+        .back-to-create {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50px;
+            padding: 12px 25px;
+            font-weight: 600;
+            color: #2c3e50;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: all 0.3s;
+            touch-action: manipulation;
+        }
+        
+        .back-to-create:hover {
+            background: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        @media (max-width: 768px) {
+            .back-to-create {
+                top: 10px;
+                left: 10px;
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        body:not(.view-mode) .back-to-create {
+            display: none;
+        }
+        
+        /* MODAL PRO VÝBĚR POHLAVÍ */
+        .gender-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 20px;
+        }
+        
+        .gender-modal.show {
+            display: flex;
+        }
+        
+        .gender-modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            animation: slideUp 0.5s ease;
+            margin: auto;
+        }
+        
+        .gender-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .gender-option {
+            padding: 25px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            touch-action: manipulation;
+        }
+        
+        .gender-option:hover {
+            border-color: #4a90e2;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .gender-option.selected {
+            border-color: #4a90e2;
+            background: #f0f7ff;
+        }
+        
+        .gender-option i {
+            font-size: 3rem;
+            color: #4a90e2;
+        }
+        
+        /* FOOTER */
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 25px 20px;
+            border-top: 5px solid #ff6b6b;
+            flex-shrink: 0;
+        }
+        
+        footer p {
+            margin: 8px 0;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+        
+        .hint {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: 12px;
+        }
+        
+        /* LOADING */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        /* SCROLLBAR */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+        
+        /* TOUCH OPTIMIZATIONS */
+        @media (hover: none) and (pointer: coarse) {
+            button, .class-option, .social-link-view {
+                min-height: 50px;
+            }
+            
+            input, select, textarea {
+                font-size: 16px;
+            }
+            
+            .class-option {
+                padding: 22px 10px;
+            }
+            
+            .avatar-overlay {
+                opacity: 1;
+                background: rgba(0, 0, 0, 0.3);
+            }
+            
+            button, .avatar-btn, .class-option, .dropdown-item {
+                min-height: 44px;
+            }
+            
+            .avatar-btn:hover, .class-option:hover, .social-link-view:hover {
+                transform: none;
+            }
+        }
+        
+        /* PREVENT TEXT SIZE ADJUST ON iOS */
+        @media screen and (max-device-width: 480px) {
+            body {
+                -webkit-text-size-adjust: 100%;
+            }
+        }
+        
+        /* FIX PRO SAFARI IOS */
+        @supports (-webkit-touch-callout: none) {
+            body {
+                min-height: -webkit-fill-available;
+            }
+            
+            .container {
+                min-height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- MODAL PRO VÝBĚR POHLAVÍ -->
+    <div class="gender-modal" id="genderModal">
+        <div class="gender-modal-content">
+            <h2><i class="fas fa-venus-mars"></i> Vyber pohlaví</h2>
+            <p>Vyber si pohlaví, abychom ti mohli ukázat relevantní avatarové možnosti.</p>
+            
+            <div class="gender-options">
+                <div class="gender-option" onclick="selectGender('male')">
+                    <i class="fas fa-mars"></i>
+                    <span>Kluk</span>
+                </div>
+                <div class="gender-option" onclick="selectGender('female')">
+                    <i class="fas fa-venus"></i>
+                    <span>Holka</span>
+                </div>
+            </div>
+            
+            <button class="btn-save" onclick="confirmGender()">
+                <i class="fas fa-check"></i> Pokračovat
+            </button>
+        </div>
+    </div>
+
+    <!-- BACK TO CREATE BUTTON -->
+    <button class="back-to-create" onclick="switchToCreateMode()">
+        <i class="fas fa-edit"></i> Upravit profil
+    </button>
+
+    <div class="container">
+        <header>
+            <div class="dots-menu" id="dotsMenu" style="display: none;">
+                <button class="dots-btn" onclick="toggleDropdown()">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <div class="dropdown-item" onclick="switchToCreateMode()">
+                        <i class="fas fa-edit"></i>
+                        <span>Upravit profil</span>
+                    </div>
+                    <div class="dropdown-item delete" onclick="resetProfile()">
+                        <i class="fas fa-trash"></i>
+                        <span>Smazat profil</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="logo">
+                <i class="fas fa-school"></i>
+                <h1>Oskarka online</h1>
+            </div>
+            <p class="tagline" id="modeTagline">Vytvoř si svůj školní profil</p>
+        </header>
+
+        <!-- REŽIM VYTVÁŘENÍ/ÚPRAVY PROFILU -->
+        <div class="main-content">
+            <div class="create-mode">
+                <!-- LEVÁ ČÁST - FORMULÁŘ -->
+                <div class="left-panel">
+                    <h2><i class="fas fa-user-edit"></i> Vytvořit/Upravit profil</h2>
+                    
+                    <!-- AVATAR SEKCE S 3 MOŽNOSTMI -->
+                    <div class="avatar-section">
+                        <div class="avatar-container">
+                            <img id="avatarPreview" class="avatar-preview" 
+                                 src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" 
+                                 alt="Profilová fotka">
+                            <div class="avatar-overlay" onclick="showAvatarOptions()">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="avatar-options-buttons">
+                            <div class="avatar-btn" onclick="openCamera()">
+                                <i class="fas fa-camera"></i>
+                                <span>Vyfotit</span>
+                            </div>
+                            <div class="avatar-btn" onclick="openGallery()">
+                                <i class="fas fa-images"></i>
+                                <span>Z galerie</span>
+                            </div>
+                            <div class="avatar-btn" onclick="showGenderModal()">
+                                <i class="fas fa-user-tag"></i>
+                                <span>Přednastavené</span>
+                            </div>
+                        </div>
+                        
+                        <!-- INPUTY PRO KAMERU A GALERII -->
+                        <input type="file" id="cameraInput" accept="image/*" capture="environment">
+                        <input type="file" id="galleryInput" accept="image/*">
+                        
+                        <!-- PŘEDNASTAVENÉ AVATARY (ZOBRAZÍ SE PO VÝBĚRU POHLAVÍ) -->
+                        <div class="avatar-presets" id="avatarPresets" style="display: none;">
+                            <h3>Vyber si avatar:</h3>
+                            <div class="avatar-preset-options" id="presetOptions">
+                                <!-- Avatary se naplní podle pohlaví -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fullName" class="required"><i class="fas fa-user"></i> Jméno a Příjmení</label>
+                        <input type="text" id="fullName" placeholder="Jan Novák" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nickname"><i class="fas fa-star"></i> Přezdívka (nepovinné)</label>
+                        <input type="text" id="nickname" placeholder="Jenda123">
+                        <p class="form-hint">Pokud nemáš přezdívku, nech prázdné</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="required"><i class="fas fa-users"></i> Třída</label>
+                        <p class="form-hint">Vyber si třídu (změna možná jen 1× za 6 měsíců)</p>
+                        <div class="class-selector" id="classSelector">
+                            <!-- Třídy se vygenerují JavaScriptem -->
+                        </div>
+                        <input type="hidden" id="selectedClass">
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-share-alt"></i> Sociální sítě</label>
+                        <p class="form-hint">Odkazy se otevřou v novém okně</p>
+                        <div class="social-links">
+                            <div class="social-input-group">
+                                <div class="social-icon instagram-bg">
+                                    <i class="fab fa-instagram"></i>
+                                </div>
+                                <input type="url" id="instagram" placeholder="https://instagram.com/tvuj_profil">
+                            </div>
+                            <div class="social-input-group">
+                                <div class="social-icon youtube-bg">
+                                    <i class="fab fa-youtube"></i>
+                                </div>
+                                <input type="url" id="youtube" placeholder="https://youtube.com/@tvuj_kanal">
+                            </div>
+                            <div class="social-input-group">
+                                <div class="social-icon tiktok-bg">
+                                    <i class="fab fa-tiktok"></i>
+                                </div>
+                                <input type="url" id="tiktok" placeholder="https://tiktok.com/@tvuj_profil">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="birthdate"><i class="fas fa-birthday-cake"></i> Datum narození</label>
+                        <p class="form-hint">Nepovinné - zobrazí se v profilu pod jménem</p>
+                        <input type="date" id="birthdate" class="birthday-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bio"><i class="fas fa-comment-dots"></i> O mně</label>
+                        <textarea id="bio" placeholder="Napiš něco o sobě, o svých zájmech, koníčcích..."></textarea>
+                    </div>
+
+                    <div class="buttons">
+                        <button class="btn-save" onclick="saveProfile()">
+                            <i class="fas fa-save"></i> Uložit profil
+                        </button>
+                        <button class="btn-load" onclick="loadProfile()">
+                            <i class="fas fa-download"></i> Načíst profil
+                        </button>
+                        <button class="btn-reset" onclick="resetProfile()">
+                            <i class="fas fa-trash"></i> Smazat vše
+                        </button>
+                    </div>
+
+                    <div id="message" class="message"></div>
+                </div>
+
+                <!-- PRAVÁ ČÁST - NÁHLED PROFILU -->
+                <div class="right-panel">
+                    <h2><i class="fas fa-eye"></i> Náhled profilu</h2>
+                    
+                    <div class="profile-preview-create" id="profilePreviewCreate">
+                        <div class="profile-header-view">
+                            <img id="previewAvatar" class="profile-avatar-view" 
+                                 src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" 
+                                 alt="Profilová fotka">
+                            <div class="profile-info-view">
+                                <h3 id="previewName">Jan Novák</h3>
+                                
+                                <!-- NAROZENINY POD JMÉNEM -->
+                                <div id="previewBirthdayBadge" class="birthday-badge" style="display: none;">
+                                    <i class="fas fa-birthday-cake"></i>
+                                    <span id="previewBirthdayText">1. 1. 2000</span>
+                                </div>
+                                
+                                <div id="nicknameContainer">
+                                    <div class="profile-nickname-view" id="previewNickname">@Jenda123</div>
+                                    <div class="no-nickname-view" id="noNickname" style="display: none;">Bez přezdívky</div>
+                                </div>
+                                <div class="profile-class-view" id="previewClass">6.A</div>
+                            </div>
+                        </div>
+
+                        <div class="profile-bio-view" id="previewBio">
+                            Zatím žádný popis...
+                        </div>
+
+                        <h3><i class="fas fa-share-alt"></i> Sociální sítě</h3>
+                        <div class="social-links-view" id="socialLinksPreview">
+                            <p style="color: #666; font-style: italic; text-align: center; width: 100%; padding: 20px;">
+                                Žádné sociální sítě
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REŽIM ZOBRAZENÍ PROFILU -->
+            <div class="view-mode-content" id="viewModeContent">
+                <div class="profile-view" id="profileView">
+                    <div class="loading" id="loadingView">Načítám profil...</div>
+                    
+                    <div id="viewContent" style="display: none;">
+                        <div class="profile-header-view">
+                            <img id="viewAvatar" class="profile-avatar-view" 
+                                 src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" 
+                                 alt="Profilová fotka">
+                            <div class="profile-info-view">
+                                <h1 id="viewName">Jan Novák</h1>
+                                
+                                <!-- NAROZENINY POD JMÉNEM -->
+                                <div id="viewBirthdayBadge" class="birthday-badge" style="display: none;">
+                                    <i class="fas fa-birthday-cake"></i>
+                                    <span id="viewBirthdayText">1. 1. 2000</span>
+                                </div>
+                                
+                                <div id="viewNicknameContainer">
+                                    <div class="profile-nickname-view" id="viewNickname">@Jenda123</div>
+                                    <div class="no-nickname-view" id="viewNoNickname" style="display: none;">Bez přezdívky</div>
+                                </div>
+                                <div class="profile-class-view" id="viewClass">6.A</div>
+                            </div>
+                        </div>
+
+                        <div class="profile-bio-view" id="viewBio">
+                            Zatím žádný popis...
+                        </div>
+
+                        <h2><i class="fas fa-share-alt"></i> Sociální sítě</h2>
+                        <div class="social-links-view" id="viewSocialLinks">
+                            <p style="color: #666; font-style: italic; text-align: center; width: 100%; padding: 30px;">
+                                Žádné sociální sítě
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p><strong>Oskarka online v8.0</strong> - Školní sociální síť</p>
+            <p>Opravený scrolling na telefonech • iOS & Android kompatibilní</p>
+            <p class="hint">Nyní funguje hladký scrolling na všech mobilních zařízeních</p>
+        </footer>
+    </div>
+
+    <script>
+        // ============================
+        // GLOBÁLNÍ PROMĚNNÉ
+        // ============================
+        const STORAGE_KEY = 'oskarka_profile';
+        const CLASS_CHANGE_COOLDOWN = 6 * 30 * 24 * 60 * 60 * 1000;
+        
+        const AVATARS = {
+            male: [
+                'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
+                'https://cdn-icons-png.flaticon.com/512/4333/4333607.png',
+                'https://cdn-icons-png.flaticon.com/512/236/236832.png',
+                'https://cdn-icons-png.flaticon.com/512/4140/4140047.png',
+                'https://cdn-icons-png.flaticon.com/512/3011/3011270.png'
+            ],
+            female: [
+                'https://cdn-icons-png.flaticon.com/512/949/949666.png',
+                'https://cdn-icons-png.flaticon.com/512/4333/4333609.png',
+                'https://cdn-icons-png.flaticon.com/512/236/236831.png',
+                'https://cdn-icons-png.flaticon.com/512/4140/4140052.png',
+                'https://cdn-icons-png.flaticon.com/512/3011/3011272.png'
+            ]
+        };
+        
+        const DEFAULT_AVATAR = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
+        
+        let currentAvatar = DEFAULT_AVATAR;
+        let selectedAvatarType = 'default';
+        let selectedGender = null;
+        let currentProfile = null;
+        
+        // ============================
+        // INICIALIZACE STRÁNKY
+        // ============================
+        document.addEventListener('DOMContentLoaded', function() {
+            generateClassOptions();
+            setupFileInputs();
+            loadProfile();
+            setupEventListeners();
+            updatePreview();
+            
+            // Pokud profil existuje, ZAČÍT V REŽIMU ZOBRAZENÍ
+            const profile = getProfile();
+            if (profile && profile.fullName) {
+                document.getElementById('dotsMenu').style.display = 'block';
+                updateViewMode();
+                setTimeout(() => {
+                    switchToViewMode();
+                }, 100);
+            }
+        });
+        
+        // ============================
+        // FIX PRO PULL TO REFRESH NA MOBILU
+        // ============================
+        function preventPullToRefresh() {
+            let lastY = 0;
+            
+            document.addEventListener('touchstart', function(e) {
+                if (e.touches.length === 1) {
+                    lastY = e.touches[0].clientY;
+                }
+            }, { passive: true });
+            
+            document.addEventListener('touchmove', function(e) {
+                let touchY = e.touches[0].clientY;
+                let touchDeltaY = touchY - lastY;
+                
+                // Pokud scrollujeme nahoru od úplného začátku, zabránit refreshi
+                if (window.scrollY === 0 && touchDeltaY > 0) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+        }
+        
+        // ============================
+        // NASTAVENÍ INPUTŮ PRO FOTKY
+        // ============================
+        function setupFileInputs() {
+            const cameraInput = document.getElementById('cameraInput');
+            const galleryInput = document.getElementById('galleryInput');
+            
+            cameraInput.addEventListener('change', function(event) {
+                handleImageUpload(event, 'camera');
+            });
+            
+            galleryInput.addEventListener('change', function(event) {
+                handleImageUpload(event, 'gallery');
+            });
+        }
+        
+        // ============================
+        // MODAL PRO VÝBĚR POHLAVÍ
+        // ============================
+        function showGenderModal() {
+            document.getElementById('genderModal').classList.add('show');
+            // Zablokovat scroll za modalem
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function selectGender(gender) {
+            selectedGender = gender;
+            
+            document.querySelectorAll('.gender-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            event.target.closest('.gender-option').classList.add('selected');
+        }
+        
+        function confirmGender() {
+            if (!selectedGender) {
+                showMessage('❌ Vyber prosím pohlaví', 'error');
+                return;
+            }
+            
+            document.getElementById('genderModal').classList.remove('show');
+            document.body.style.overflow = ''; // Odblokovat scroll
+            
+            showGenderAvatars(selectedGender);
+        }
+        
+        // Zavřít modal při kliknutí mimo
+        document.getElementById('genderModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+        });
+        
+        function showGenderAvatars(gender) {
+            const container = document.getElementById('presetOptions');
+            container.innerHTML = '';
+            
+            const avatars = AVATARS[gender];
+            
+            avatars.forEach((avatar, index) => {
+                const img = document.createElement('img');
+                img.src = avatar;
+                img.className = 'avatar-preset';
+                img.alt = `Avatar ${index + 1}`;
+                img.title = `Avatar ${index + 1}`;
+                
+                img.addEventListener('click', function() {
+                    document.querySelectorAll('.avatar-preset').forEach(a => {
+                        a.classList.remove('selected');
+                    });
+                    
+                    this.classList.add('selected');
+                    
+                    currentAvatar = avatar;
+                    selectedAvatarType = 'preset';
+                    
+                    document.getElementById('avatarPreview').src = currentAvatar;
+                    updatePreview();
+                    
+                    showMessage('✅ Avatar vybrán!', 'success');
+                });
+                
+                container.appendChild(img);
+            });
+            
+            document.getElementById('avatarPresets').style.display = 'block';
+            
+            // Smooth scroll k avatarům
+            setTimeout(() => {
+                document.getElementById('avatarPresets').scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'nearest'
+                });
+            }, 300);
+        }
+        
+        // ============================
+        // 3 MOŽNOSTI PRO PROFILOVKU
+        // ============================
+        function openCamera() {
+            document.getElementById('cameraInput').click();
+        }
+        
+        function openGallery() {
+            document.getElementById('galleryInput').click();
+        }
+        
+        function showAvatarOptions() {
+            showGenderModal();
+        }
+        
+        function handleImageUpload(event, source) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (!file.type.startsWith('image/')) {
+                showMessage('❌ Vyber prosím obrázek (JPG, PNG, GIF)', 'error');
+                return;
+            }
+            
+            if (file.size > 5 * 1024 * 1024) {
+                showMessage('❌ Obrázek je příliš velký (max 5MB)', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                currentAvatar = e.target.result;
+                selectedAvatarType = source;
+                
+                document.getElementById('avatarPreview').src = currentAvatar;
+                document.getElementById('avatarPresets').style.display = 'none';
+                
+                const sourceText = source === 'camera' ? 'vyfocena' : 'nahrána';
+                showMessage(`✅ Fotka ${sourceText}! Klikni "Uložit profil" pro uložení.`, 'success');
+                
+                updatePreview();
+            };
+            
+            reader.onerror = function() {
+                showMessage('❌ Chyba při načítání fotky', 'error');
+            };
+            
+            reader.readAsDataURL(file);
+            
+            event.target.value = '';
+        }
+        
+        // ============================
+        // GENEROVÁNÍ TŘÍD
+        // ============================
+        function generateClassOptions() {
+            const container = document.getElementById('classSelector');
+            container.innerHTML = '';
+            
+            for (let grade = 6; grade <= 9; grade++) {
+                for (let letter of ['A', 'B', 'C', 'D']) {
+                    const className = `${grade}.${letter}`;
+                    const div = document.createElement('div');
+                    div.className = 'class-option';
+                    div.textContent = className;
+                    div.dataset.value = className;
+                    
+                    div.addEventListener('click', function() {
+                        selectClass(this);
+                    });
+                    
+                    // Touch events pro mobily
+                    div.addEventListener('touchstart', function() {
+                        this.style.transform = 'scale(0.95)';
+                    }, { passive: true });
+                    
+                    div.addEventListener('touchend', function() {
+                        this.style.transform = '';
+                    }, { passive: true });
+                    
+                    container.appendChild(div);
+                }
+            }
+        }
+        
+        function selectClass(element) {
+            document.querySelectorAll('.class-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            element.classList.add('selected');
+            document.getElementById('selectedClass').value = element.dataset.value;
+            updatePreview();
+        }
+        
+        // ============================
+        // ULOŽENÍ PROFILU
+        // ============================
+        function saveProfile() {
+            const fullName = document.getElementById('fullName').value.trim();
+            const nickname = document.getElementById('nickname').value.trim();
+            const selectedClass = document.getElementById('selectedClass').value;
+            const instagram = document.getElementById('instagram').value.trim();
+            const youtube = document.getElementById('youtube').value.trim();
+            const tiktok = document.getElementById('tiktok').value.trim();
+            const birthdate = document.getElementById('birthdate').value;
+            const bio = document.getElementById('bio').value.trim();
+            
+            if (!fullName || !selectedClass) {
+                showMessage('❌ Vyplň prosím jméno a vyber třídu!', 'error');
+                return;
+            }
+            
+            const profile = {
+                fullName,
+                nickname,
+                class: selectedClass,
+                avatar: currentAvatar,
+                avatarType: selectedAvatarType,
+                gender: selectedGender,
+                social: {
+                    instagram: validateUrl(instagram),
+                    youtube: validateUrl(youtube),
+                    tiktok: validateUrl(tiktok)
+                },
+                birthdate,
+                bio,
+                created: currentProfile?.created || new Date().toISOString(),
+                updated: new Date().toISOString()
+            };
+            
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
+            currentProfile = profile;
+            
+            document.getElementById('dotsMenu').style.display = 'block';
+            
+            showMessage('✅ Profil úspěšně uložen! Přepínám...', 'success');
+            updatePreview();
+            updateViewMode();
+            
+            // Scroll na začátek před přepnutím
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            setTimeout(() => {
+                switchToViewMode();
+            }, 1500);
+        }
+        
+        // ============================
+        // NAČTENÍ PROFILU
+        // ============================
+        function loadProfile() {
+            const profile = getProfile();
+            
+            if (!profile) {
+                return;
+            }
+            
+            currentProfile = profile;
+            
+            document.getElementById('fullName').value = profile.fullName || '';
+            document.getElementById('nickname').value = profile.nickname || '';
+            document.getElementById('instagram').value = profile.social?.instagram || '';
+            document.getElementById('youtube').value = profile.social?.youtube || '';
+            document.getElementById('tiktok').value = profile.social?.tiktok || '';
+            document.getElementById('birthdate').value = profile.birthdate || '';
+            document.getElementById('bio').value = profile.bio || '';
+            
+            if (profile.avatar) {
+                currentAvatar = profile.avatar;
+                selectedAvatarType = profile.avatarType || 'default';
+                selectedGender = profile.gender || null;
+                document.getElementById('avatarPreview').src = currentAvatar;
+            }
+            
+            if (profile.class) {
+                document.querySelectorAll('.class-option').forEach(opt => {
+                    if (opt.dataset.value === profile.class) {
+                        selectClass(opt);
+                    }
+                });
+            }
+            
+            updatePreview();
+            updateViewMode();
+        }
+        
+        // ============================
+        // SMAZÁNÍ PROFILU
+        // ============================
+        function resetProfile() {
+            if (!confirm('Opravdu chceš smazat celý profil? Tato akce je nevratná!')) {
+                return;
+            }
+            
+            localStorage.removeItem(STORAGE_KEY);
+            currentProfile = null;
+            
+            document.getElementById('fullName').value = '';
+            document.getElementById('nickname').value = '';
+            document.getElementById('instagram').value = '';
+            document.getElementById('youtube').value = '';
+            document.getElementById('tiktok').value = '';
+            document.getElementById('birthdate').value = '';
+            document.getElementById('bio').value = '';
+            
+            currentAvatar = DEFAULT_AVATAR;
+            selectedAvatarType = 'default';
+            selectedGender = null;
+            document.getElementById('avatarPreview').src = currentAvatar;
+            document.getElementById('avatarPresets').style.display = 'none';
+            
+            document.querySelectorAll('.class-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            document.getElementById('selectedClass').value = '';
+            
+            document.getElementById('dotsMenu').style.display = 'none';
+            
+            updatePreview();
+            updateViewMode();
+            showMessage('🗑️ Profil byl smazán.', 'info');
+            
+            switchToCreateMode();
+        }
+        
+        // ============================
+        // AKTUALIZACE NÁHLEDU
+        // ============================
+        function updatePreview() {
+            const fullName = document.getElementById('fullName').value.trim() || 
+                            (currentProfile?.fullName || 'Neznámý uživatel');
+            const nickname = document.getElementById('nickname').value.trim() || 
+                            (currentProfile?.nickname || '');
+            const selectedClass = document.getElementById('selectedClass').value || 
+                                 (currentProfile?.class || 'Nevybráno');
+            const bio = document.getElementById('bio').value.trim() || 
+                       (currentProfile?.bio || 'Zatím žádný popis...');
+            const birthdate = document.getElementById('birthdate').value || 
+                            (currentProfile?.birthdate || '');
+            
+            document.getElementById('previewName').textContent = fullName;
+            document.getElementById('previewClass').textContent = selectedClass;
+            document.getElementById('previewAvatar').src = currentAvatar;
+            document.getElementById('previewBio').textContent = bio;
+            
+            if (nickname) {
+                document.getElementById('previewNickname').textContent = `@${nickname}`;
+                document.getElementById('previewNickname').style.display = 'block';
+                document.getElementById('noNickname').style.display = 'none';
+            } else {
+                document.getElementById('previewNickname').style.display = 'none';
+                document.getElementById('noNickname').style.display = 'block';
+            }
+            
+            updateBirthdayPreview(birthdate, 'preview');
+            updateSocialPreview();
+        }
+        
+        // ============================
+        // NAROZENINY POD JMÉNEM
+        // ============================
+        function updateBirthdayPreview(birthdate, mode) {
+            const birthdayBadge = document.getElementById(mode === 'preview' ? 'previewBirthdayBadge' : 'viewBirthdayBadge');
+            const birthdayText = document.getElementById(mode === 'preview' ? 'previewBirthdayText' : 'viewBirthdayText');
+            
+            if (birthdate) {
+                const date = new Date(birthdate);
+                const day = date.getDate();
+                const month = date.getMonth() + 1;
+                const year = date.getFullYear();
+                
+                birthdayText.textContent = `${day}. ${month}. ${year}`;
+                birthdayBadge.style.display = 'inline-block';
+            } else {
+                birthdayBadge.style.display = 'none';
+            }
+        }
+        
+        function updateSocialPreview() {
+            const container = document.getElementById('socialLinksPreview');
+            container.innerHTML = '';
+            
+            const socials = [
+                { platform: 'instagram', icon: 'fab fa-instagram', label: 'Instagram', 
+                  url: document.getElementById('instagram').value.trim() },
+                { platform: 'youtube', icon: 'fab fa-youtube', label: 'YouTube', 
+                  url: document.getElementById('youtube').value.trim() },
+                { platform: 'tiktok', icon: 'fab fa-tiktok', label: 'TikTok', 
+                  url: document.getElementById('tiktok').value.trim() }
+            ];
+            
+            let hasSocialLinks = false;
+            
+            socials.forEach(social => {
+                if (social.url && social.url.trim() !== '') {
+                    hasSocialLinks = true;
+                    const link = document.createElement('a');
+                    link.href = social.url.startsWith('http') ? social.url : `https://${social.url}`;
+                    link.target = '_blank';
+                    link.rel = 'noopener noreferrer';
+                    link.className = `social-link-view ${social.platform}`;
+                    link.innerHTML = `
+                        <i class="${social.icon}"></i>
+                        <span>${social.label}</span>
+                    `;
+                    container.appendChild(link);
+                }
+            });
+            
+            if (!hasSocialLinks) {
+                container.innerHTML = '<p style="color: #666; font-style: italic; text-align: center; width: 100%; padding: 20px;">Žádné sociální sítě</p>';
+            }
+        }
+        
+        // ============================
+        // AKTUALIZACE REŽIMU ZOBRAZENÍ
+        // ============================
+        function updateViewMode() {
+            const viewContent = document.getElementById('viewContent');
+            const loadingView = document.getElementById('loadingView');
+            
+            if (!currentProfile || !currentProfile.fullName) {
+                loadingView.style.display = 'none';
+                viewContent.style.display = 'block';
+                document.getElementById('viewName').textContent = 'Žádný profil';
+                document.getElementById('viewNoNickname').style.display = 'block';
+                document.getElementById('viewNickname').style.display = 'none';
+                document.getElementById('viewClass').textContent = 'Nevytvořeno';
+                document.getElementById('viewBio').textContent = 'Vytvoř si svůj profil!';
+                document.getElementById('viewAvatar').src = DEFAULT_AVATAR;
+                document.getElementById('viewBirthdayBadge').style.display = 'none';
+                updateViewSocialLinks(null);
+                return;
+            }
+            
+            loadingView.style.display = 'none';
+            viewContent.style.display = 'block';
+            
+            document.getElementById('viewName').textContent = currentProfile.fullName;
+            document.getElementById('viewClass').textContent = currentProfile.class;
+            document.getElementById('viewAvatar').src = currentProfile.avatar || DEFAULT_AVATAR;
+            document.getElementById('viewBio').textContent = currentProfile.bio || 'Žádný popis';
+            
+            if (currentProfile.nickname && currentProfile.nickname.trim() !== '') {
+                document.getElementById('viewNickname').textContent = `@${currentProfile.nickname}`;
+                document.getElementById('viewNickname').style.display = 'block';
+                document.getElementById('viewNoNickname').style.display = 'none';
+            } else {
+                document.getElementById('viewNickname').style.display = 'none';
+                document.getElementById('viewNoNickname').style.display = 'block';
+            }
+            
+            updateBirthdayPreview(currentProfile.birthdate, 'view');
+            updateViewSocialLinks(currentProfile);
+        }
+        
+        function updateViewSocialLinks(profile) {
+            const container = document.getElementById('viewSocialLinks');
+            container.innerHTML = '';
+            
+            if (!profile || !profile.social) return;
+            
+            const socials = [
+                { platform: 'instagram', icon: 'fab fa-instagram', label: 'Instagram', url: profile.social.instagram },
+                { platform: 'youtube', icon: 'fab fa-youtube', label: 'YouTube', url: profile.social.youtube },
+                { platform: 'tiktok', icon: 'fab fa-tiktok', label: 'TikTok', url: profile.social.tiktok }
+            ];
+            
+            let hasSocialLinks = false;
+            
+            socials.forEach(social => {
+                if (social.url && social.url.trim() !== '') {
+                    hasSocialLinks = true;
+                    const link = document.createElement('a');
+                    link.href = social.url.startsWith('http') ? social.url : `https://${social.url}`;
+                    link.target = '_blank';
+                    link.rel = 'noopener noreferrer';
+                    link.className = `social-link-view ${social.platform}`;
+                    link.innerHTML = `
+                        <i class="${social.icon}"></i>
+                        <span>${social.label}</span>
+                    `;
+                    container.appendChild(link);
+                }
+            });
+            
+            if (!hasSocialLinks) {
+                container.innerHTML = '<p style="color: #666; font-style: italic; text-align: center; width: 100%; padding: 30px;">Žádné sociální sítě</p>';
+            }
+        }
+        
+        // ============================
+        // PŘEPÍNÁNÍ REŽIMŮ
+        // ============================
+        function switchToViewMode() {
+            document.body.classList.add('view-mode');
+            document.getElementById('modeTagline').textContent = 'Tvůj školní profil';
+            updateViewMode();
+            
+            document.getElementById('dotsMenu').style.display = 'block';
+            
+            // Scroll na začátek
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function switchToCreateMode() {
+            document.body.classList.remove('view-mode');
+            document.getElementById('modeTagline').textContent = 'Vytvoř si svůj školní profil';
+            
+            document.getElementById('dotsMenu').style.display = 'none';
+            
+            // Scroll na začátek
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // ============================
+        // 3 TEČKY MENU
+        // ============================
+        function toggleDropdown() {
+            const menu = document.getElementById('dropdownMenu');
+            menu.classList.toggle('show');
+        }
+        
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('dropdownMenu');
+            const btn = document.querySelector('.dots-btn');
+            
+            if (menu && menu.classList.contains('show') && 
+                !menu.contains(event.target) && 
+                !btn.contains(event.target)) {
+                menu.classList.remove('show');
+            }
+        });
+        
+        // ============================
+        // POMOCNÉ FUNKCE
+        // ============================
+        function getProfile() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            return data ? JSON.parse(data) : null;
+        }
+        
+        function validateUrl(url) {
+            if (!url) return '';
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                return 'https://' + url;
+            }
+            return url;
+        }
+        
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type} show`;
+            
+            setTimeout(() => {
+                messageDiv.classList.remove('show');
+            }, 5000);
+        }
+        
+        function setupEventListeners() {
+            const inputs = ['fullName', 'nickname', 'instagram', 'youtube', 'tiktok', 'birthdate', 'bio'];
+            inputs.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('input', updatePreview);
+                    element.addEventListener('change', updatePreview);
+                }
+            });
+            
+            // Fix pro iOS keyboard
+            document.querySelectorAll('input, textarea').forEach(input => {
+                input.addEventListener('focus', function() {
+                    setTimeout(() => {
+                        this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 300);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
