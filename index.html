@@ -1,214 +1,307 @@
+
 <!DOCTYPE html>
 <html lang="cs">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
-<meta name="theme-color" content="#080b14">
-<title>Neon Tetris</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Tetris test3</title>
 <style>
-:root{color-scheme:dark;--bg:#080b14;--panel:#121a2b;--line:#2a3853;--text:#eef4ff;--muted:#9eacc8;--cyan:#65e7ff}
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;background:radial-gradient(ellipse at 50% 0,#1a2a49 0,var(--bg) 62%);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,sans-serif}
-body{min-height:100dvh;display:flex;justify-content:center;overscroll-behavior:none}
-button{font:inherit;color:var(--text);font-weight:750;border:1px solid #344765;background:linear-gradient(#202d46,#151e30);border-radius:13px;min-height:48px;touch-action:manipulation;user-select:none;-webkit-tap-highlight-color:transparent}
-button:active{transform:scale(.96);background:#2c4569}
-button:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
-.app{width:min(100%,460px);padding:14px 13px calc(14px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:11px}
-header{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.brand{font-size:clamp(25px,7vw,33px);font-weight:950;letter-spacing:1px;line-height:1}
-.brand span{color:var(--cyan)}.sub{font-size:10px;color:var(--muted);letter-spacing:2px;margin-top:5px}
-.status{font-size:11px;font-weight:800;color:var(--cyan);border:1px solid var(--line);background:#10192a;border-radius:99px;padding:7px 9px}
+body{
+ margin:0;background:#f3f5f8;color:#252b38;
+ font-family:system-ui,sans-serif;
+ display:flex;justify-content:center;
+ min-height:100dvh;overscroll-behavior:none
+}
+.app{
+ width:min(100%,400px);padding:10px 12px;
+ display:flex;flex-direction:column;gap:8px;
+}
+header{display:flex;justify-content:space-between;align-items:center}
+h1{font-size:23px;margin:0}
+button{
+ border:0;border-radius:12px;padding:10px;
+ background:white;color:#263247;font-weight:750;
+ font-size:17px;touch-action:manipulation;
+ box-shadow:0 2px 5px #0000000b
+}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
-.stat{background:linear-gradient(145deg,#17233b,#101727);border:1px solid var(--line);border-radius:12px;text-align:center;padding:7px}
-.stat label{display:block;font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
-.stat strong{display:block;font-size:21px;font-variant-numeric:tabular-nums}
-.game-wrap{position:relative;align-self:center;width:min(100%,300px)}
-#game{display:block;width:100%;height:auto;aspect-ratio:1/2;border:2px solid #344766;border-radius:9px;background:#080d18;box-shadow:0 12px 35px #0008;touch-action:none}
-.overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;background:#070b16d9;backdrop-filter:blur(4px);border-radius:9px}
-.overlay.hidden{display:none}.overlay-card{width:100%}.overlay h2{font-size:28px;margin:0 0 8px}.overlay p{font-size:13px;line-height:1.5;color:#bdc9df;margin:0 0 16px}
-.primary{background:linear-gradient(#8af0ff,#48cbe9);color:#07131a;border-color:#a3f3ff}
-.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
-.controls button{font-size:22px;min-height:51px}.controls .word{font-size:12px;letter-spacing:.5px}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.hint{text-align:center;color:var(--muted);font-size:11px;line-height:1.45}
-@media(max-height:720px){.app{gap:7px;padding-top:8px}.game-wrap{width:min(100%, min(300px, 42dvh))}.stat{padding:5px}.stat strong{font-size:18px}.controls button{min-height:42px}}
+.stat{background:white;border-radius:12px;padding:6px 9px}
+.stat small{display:block;color:#7b8493}
+.stat strong{font-size:20px}
+.game{
+ position:relative;align-self:center;
+ width:min(100%, min(300px, 43dvh));
+}
+canvas{
+ width:100%;height:auto;display:block;
+ background:#e4e8ef;border-radius:9px;
+ touch-action:none
+}
+.overlay{
+ position:absolute;inset:0;background:#f3f5f8ed;
+ display:flex;align-items:center;justify-content:center;
+ text-align:center;padding:20px;border-radius:9px
+}
+.overlay.hidden{display:none}
+.overlay p{font-size:13px;color:#667184}
+.primary{background:#4d91ef;color:white;padding:12px 24px}
+.controls{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.controls button{min-height:43px}
+.controls .small{font-size:11px}
+.hint{text-align:center;color:#7b8493;font-size:11px}
+@media(max-height:700px){
+ .app{gap:6px;padding-top:5px}
+ .game{width:min(100%, min(270px, 38dvh))}
+ .stat{padding:4px 7px}
+ .stat strong{font-size:18px}
+ .controls button{min-height:38px}
+}
 </style>
 </head>
 <body>
 <main class="app">
-<header><div><div class="brand">NEON<span> TETRIS</span></div><div class="sub">STACK · CLEAR · SURVIVE</div></div><div class="status" id="status">PŘIPRAVENO</div></header>
-<section class="stats">
-<div class="stat"><label>Skóre</label><strong id="score">0</strong></div>
-<div class="stat"><label>Řádky</label><strong id="lines">0</strong></div>
-<div class="stat"><label>Level</label><strong id="level">1</strong></div>
-</section>
-<div class="game-wrap">
-<canvas id="game" width="300" height="600" aria-label="Herní plocha Tetris"></canvas>
-<div class="overlay" id="overlay"><div class="overlay-card"><h2 id="overlayTitle">TETRIS</h2><p id="overlayText">Dokončuj celé řádky a nenech kostky dosáhnout horního okraje.</p><button class="primary" id="startBtn">HRÁT</button></div></div>
-</div>
-<section class="controls" aria-label="Ovládání">
-<button id="leftBtn" aria-label="Doleva">←</button><button id="rotateBtn" aria-label="Otočit">↻</button><button id="rightBtn" aria-label="Doprava">→</button>
-<button id="downBtn" aria-label="Dolů">↓</button><button id="dropBtn" class="word">DROP</button><button id="pauseBtn" class="word">PAUZA</button>
-</section>
-<section class="actions"><button id="restartBtn">↻ Restart</button><button id="soundBtn">Zvuk: vypnutý</button></section>
-<div class="hint">Klepni na plochu pro otočení. Přejetím pohni kostkou; přejeď dolů pro rychlý pád. Funguje také klávesnice.</div>
-</main>
-<script>
-(() => {
-"use strict";
-const COLS=10,ROWS=20,S=30;
-const canvas=document.getElementById("game"),ctx=canvas.getContext("2d");
-const $=id=>document.getElementById(id);
-const COLORS={I:"#54e8ff",O:"#ffe36e",T:"#bd83ff",S:"#72f0a0",Z:"#ff718b",J:"#7197ff",L:"#ffad67"};
-const SHAPES={
- I:[[1,1,1,1]],O:[[1,1],[1,1]],T:[[0,1,0],[1,1,1]],
- S:[[0,1,1],[1,1,0]],Z:[[1,1,0],[0,1,1]],
- J:[[1,0,0],[1,1,1]],L:[[0,0,1],[1,1,1]]
-};
-let board,piece,score=0,lines=0,level=1,dropInterval=850,dropCounter=0;
-let running=false,paused=false,over=false,lastTime=0,raf=0,soundOn=false,audio=null;
+<header>
+ <h1>Block Tetris</h1>
+ <button id="restart">↻ Restart</button>
+</header>
 
-function makePiece(){
- const keys=Object.keys(SHAPES),type=keys[Math.floor(Math.random()*keys.length)];
+<section class="stats">
+ <div class="stat"><small>Skóre</small><strong id="score">0</strong></div>
+ <div class="stat"><small>Řádky</small><strong id="lines">0</strong></div>
+ <div class="stat"><small>Level</small><strong id="level">1</strong></div>
+</section>
+
+<div class="game">
+ <canvas id="board" width="300" height="600"></canvas>
+ <div class="overlay" id="overlay">
+  <div>
+   <h2 id="title">Tetris</h2>
+   <p id="message">Bloky automaticky padají. Dokončuj celé řádky!</p>
+   <button class="primary" id="start">Hrát</button>
+  </div>
+ </div>
+</div>
+
+<section class="controls">
+ <button id="left">←</button>
+ <button id="rotate">↻</button>
+ <button id="right">→</button>
+ <button id="down">↓</button>
+ <button class="small" id="pause">PAUZA</button>
+</section>
+<div class="hint">Klepnutí na pole = otočení · Přejetí = pohyb</div>
+</main>
+
+<script>
+(()=>{
+"use strict";
+const W=10,H=20,S=30;
+const COLORS={
+ I:"#55b9e8",O:"#f2c451",T:"#a58ad9",
+ S:"#70bd8c",Z:"#df777d",J:"#7798d4",L:"#e9a16d"
+};
+const SHAPES={
+ I:[[1,1,1,1]],
+ O:[[1,1],[1,1]],
+ T:[[0,1,0],[1,1,1]],
+ S:[[0,1,1],[1,1,0]],
+ Z:[[1,1,0],[0,1,1]],
+ J:[[1,0,0],[1,1,1]],
+ L:[[0,0,1],[1,1,1]]
+};
+const $=id=>document.getElementById(id);
+const canvas=$("board"),ctx=canvas.getContext("2d");
+let board,piece,score=0,lines=0,level=1;
+let running=false,paused=false,over=false;
+let interval=800,timer=0,last=0,touch=null;
+
+function newPiece(){
+ const types=Object.keys(SHAPES);
+ const type=types[Math.floor(Math.random()*types.length)];
  const matrix=SHAPES[type].map(r=>r.slice());
- return {type,matrix,x:Math.floor((COLS-matrix[0].length)/2),y:0};
+ return {type,matrix,x:Math.floor((W-matrix[0].length)/2),y:0};
 }
-function stats(){
- $("score").textContent=score.toLocaleString("cs-CZ");
- $("lines").textContent=lines;$("level").textContent=level;
+function update(){
+ $("score").textContent=score;
+ $("lines").textContent=lines;
+ $("level").textContent=level;
 }
-function overlay(title,message,button){
- $("overlayTitle").textContent=title;$("overlayText").textContent=message;
- $("startBtn").textContent=button;$("overlay").classList.remove("hidden");
+function message(title,text,button){
+ $("title").textContent=title;
+ $("message").textContent=text;
+ $("start").textContent=button;
+ $("overlay").classList.remove("hidden");
 }
-function hideOverlay(){$("overlay").classList.add("hidden");}
 function reset(){
- board=Array.from({length:ROWS},()=>Array(COLS).fill(null));
- score=0;lines=0;level=1;dropInterval=850;dropCounter=0;
- piece=makePiece();running=false;paused=false;over=false;stats();draw();
- $("status").textContent="PŘIPRAVENO";$("pauseBtn").textContent="PAUZA";
- overlay("TETRIS","Dokončuj celé řádky a nenech kostky dosáhnout horního okraje.","HRÁT");
+ board=Array.from({length:H},()=>Array(W).fill(null));
+ piece=newPiece();score=0;lines=0;level=1;
+ interval=800;timer=0;running=false;paused=false;over=false;
+ update();draw();
+ $("pause").textContent="PAUZA";
+ message("Tetris","Bloky automaticky padají. Dokončuj celé řádky!","Hrát");
 }
-function beep(freq=400,duration=.05){
- if(!soundOn)return;
- try{
-  audio ||= new (window.AudioContext||window.webkitAudioContext)();
-  if(audio.state==="suspended")audio.resume();
-  const o=audio.createOscillator(),g=audio.createGain();
-  o.frequency.value=freq;g.gain.value=.04;o.connect(g);g.connect(audio.destination);
-  o.start();g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+duration);o.stop(audio.currentTime+duration);
- }catch(e){}
+function start(){
+ if(over)reset();
+ running=true;paused=false;over=false;
+ $("overlay").classList.add("hidden");
+ $("pause").textContent="PAUZA";
+ last=performance.now();
 }
-function collides(p,dx=0,dy=0,m=p.matrix){
- for(let y=0;y<m.length;y++)for(let x=0;x<m[y].length;x++)if(m[y][x]){
+function collision(p,dx=0,dy=0,m=p.matrix){
+ for(let y=0;y<m.length;y++)
+ for(let x=0;x<m[y].length;x++){
+  if(!m[y][x])continue;
   const nx=p.x+x+dx,ny=p.y+y+dy;
-  if(nx<0||nx>=COLS||ny>=ROWS)return true;
+  if(nx<0||nx>=W||ny>=H)return true;
   if(ny>=0&&board[ny][nx])return true;
  }
  return false;
 }
-function merge(){
- piece.matrix.forEach((r,y)=>r.forEach((v,x)=>{if(v&&piece.y+y>=0)board[piece.y+y][piece.x+x]=piece.type;}));
+function lock(){
+ piece.matrix.forEach((row,y)=>row.forEach((v,x)=>{
+  if(v&&piece.y+y>=0)
+   board[piece.y+y][piece.x+x]=piece.type;
+ }));
  let cleared=0;
- for(let y=ROWS-1;y>=0;){
-  if(board[y].every(Boolean)){board.splice(y,1);board.unshift(Array(COLS).fill(null));cleared++;}
-  else y--;
+ for(let y=H-1;y>=0;){
+  if(board[y].every(Boolean)){
+   board.splice(y,1);
+   board.unshift(Array(W).fill(null));
+   cleared++;
+  }else y--;
  }
  if(cleared){
   score+=([0,100,300,500,800][cleared]||800)*level;
-  lines+=cleared;level=Math.floor(lines/10)+1;dropInterval=Math.max(100,850-(level-1)*65);beep(660,.12);
- }else beep(210,.04);
- stats();piece=makePiece();
- if(collides(piece))endGame();
+  lines+=cleared;
+  level=Math.floor(lines/10)+1;
+  interval=Math.max(100,800-(level-1)*60);
+ }
+ update();
+ piece=newPiece();
+ if(collision(piece))gameOver();
 }
 function move(dx,dy=0){
  if(!running||paused||over)return false;
- if(!collides(piece,dx,dy)){piece.x+=dx;piece.y+=dy;if(dx)beep(300,.025);draw();return true;}
- if(dy>0)merge();
+ if(!collision(piece,dx,dy)){
+  piece.x+=dx;piece.y+=dy;draw();return true;
+ }
+ if(dy>0)lock();
  draw();return false;
 }
 function rotate(){
  if(!running||paused||over)return;
- const rotated=piece.matrix[0].map((_,i)=>piece.matrix.map(r=>r[i]).reverse());
- for(const kick of [0,-1,1,-2,2])if(!collides(piece,kick,0,rotated)){
-  piece.x+=kick;piece.matrix=rotated;beep(480,.045);draw();return;
+ const m=piece.matrix;
+ const r=m[0].map((_,i)=>m.map(row=>row[i]).reverse());
+ for(const kick of [0,-1,1,-2,2]){
+  if(!collision(piece,kick,0,r)){
+   piece.x+=kick;piece.matrix=r;draw();return;
+  }
  }
 }
 function hardDrop(){
  if(!running||paused||over)return;
- let d=0;while(!collides(piece,0,1)){piece.y++;d++;}
- score+=d*2;merge();stats();draw();beep(180,.08);
+ let distance=0;
+ while(!collision(piece,0,1)){
+  piece.y++;distance++;
+ }
+ score+=distance*2;
+ lock();update();draw();
 }
-function endGame(){
- running=false;over=true;$("status").textContent="KONEC HRY";
- overlay("KONEC HRY",`Skóre: ${score.toLocaleString("cs-CZ")} · Řádky: ${lines}`,"HRÁT ZNOVU");
+function gameOver(){
+ running=false;over=true;
+ message("Konec hry","Tvé skóre: "+score,"Hrát znovu");
+}
+function rounded(x,y,w,h,r){
+ ctx.beginPath();ctx.moveTo(x+r,y);
+ ctx.arcTo(x+w,y,x+w,y+h,r);
+ ctx.arcTo(x+w,y+h,x,y+h,r);
+ ctx.arcTo(x,y+h,x,y,r);
+ ctx.arcTo(x,y,x+w,y,r);ctx.closePath();
 }
 function cell(x,y,type,alpha=1){
- if(y<0)return;const px=x*S,py=y*S;
- ctx.globalAlpha=alpha;ctx.fillStyle=COLORS[type];ctx.fillRect(px+1,py+1,S-2,S-2);
- ctx.fillStyle="#ffffff35";ctx.fillRect(px+3,py+3,S-6,3);
- ctx.fillStyle="#00000025";ctx.fillRect(px+3,py+S-6,S-6,3);
- ctx.strokeStyle="#ffffff35";ctx.strokeRect(px+1.5,py+1.5,S-3,S-3);ctx.globalAlpha=1;
+ if(y<0)return;
+ const px=x*S+1,py=y*S+1,size=S-2;
+ ctx.globalAlpha=alpha;ctx.fillStyle=COLORS[type];
+ rounded(px,py,size,size,4);ctx.fill();
+ ctx.fillStyle="#ffffff55";
+ rounded(px+3,py+3,size-6,3,1);ctx.fill();
+ ctx.globalAlpha=1;
 }
 function draw(){
- ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle="#080d18";ctx.fillRect(0,0,canvas.width,canvas.height);
- ctx.strokeStyle="#19243a";ctx.lineWidth=1;
- for(let x=0;x<=COLS;x++){ctx.beginPath();ctx.moveTo(x*S+.5,0);ctx.lineTo(x*S+.5,600);ctx.stroke();}
- for(let y=0;y<=ROWS;y++){ctx.beginPath();ctx.moveTo(0,y*S+.5);ctx.lineTo(300,y*S+.5);ctx.stroke();}
- if(board)board.forEach((r,y)=>r.forEach((t,x)=>{if(t)cell(x,y,t);}));
+ ctx.clearRect(0,0,300,600);
+ ctx.fillStyle="#e4e8ef";ctx.fillRect(0,0,300,600);
+ for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+  if(board[y][x])cell(x,y,board[y][x]);
+  else{
+   ctx.fillStyle="#d7dde7";
+   rounded(x*S+2,y*S+2,S-4,S-4,4);ctx.fill();
+  }
+ }
  if(piece){
-  let gy=piece.y;while(!collides({...piece,y:gy},0,1))gy++;
-  piece.matrix.forEach((r,y)=>r.forEach((v,x)=>{if(v)cell(piece.x+x,gy+y,piece.type,.22);}));
-  piece.matrix.forEach((r,y)=>r.forEach((v,x)=>{if(v)cell(piece.x+x,piece.y+y,piece.type);}));
+  let ghost=piece.y;
+  while(!collision({...piece,y:ghost},0,1))ghost++;
+  piece.matrix.forEach((row,y)=>row.forEach((v,x)=>{
+   if(v)cell(piece.x+x,ghost+y,piece.type,.25);
+  }));
+  piece.matrix.forEach((row,y)=>row.forEach((v,x)=>{
+   if(v)cell(piece.x+x,piece.y+y,piece.type);
+  }));
  }
 }
-function start(){
- if(over||!board)reset();
- running=true;paused=false;over=false;hideOverlay();$("status").textContent="HRAJEŠ";$("pauseBtn").textContent="PAUZA";lastTime=performance.now();
+function tick(now=0){
+ const dt=Math.min(now-last,100);last=now;
+ if(running&&!paused&&!over){
+  timer+=dt;
+  if(timer>=interval){timer=0;move(0,1);}
+ }
+ draw();requestAnimationFrame(tick);
 }
 function togglePause(){
  if(over)return;
  if(!running){start();return;}
- paused=!paused;$("pauseBtn").textContent=paused?"POKRAČOVAT":"PAUZA";
- $("status").textContent=paused?"PAUZA":"HRAJEŠ";
- if(paused)overlay("PAUZA","Hra je pozastavená.","POKRAČOVAT");else hideOverlay();
+ paused=!paused;
+ $("pause").textContent=paused?"POKRAČOVAT":"PAUZA";
+ if(paused)message("Pauza","Hra je pozastavená.","Pokračovat");
+ else $("overlay").classList.add("hidden");
 }
-function tick(now=0){
- const dt=Math.min(now-lastTime,100);lastTime=now;
- if(running&&!paused&&!over){dropCounter+=dt;if(dropCounter>=dropInterval){move(0,1);dropCounter=0;}}
- draw();raf=requestAnimationFrame(tick);
-}
-$("startBtn").addEventListener("click",()=>{if(paused&&!over)togglePause();else start();});
-$("restartBtn").addEventListener("click",()=>{reset();start();});
-$("pauseBtn").addEventListener("click",togglePause);
-$("leftBtn").addEventListener("click",()=>move(-1));
-$("rightBtn").addEventListener("click",()=>move(1));
-$("downBtn").addEventListener("click",()=>{if(move(0,1)){score++;stats();}});
-$("rotateBtn").addEventListener("click",rotate);
-$("dropBtn").addEventListener("click",hardDrop);
-$("soundBtn").addEventListener("click",()=>{soundOn=!soundOn;$("soundBtn").textContent="Zvuk: "+(soundOn?"zapnutý":"vypnutý");beep(520,.07);});
+$("start").onclick=start;
+$("restart").onclick=reset;
+$("pause").onclick=togglePause;
+$("left").onclick=()=>move(-1);
+$("right").onclick=()=>move(1);
+$("rotate").onclick=rotate;
+$("down").onclick=()=>{if(move(0,1)){score++;update();}};
 document.addEventListener("keydown",e=>{
- const used=["ArrowLeft","ArrowRight","ArrowDown","ArrowUp"," ","p","P","x","X"];
- if(used.includes(e.key))e.preventDefault();
+ if(["ArrowLeft","ArrowRight","ArrowDown","ArrowUp"," ","p","P"].includes(e.key))e.preventDefault();
  if(e.key==="ArrowLeft")move(-1);
- else if(e.key==="ArrowRight")move(1);
- else if(e.key==="ArrowDown"){if(move(0,1)){score++;stats();}}
- else if(["ArrowUp","x","X"].includes(e.key))rotate();
- else if(e.key===" ")hardDrop();
- else if(e.key==="p"||e.key==="P")togglePause();
+ if(e.key==="ArrowRight")move(1);
+ if(e.key==="ArrowDown"){if(move(0,1)){score++;update();}}
+ if(e.key==="ArrowUp"||e.key==="x")rotate();
+ if(e.key===" ")hardDrop();
+ if(e.key==="p"||e.key==="P")togglePause();
 });
-let touch=null;
-canvas.addEventListener("touchstart",e=>{const t=e.changedTouches[0];touch={x:t.clientX,y:t.clientY};},{passive:true});
+canvas.addEventListener("touchstart",e=>{
+ const t=e.changedTouches[0];touch={x:t.clientX,y:t.clientY};
+},{passive:true});
 canvas.addEventListener("touchend",e=>{
  if(!touch||!running||paused){touch=null;return;}
- const t=e.changedTouches[0],dx=t.clientX-touch.x,dy=t.clientY-touch.y;
+ const t=e.changedTouches[0];
+ const dx=t.clientX-touch.x,dy=t.clientY-touch.y;
  if(Math.abs(dx)<18&&Math.abs(dy)<18)rotate();
- else if(Math.abs(dx)>Math.abs(dy)){const n=Math.min(5,Math.max(1,Math.round(Math.abs(dx)/30)));for(let i=0;i<n;i++)move(dx>0?1:-1);}
- else if(dy>35){if(dy>100)hardDrop();else move(0,1);}
+ else if(Math.abs(dx)>Math.abs(dy)){
+  const n=Math.min(5,Math.max(1,Math.round(Math.abs(dx)/30)));
+  for(let i=0;i<n;i++)move(dx>0?1:-1);
+ }else if(dy>30){
+  if(dy>100)hardDrop();else move(0,1);
+ }
  touch=null;
 },{passive:true});
-document.addEventListener("visibilitychange",()=>{if(document.hidden&&running&&!paused)togglePause();});
-reset();cancelAnimationFrame(raf);raf=requestAnimationFrame(tick);
+document.addEventListener("visibilitychange",()=>{
+ if(document.hidden&&running&&!paused)togglePause();
+});
+reset();
+requestAnimationFrame(tick);
 })();
 </script>
 </body>
